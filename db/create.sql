@@ -65,7 +65,8 @@ CREATE TABLE Seller_Review (
 
 CREATE TABLE Cart (
     buyer_id INT NOT NULL REFERENCES Buyer(user_id) PRIMARY KEY,
-    product_name VARCHAR(255) NOT NULL UNIQUE REFERENCES Product(name),
+    product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
     seller_id INT NOT NULL REFERENCES Seller(user_id),
-    quantity INT NOT NULL
+    quantity INT NOT NULL,
+    UNIQUE(product_name, seller_id)  
 );
