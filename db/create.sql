@@ -22,9 +22,9 @@ CREATE TABLE Category(
 
 CREATE TABLE Product(
     name VARCHAR(255) NOT NULL PRIMARY KEY,
-    description VARCHAR(255),
+    category_name VARCHAR(255) NOT NULL REFERENCES Category(name),
     image_url VARCHAR(255) NOT NULL,
-    category_name VARCHAR(255) UNIQUE NOT NULL
+    description VARCHAR(255)
 );
 
 CREATE TABLE Selling(
