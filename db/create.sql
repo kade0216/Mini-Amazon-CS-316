@@ -9,7 +9,7 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Seller(
-    user_id INTEGER NOT NULL  PRIMARY KEY REFERENCES Users(id)
+    user_id INTEGER NOT NULL PRIMARY KEY REFERENCES Users(id)
 );
 
 CREATE TABLE Buyer(
@@ -28,7 +28,7 @@ CREATE TABLE Product(
 );
 
 CREATE TABLE Selling(
-    seller_id INT NOT NULL,
+    seller_id INT NOT NULL REFERENCES Seller(user_id),
     product_name VARCHAR(255) UNIQUE NOT NULL REFERENCES Product(name),
     price FLOAT NOT NULL,
     quantity_in_inventory INT NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE Orders (
 
 CREATE TABLE Product_Review (
     product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
-    buyer_id INT NOT NULL REFERENCES Users(id),
+    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
     seller_id INT NOT NULL REFERENCES Seller(user_id),
     rating INT NOT NULL,
     date DATE,
@@ -56,11 +56,11 @@ CREATE TABLE Product_Review (
 );
 
 CREATE TABLE Seller_Review (
-    buyer_id INT NOT NULL REFERENCES Users(id),
+    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
     seller_id INT NOT NULL REFERENCES Seller(user_id),
     rating INT NOT NULL,
     date DATE,
-    UNIQUE(buyer_id, seller_id)
+    PRIMARY KEY(buyer_id, seller_id)
 );
 
 CREATE TABLE Cart (
