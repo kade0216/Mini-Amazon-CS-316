@@ -23,7 +23,7 @@ CREATE TABLE Category(
 CREATE TABLE Product(
     name VARCHAR(255) NOT NULL PRIMARY KEY,
     description VARCHAR(255),
-    image_id INT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
     category_name VARCHAR(255) UNIQUE NOT NULL
 );
 
