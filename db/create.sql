@@ -42,7 +42,7 @@ CREATE TABLE Orders (
     product_name VARCHAR(255) UNIQUE NOT NULL REFERENCES Product(name),
     quantity INT NOT NULL,
     fulfilllment_status BOOLEAN DEFAULT FALSE,
-    order_page_link VARCHAR(255) UNIQUE,
+    order_page_link VARCHAR(255)
     PRIMARY KEY(buyer_id, time_purchased, seller_id, product_name)
 );
 
@@ -68,5 +68,5 @@ CREATE TABLE Cart (
     product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
     seller_id INT NOT NULL REFERENCES Seller(user_id),
     quantity INT NOT NULL,
-    UNIQUE(product_name, seller_id)  
+    UNIQUE(product_name, seller_id)
 );
