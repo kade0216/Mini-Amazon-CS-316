@@ -24,6 +24,7 @@ CREATE TABLE Product(
     name VARCHAR(255) NOT NULL PRIMARY KEY,
     category_name VARCHAR(255) NOT NULL REFERENCES Category(name),
     image_url VARCHAR(255) NOT NULL,
+    available BOOLEAN NOT NULL,
     description VARCHAR(255)
 );
 
@@ -42,7 +43,7 @@ CREATE TABLE Orders (
     product_name VARCHAR(255) UNIQUE NOT NULL REFERENCES Product(name),
     quantity INT NOT NULL,
     fulfilllment_status BOOLEAN DEFAULT FALSE,
-    order_page_link VARCHAR(255)
+    order_page_link VARCHAR(255),
     PRIMARY KEY(buyer_id, time_purchased, seller_id, product_name)
 );
 
