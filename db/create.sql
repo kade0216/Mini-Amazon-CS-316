@@ -24,6 +24,7 @@ CREATE TABLE Product(
     name VARCHAR(255) NOT NULL PRIMARY KEY,
     category_name VARCHAR(255) NOT NULL REFERENCES Category(name),
     image_url VARCHAR(255) NOT NULL,
+    available BOOLEAN NOT NULL,
     description VARCHAR(255)
 );
 
