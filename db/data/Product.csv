@@ -3,4 +3,4 @@
 'strawberry ice cream','dessert', 'strawberry_ice_cream.jpeg', TRUE, 'creamy strawberry'
 '6-pack of paycheck pilsners','beer', 'pilsners.jpeg', TRUE, 'bitter beer'
 'seven fabergé easter eggs','eggs', 'easter_eggs.jpeg', TRUE, 'fancy easter eggs for family'
-'painting - the storm on the sea of galilee','painting', TRUE, 'the_storm_on_the_sea_of_galilee.jpeg', 'stormy painting'
+'painting - the storm on the sea of galilee','painting', 'the_storm_on_the_sea_of_galilee.jpeg', TRUE, 'stormy painting'
