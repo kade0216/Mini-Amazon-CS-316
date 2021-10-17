@@ -2,10 +2,11 @@ from flask import current_app as app
 
 
 class Product:
-    def __init__(self, name, category_name, image_url, description):
+    def __init__(self, name, category_name, image_url, available, description):
         self.name = name
         self.category_name = category_name
         self.image_url = image_url
+        self.available = available
         self.description = description
 
     @staticmethod
@@ -28,12 +29,12 @@ class Product:
         available=available)
         return [Product(*row) for row in rows]
 
-#     @staticmethod
-#     def get_all(available=True):
-#         rows = app.db.execute('''
-#           SELECT id, name, price, available
-#           FROM Products
-#           WHERE available = :available
-#           ''',
-#           available=available)
-#           return [Product(*row) for row in rows]
+    # @staticmethod
+    # def get_all(available=True):
+    #     rows = app.db.execute('''
+    #       SELECT id, name, price, available
+    #       FROM Products
+    #       WHERE available = :available
+    #       ''',
+    #       available=available)
+    #       return [Product(*row) for row in rows]
