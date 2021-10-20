@@ -1,9 +1,11 @@
+from flask import current_app as app
 from flask import render_template
 from flask_login import current_user
 import datetime
 
 from .models.product import Product
 from .models.purchase import Purchase
+from .models.selling import Selling
 
 from flask import Blueprint
 bp = Blueprint('index', __name__)
@@ -23,3 +25,13 @@ def index():
     return render_template('index.html',
                            avail_products=products,
                            purchase_history=purchases)
+
+
+@bp.route('/seller-inventory/<user_id>', methods=['GET'])
+def get_seller_inventory_page(user_id):
+    seller_inventory = Selling.get_all_for_seller(user_id)
+
+    '''TODO(Sellers Guru (vikramrk)): Handle login '''
+
+    return render_template('sellerinventory.html',
+                           seller_inventory=seller_inventory)
