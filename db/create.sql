@@ -9,7 +9,8 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Seller(
-    user_id INTEGER NOT NULL PRIMARY KEY REFERENCES Users(id)
+    user_id INTEGER NOT NULL PRIMARY KEY REFERENCES Users(id),
+    seller_name VARCHAR(255) UNIQUE NOT NULL
 );
 
 CREATE TABLE Buyer(
@@ -65,9 +66,9 @@ CREATE TABLE Seller_Review (
 );
 
 CREATE TABLE Cart (
-    buyer_id INT NOT NULL REFERENCES Buyer(user_id) PRIMARY KEY,
+    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
     product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
     seller_id INT NOT NULL REFERENCES Seller(user_id),
     quantity INT NOT NULL,
-    UNIQUE(product_name, seller_id)
+    PRIMARY KEY(buyer_id, product_name, seller_id)
 );
