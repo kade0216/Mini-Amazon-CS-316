@@ -30,7 +30,7 @@ CREATE TABLE Product(
 
 CREATE TABLE Selling(
     seller_id INT NOT NULL REFERENCES Seller(user_id),
-    product_name VARCHAR(255) UNIQUE NOT NULL REFERENCES Product(name),
+    product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
     price FLOAT NOT NULL,
     quantity_in_inventory INT NOT NULL,
     PRIMARY KEY(seller_id, product_name)

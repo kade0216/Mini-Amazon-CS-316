@@ -22,7 +22,7 @@ def index():
     else:
         purchases = None
 
-    
+
     # render the page by adding information to the index.html file
     return render_template('index.html',
                            avail_products=products,
@@ -32,7 +32,7 @@ def index():
 @bp.route('/seller-inventory/<user_id>', methods=['GET'])
 def get_seller_inventory_page(user_id):
     seller_inventory = Selling.get_all_for_seller(user_id)
-
+    
     '''TODO(Sellers Guru (vikramrk)): Handle login '''
 
     return render_template('sellerinventory.html',
