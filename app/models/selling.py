@@ -1,5 +1,7 @@
 from flask import current_app as app
 
+from .product import Product
+
 
 class Selling:
     def __init__(self, seller_id, product_name, price, quantity_in_inventory):
@@ -78,6 +80,89 @@ class Selling:
         AND product_name = :product_name
         """,
             new_quantity=new_quantity,
+            seller_id=seller_id,
+            product_name=product_name,
+        )
+
+    @staticmethod
+    def does_seller_sell_product(seller_id, product_name):
+        """
+        Checks whether a seller sells a given product.
+
+        Returns boolean T/F.
+        """
+        rows = app.db.execute(
+            """
+            SELECT seller_id, product_name
+            FROM Selling
+            WHERE seller_id = :seller_id
+            AND product_name = :product_name
+            """,
+            seller_id=seller_id,
+            product_name=product_name,
+        )
+
+        return len(rows) > 0
+
+    @staticmethod
+    def add_new_product_to_seller_inventory(seller_id, product_name, price, quantity):
+        """
+        Adds a new product to a seller's inventory.
+        Throws an exception if the product already exisits in the seller's inventory.
+        Throws an exception if the new product does not exisit in the product table.
+        (violates foreign key constraint)
+
+        Note: A new product must exisit in the products table before calling
+        this method.
+        """
+
+        if Selling.does_seller_sell_product(seller_id, product_name):
+            app.logger.error(
+                f"Cannot add {product_name} to seller's inventory because it already exists"
+            )
+            return
+
+        if not (Product.does_product_exist(product_name)):
+            app.logger.error(
+                f"Cannot add {product_name} because it does not exisit in the Product table"
+            )
+            return
+
+        app.db.execute_with_no_return(
+            """
+        INSERT INTO Selling
+        VALUES (:seller_id, :product_name, :price, :quantity)
+        """,
+            seller_id=seller_id,
+            product_name=product_name,
+            price=price,
+            quantity=quantity,
+        )
+
+    @staticmethod
+    def remove_product_from_seller_inventory(seller_id, product_name):
+        """
+        Removes an exisiting product from a seller's inventory
+        Throws an exception if the product does not exisit in the seller's inventory.
+
+
+        Note: (TODO: Seller's Guru: if after removal, the product has no remaining sellers,
+        remove product (blocked by lack of remove product method))
+        """
+
+        if not (Selling.does_seller_sell_product(seller_id, product_name)):
+            app.logger.error(
+                f"Cannot remove {product_name} to seller's inventory because "
+                f"seller does not sell that product."
+            )
+            return
+
+        app.db.execute_with_no_return(
+            """
+        DELETE FROM Selling
+        WHERE seller_id = :seller_id
+        AND product_name = :product_name
+        """,
             seller_id=seller_id,
             product_name=product_name,
         )

@@ -29,6 +29,22 @@ class Product:
         available=available)
         return [Product(*row) for row in rows]
 
+    @staticmethod
+    def does_product_exist(product_name):
+        """
+        Checks whether a product exists in Product table
+
+        Returns boolean T/F.
+        """
+        rows = app.db.execute('''
+        SELECT name
+        FROM product
+        WHERE name = :product_name
+        ''',
+        product_name=product_name)
+
+        return len(rows) > 0
+
     # @staticmethod
     # def get_all(available=True):
     #     rows = app.db.execute('''
