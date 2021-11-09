@@ -4,6 +4,14 @@
 
 <br><br>
 
+<!-- <a href="{{ url_for('index.get_seller_inventory_page', user_id=current_user.id) }}" type="button" class="btn btn-light">Log in</a> -->
+
+
+
+{% for cat in categories%}
+    <a href="{{ url_for('index.get_cat_page', category=cat) }}" type="button" class="btn btn-light">{{cat}}</a>
+{% endfor %}
+
 <h2>Products for sale:</h2>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
