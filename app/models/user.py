@@ -21,8 +21,11 @@ class User(UserMixin):
                 WHERE email = :email
                 """,
                     email=email)
+
         if not rows:  # email not found
             return None
+        elif email == 'bes41@duke.edu': #get test user without dealing with unhashing pws
+            return User(*(rows[0][1:]))
         elif not check_password_hash(rows[0][0], password):
             # incorrect password
             return None
@@ -38,6 +41,39 @@ class User(UserMixin):
                 """,
                     email=email)
         return len(rows) > 0
+
+    @staticmethod
+    def get_account_balance(uid):
+        balance = app.db.execute("""
+                SELECT balance
+                FROM Users
+                WHERE id = :id
+                """,
+                    id=uid)
+
+        return balance[0][0]
+
+    @staticmethod
+    def add_balance(uid, balance):
+        app.db.execute("""
+                UPDATE Users
+                SET balance = balance + :balance
+                WHERE id = :uid
+                RETURNING id
+                """,
+                    uid=uid,
+                    balance=balance)
+
+    @staticmethod
+    def withdraw_balance(uid, balance):
+        app.db.execute("""
+                UPDATE Users
+                SET balance = balance - :balance
+                WHERE id = :uid
+                RETURNING id
+                """,
+                    uid=uid,
+                    balance=balance)
 
     @staticmethod
     def register(email, password, firstname, lastname, address):
