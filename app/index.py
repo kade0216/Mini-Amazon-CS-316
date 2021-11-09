@@ -15,6 +15,7 @@ bp = Blueprint('index', __name__)
 def index():
     # get all available products for sale:
     products = Product.get_all(True)
+
     # find the products current user has bought:
     if current_user.is_authenticated:
         purchases = []
@@ -44,3 +45,20 @@ def get_seller_inventory_page(user_id):
 def get_users_cart(user_id):
     cart = Cart.get_current_cart(user_id)
     return render_template('cart.html', cart=cart)
+
+@bp.route('/product_page/<name>', methods=['GET'])
+def get_product_page(name):
+
+    products = Product.get(name)
+
+    print(products)
+    '''TODO(Karan): Handle login '''
+
+    return render_template('productpage.html', product=products)
+
+@bp.route('/product_category/<category>', methods=['GET'])
+def get_cat_page(category):
+    prod_in_cat = Product.get_products_in_category(category)
+
+    print(prod_in_cat)
+    return render_template('productcat.html', products=prod_in_cat)
