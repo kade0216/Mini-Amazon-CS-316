@@ -1,5 +1,6 @@
 from flask import current_app as app
 
+#from .selling import Selling
 
 class Product:
     def __init__(self, name, category_name, image_url, available, description):
@@ -11,41 +12,101 @@ class Product:
 
     @staticmethod
     def get(name):
-        name = '\'' + name + '\''
+        #print(name)
+        #name = '\'' + name + '\''
         rows = app.db.execute('''
         SELECT *
-        FROM Product
+        FROM Product, Selling
         WHERE name = :name
+        AND name = product_name
         ''',
         name=name)
-        return [Product(*(rows[0])) if rows is not None else None]
+
+        return rows
+        #return [Product(*(rows[0])) if rows is not None else None]
 
 
     @staticmethod
     def get_all(available=True):
         rows = app.db.execute('''
         SELECT *
-        FROM Product
+        FROM Product, Selling
         WHERE available = :available
+        AND name = product_name
         ''',
         available=available)
-        return [Product(*row) for row in rows]
+        return rows
+
+    def get_categories():
+        rows = app.db.execute('''
+        SELECT *
+        FROM Category
+        ''')
+
+        return [row[0] for row in rows]
+
+    def get_search(search):
+        #print(search)
+        rows = app.db.execute('''
+        SELECT *
+        FROM Product, Selling
+        WHERE name LIKE '%:search%'
+        AND name = product_name
+        ''',
+        search=search)
+        #print(rows)
+        return rows
 
     @staticmethod
     def get_products_in_category(category_name):
         """
         Gets all products within given category
         """
+        print(category_name)
 
-        category_name = '\'' + category_name + '\''
+        #category_name = '\'' + category_name + '\''
         rows = app.db.execute('''
         SELECT *
         FROM Product
         WHERE category_name = :category_name
         ''',
         category_name = category_name)
-        print(rows)
+        
         return [Product(*row) for row in rows]
+
+    @staticmethod
+    def sort_by_price_low_to_high(bool):
+        """
+        Sort the products on the page from price low to high
+        """
+
+        rows = app.db.execute('''
+        SELECT *
+        FROM Product, Selling
+        WHERE name = product_name
+        ORDER BY price
+        ''',
+        bool=bool)
+        #print(rows)
+        #return [Product(*row) for row in rows]
+        return rows
+
+    @staticmethod
+    def sort_by_price_high_to_low(bool):
+        """
+        Sort the products on the page from price low to high
+        """
+
+        rows = app.db.execute('''
+        SELECT *
+        FROM Product, Selling
+        WHERE name = product_name
+        ORDER BY price DESC
+        ''',
+        bool=bool)
+        #print(rows)
+        #return [Product(*row) for row in rows]
+        return rows
 
     @staticmethod
     def does_product_exist(product_name):
@@ -80,10 +141,10 @@ class Product:
             return
 
 
-        name = '\'' + name + '\''
-        category_name = '\'' + category_name + '\''
-        image_url = '\'' + image_url + '\''
-        description = '\'' + description + '\''
+        #name = '\'' + name + '\''
+        #category_name = '\'' + category_name + '\''
+        #image_url = '\'' + image_url + '\''
+        #description = '\'' + description + '\''
         
         app.db.execute_with_no_return(
             """
