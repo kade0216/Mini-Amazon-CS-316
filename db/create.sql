@@ -51,9 +51,10 @@ CREATE TABLE Orders (
 CREATE TABLE Product_Review (
     product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
     buyer_id INT NOT NULL REFERENCES Buyer(user_id),
-    seller_id INT NOT NULL REFERENCES Seller(user_id),
     rating INT NOT NULL,
     date DATE,
+    upvote_count INT,
+    downvote_count INT,
     PRIMARY KEY(product_name, buyer_id)
 );
 
@@ -62,7 +63,18 @@ CREATE TABLE Seller_Review (
     seller_id INT NOT NULL REFERENCES Seller(user_id),
     rating INT NOT NULL,
     date DATE,
+    upvote_count INT,
+    downvote_count INT,
     PRIMARY KEY(buyer_id, seller_id)
+);
+
+CREATE TABLE Message(
+    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
+    seller_id INT NOT NULL REFERENCES Seller(user_id),
+    directionality INT,
+    date DATE,
+    messageText VARCHAR(1000),
+    PRIMARY KEY(buyer_id, seller_id, date)
 );
 
 CREATE TABLE Cart (

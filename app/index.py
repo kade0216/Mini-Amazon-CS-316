@@ -6,6 +6,9 @@ import datetime
 from .models.product import Product
 from .models.selling import Selling
 from .models.cart import Cart
+from .models.product_review import Product_Review
+from .models.seller_review import Seller_Review
+
 
 from flask import Blueprint
 bp = Blueprint('index', __name__)
@@ -45,6 +48,37 @@ def get_seller_inventory_page(user_id):
 def get_users_cart(user_id):
     cart = Cart.get_current_cart(user_id)
     return render_template('cart.html', cart=cart)
+
+@bp.route('/user-product-reviews/<user_id>', methods=['GET'])
+def get_product_reviews_by_user(user_id):
+    review_list = Product_Review.get_all_reviews_by_buyer(user_id)
+
+    return render_template('user_product_reviews.html',
+			     review_list=review_list)
+
+@bp.route('/user-seller-reviews/<user_id>', methods=['GET'])
+def get_seller_reviews_by_user(user_id):
+    review_list = Seller_Review.get_all_reviews_by_buyer(user_id)
+
+    return render_template('user_seller_reviews.html',
+			     review_list=review_list)
+
+
+@bp.route('/reviews-for-product/<product_name>', methods=['GET'])
+def get_reviews_for_product(product_name):
+    product_name = "'" + product_name.replace("_", " ") + "'"
+    review_list = Product_Review.get_all_reviews_for_product(product_name)
+
+    return render_template('reviews_for_product.html',
+			     review_list=review_list)
+
+@bp.route('/reviews-for-seller/<seller_id>', methods=['GET'])
+def get_reviews_for_seller(seller_id):
+    review_list = Seller_Review.get_all_reviews_for_seller(seller_id)
+
+    return render_template('reviews_for_seller.html',
+			     review_list=review_list)
+
 
 @bp.route('/product_page/<name>', methods=['GET'])
 def get_product_page(name):
