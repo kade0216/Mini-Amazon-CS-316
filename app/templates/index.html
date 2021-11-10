@@ -7,26 +7,33 @@
 <!-- <a href="{{ url_for('index.get_seller_inventory_page', user_id=current_user.id) }}" type="button" class="btn btn-light">Log in</a> -->
 
 
-<h5>Categories:</h>
+<h5>Categories:</h5>
 {% for cat in categories%}
     <a href="{{ url_for('index.get_cat_page', category=cat) }}" type="button" class="btn btn-light">{{cat}}</a>
 {% endfor %}
+
+<h5>Sort by:</h5>
+<a href="{{ url_for('index.get_product__sort_low_to_high') }}" type="button" class="btn btn-light">Price low to high</a>
+<a href="{{ url_for('index.get_product__sort_high_to_low') }}" type="button" class="btn btn-light">Price high to low</a>
 
 <h2>Products for sale:</h2>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
-      <th scope="col">Product ID</th>
+      <!-- <th scope="col">Product ID</th> -->
       <th scope="col">Product Name</th>
       <th scope="col">Price</th>
+      <th scope="col">Image</th>
+      <th scope="col">Description</th>
     </tr>
   </thead>
   <tbody>
     {% for product in avail_products%}
       <tr>
-        <th scope="row">{{product.id}}</th>
-        <td>{{product.name}}</td>
+        <th scope="row">{{product.name}}</th>
         <td>{{product.price}}</td>
+        <td>{{product.image_url}}</td>
+        <td>{{product.description}}</td>
       </tr>
     {% endfor %}
   </tbody>
