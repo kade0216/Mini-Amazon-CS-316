@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<h2>Dashboard</h2>
+
+<br><br>
+
+<h2>Account Balance: {{'%0.2f'|format(account_balance|float)}} </h2>
+<form action="{{ url_for('users.add_balance') }}" method="post">
+    <label for="add_balance">Add balance:</label>
+    <input name='balance' type="number" step="0.01" min=0>
+    <input type="submit" value="Add!">
+</form>
+<br>
+<form action="{{ url_for('users.withdraw_balance') }}" method="post">
+    <label for="withdraw_balance">Withdraw balance:</label>
+    <input name='balance' type="number" step="0.01" min=0 max={{account_balance}}>
+    <input type="submit" value="Withdraw!">
+</form>
+
+
+<br><br>
+
+<h2>Your recent orders:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product Name</th>
+      <th scope="col">Seller ID</th>
+      <th scope="col">Fullfillment Status</th>
+      <th scope="col">Date Purchased</th>
+      <th scope="col">Product Page</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in order_history%}
+      <tr>
+        <th scope="row">{{order.product_name}}</th>
+        <td>{{order.seller_id}}</td>
+        <td>{{order.fulfilllment_status}}</td>
+        <td>{{order.time_purchased}}</td>
+        <td> <a href="{{ url_for('index.get_product_page', name=order.product_name) }}" type="button" class="btn btn-light">go to page!</a></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
