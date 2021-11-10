@@ -21,16 +21,18 @@
       <tr>
         <th scope="row">{{prod.name}}</th>
         <td>{{prod.price}}</td>
-        <td>{{prod.image_url}}</td>
+        <td><img src="/static/css/images/{{prod.name}}.jpeg" alt={{prod.name}} style="width:auto;height:50px"></td>
         <td>{{prod.description}}</td>
+        <td>{{prod.seller_id}}</td>
+        <td>{{prod.quantity_in_inventory}}</td>
       </tr>
     {% endfor %}
-    {% for product in seller_inventory%}
+    <!-- {% for product in seller_inventory%}
       <tr>
         <th scope="row">{{product.price}}</th>
         <td>{{product.quantity_in_inventory}}</td>
       </tr>
-    {% endfor %}
+    {% endfor %} -->
   </tbody>
 </table>
 

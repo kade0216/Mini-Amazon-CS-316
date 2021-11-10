@@ -12,27 +12,30 @@ class Product:
 
     @staticmethod
     def get(name):
-        print(name)
-        name = '\'' + name + '\''
+        #print(name)
+        #name = '\'' + name + '\''
         rows = app.db.execute('''
         SELECT *
-        FROM Product
+        FROM Product, Selling
         WHERE name = :name
+        AND name = product_name
         ''',
         name=name)
 
-        return [Product(*(rows[0])) if rows is not None else None]
+        return rows
+        #return [Product(*(rows[0])) if rows is not None else None]
 
 
     @staticmethod
     def get_all(available=True):
         rows = app.db.execute('''
         SELECT *
-        FROM Product
+        FROM Product, Selling
         WHERE available = :available
+        AND name = product_name
         ''',
         available=available)
-        return [Product(*row) for row in rows]
+        return rows
 
     def get_categories():
         rows = app.db.execute('''
@@ -126,10 +129,10 @@ class Product:
             return
 
 
-        name = '\'' + name + '\''
-        category_name = '\'' + category_name + '\''
-        image_url = '\'' + image_url + '\''
-        description = '\'' + description + '\''
+        #name = '\'' + name + '\''
+        #category_name = '\'' + category_name + '\''
+        #image_url = '\'' + image_url + '\''
+        #description = '\'' + description + '\''
         
         app.db.execute_with_no_return(
             """

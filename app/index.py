@@ -18,8 +18,12 @@ bp = Blueprint('index', __name__)
 def index():
     # get all available products for sale:
     products = Product.get_all(True)
+    print(Product)
 
     categories = Product.get_categories()
+    #for i in range(len(categories)):
+        #categories[i] = categories[i][1:-1].capitalize()
+    #print(categories)
 
     # find the products current user has bought:
     if current_user.is_authenticated:
