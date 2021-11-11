@@ -5,8 +5,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask_babel import _, lazy_gettext as _l
+from flask import current_app as app
+import datetime
 
 from .models.user import User
+from .models.orders import Orders
 
 
 from flask import Blueprint
@@ -77,3 +80,26 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('index.index'))
+
+@bp.route('/dash')
+def dash():
+    order_history = Orders.get_all_by_uid_since(
+            current_user.id, datetime.datetime(1980, 9, 14, 0, 0, 0))
+
+    account_balance = User.get_account_balance(current_user.id)
+    return render_template('dash.html', order_history=order_history, account_balance=account_balance)
+
+@bp.route('/add_balance', methods=['POST', 'GET'])
+def add_balance():
+    balance = request.form['balance']
+    User.add_balance(current_user.id, balance)
+
+    return redirect(url_for('users.dash'))
+
+@bp.route('/withdraw_balance', methods=['POST', 'GET'])
+def withdraw_balance():
+    balance = request.form['balance']
+    User.withdraw_balance(current_user.id, balance)
+
+    return redirect(url_for('users.dash'))
+
