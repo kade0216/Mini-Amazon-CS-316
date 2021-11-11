@@ -4,6 +4,7 @@
 
 <br><br>
 
+
 <h2>Your cart:</h2>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
@@ -13,6 +14,7 @@
       <th scope="col">Quantity</th>
       <th scope="col">Unit Price</th>
       <th scope="col">Total Price</th>
+      <th scope="col">Remove?</th>
     </tr>
   </thead>
   <tbody>
@@ -20,14 +22,34 @@
       <tr>
         <th scope="row">{{order.product_name}}</th>
         <td>{{order.seller_name}}</td>
-        <td>{{order.quantity}}</td>
+        <td>{{order.quantity}}
+          <form action="{{ url_for('cart.add_quantity_to_cart_item', product_name=order.product_name, seller_name=order.seller_name)}}" method="post">
+              <label for="add_quantity">Add quantity:</label>
+              <input name='quantity_diff' type="number" step="1" min=0>
+              <input type="submit" value="Submit">
+          </form>
+          <br>
+          <form action="{{ url_for('cart.subtract_quantity_to_cart_item', product_name=order.product_name, seller_name=order.seller_name) }}" method="post">
+              <label for="subtract_quantity">Subtract quantity:</label>
+              <input name='quantity_diff' type="number" step="1" min=0 max={{order.quantity}}>
+              <input type="submit" value="Submit">
+          </form>
+        </td>
         <td>{{order.unit_price}}</td>
         <td>{{order.total_price}}</td>
+        <td><form action="{{ url_for('cart.remove_item_from_cart', product_name=order.product_name, seller_name=order.seller_name) }}" method="post">
+            <input type="image" src="/static/icons/delete_button.png" alt="Remove?" style=width:50px;height="50px";>
+          </form></td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
 
+{% for mesg in get_flashed_messages() %}
+<p><strong> {{ mesg }} </strong></p>
+{% endfor %}
+
+<a href="{{ url_for('cart.submit_order') }}" type="button" class="btn btn-dark">Submit Order</a>
 <br><br>
 
 {% endblock %}
