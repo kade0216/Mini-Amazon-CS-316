@@ -98,11 +98,16 @@ def get_cat_page(category):
 
 @bp.route('/search', methods=['POST', 'GET'])
 def get_search_results():
-    search = request.form["search"]
+    products = []
+    if request.method == "POST":
+        search = request.form['search']
+        prods = Product.get_search(search)
+        products = prods
+    #print(products)
     #search = request.form.get("search", False)
-    print(search)
+    #print(search)
     # get all available products for sale:
-    products = Product.get_search(search)
+    #products = Product.get_search(search)
     #print(products)
 
     categories = Product.get_categories()
@@ -117,7 +122,7 @@ def get_search_results():
 
 
     # render the page by adding information to the index.html file
-    return render_template('index.html',
+    return render_template('search.html',
                             search_products=products,
                             purchase_history=purchases,
                             categories=categories)

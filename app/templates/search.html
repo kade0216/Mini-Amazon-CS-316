@@ -39,7 +39,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for product in avail_products%}
+    {% for product in search_products%}
       <tr>
         <th scope="row"> <a href="{{ url_for('index.get_product_page', name=product.name)}}">{{product.name}}</a> </th>
         <td>{{product.price}}</td>
