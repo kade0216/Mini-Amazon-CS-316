@@ -45,6 +45,18 @@ class Product:
 
         return [row[0] for row in rows]
 
+    def get_search(search):
+        #print(search)
+        rows = app.db.execute('''
+        SELECT *
+        FROM Product, Selling
+        WHERE name LIKE '%:search%'
+        AND name = product_name
+        ''',
+        search=search)
+        #print(rows)
+        return rows
+
     @staticmethod
     def get_products_in_category(category_name):
         """

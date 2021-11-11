@@ -8,8 +8,11 @@
 
 <!-- <form action="users.php" method="GET"> -->
 <h5>Search bar:</h5>
-<input id="search" type="text" placeholder="Type here" >
-<input id="submit" type="submit" value="Search" class="btn btn-light">
+<form action="{{ url_for('index.get_search_results')}}" method="POST">
+    <input name="search" id="search" type="text" placeholder="Type here" >
+    <!-- <input id="submit" type="button" value="Search" class="btn btn-light"> -->
+    <button class="btn btn-light" type="submit">Search</button>
+</form>
 <!-- </form> -->
 
 <h5>Categories:</h5>
