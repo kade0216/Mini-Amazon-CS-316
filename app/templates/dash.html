@@ -4,23 +4,73 @@
 
 <br><br>
 
+{% if current_user.is_authenticated %}
 <h2>Dashboard</h2>
+
+<br>
+
+<h2>Account Information</h2>
+First Name: {{ user.firstname }}
+<form action="{{ url_for('users.change_fname', user_id=user.id) }}" method="post">
+  <label for="change_fname">Change first name:</label>
+  <input name='change'>
+  <input type="submit" value="Change!">
+</form>
+<br>
+Last Name: {{ user.lastname }}
+<form action="{{ url_for('users.change_lname', user_id=user.id) }}" method="post">
+  <label for="change_lname">Change last name:</label>
+  <input name='change'>
+  <input type="submit" value="Change!">
+</form>
+<br>
+
+{% if seller_name %}
+Store Name: {{ seller_name }}
+<form action="{{ url_for('users.change_store', user_id=user.id) }}" method="post">
+  <label for="change_lname">Change store name:</label>
+  <input name='change'>
+  <input type="submit" value="Change!">
+</form>
+<br>
+{% endif %}
+
+Email: {{ user.email }}
+<form action="{{ url_for('users.change_email', user_id=user.id) }}" method="post">
+  <label for="change_email">Change email:</label>
+  <input name='change'>
+  <input type="submit" value="Change!">
+</form>
+<br>
+Address: {{ user.address }}
+<form action="{{ url_for('users.change_address', user_id=user.id, field='address') }}" method="post">
+  <label for="change_address">Change address:</label>
+  <input name='change'>
+  <input type="submit" value="Change!">
+</form>
+<br>
+<form action="{{ url_for('users.change_password', user_id=user.id) }}" method="post">
+  <label for="change_password">Change password:</label>
+  <input name='change'>
+  <input type="submit" value="Change!">
+</form>
+<br>
+Account ID: {{ user.id }}
 
 <br><br>
 
 <h2>Account Balance: {{'%0.2f'|format(account_balance|float)}} </h2>
-<form action="{{ url_for('users.add_balance') }}" method="post">
+<form action="{{ url_for('users.add_balance', user_id=user.id) }}" method="post">
     <label for="add_balance">Add balance:</label>
     <input name='balance' type="number" step="0.01" min=0>
     <input type="submit" value="Add!">
 </form>
 <br>
-<form action="{{ url_for('users.withdraw_balance') }}" method="post">
+<form action="{{ url_for('users.withdraw_balance', user_id=user.id) }}" method="post">
     <label for="withdraw_balance">Withdraw balance:</label>
     <input name='balance' type="number" step="0.01" min=0 max={{account_balance}}>
     <input type="submit" value="Withdraw!">
 </form>
-
 
 <br><br>
 
@@ -48,4 +98,18 @@
   </tbody>
 </table>
 
+{% else %}
+<h2>Account Information</h2>
+<br>
+Name: {{ user.firstname }} {{ user.lastname }}
+<br>
+Account ID: {{ user.id }}
+<br>
+{% if seller_name %}
+Email: {{ user.email }}
+<br>
+Store Name: {{ seller_name }}
+{% endif %}
+
+{% endif %}
 {% endblock %}
