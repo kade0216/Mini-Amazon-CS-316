@@ -7,7 +7,6 @@ import datetime
 
 from .models.product import Product
 from .models.selling import Selling
-from .models.cart import Cart
 from .models.product_review import Product_Review
 from .models.seller_review import Seller_Review
 
@@ -49,11 +48,6 @@ def get_seller_inventory_page(user_id):
                            seller_inventory=seller_inventory)
 
 
-@bp.route('/cart/<user_id>', methods=['GET'])
-def get_users_cart(user_id):
-    cart = Cart.get_current_cart(user_id)
-    return render_template('cart.html', cart=cart)
-
 @bp.route('/user-product-reviews/<user_id>', methods=['GET'])
 def get_product_reviews_by_user(user_id):
     review_list = Product_Review.get_all_reviews_by_buyer(user_id)
@@ -87,7 +81,7 @@ def get_reviews_for_seller(seller_id):
 
 @bp.route('/product_page/<name>', methods=['GET'])
 def get_product_page(name):
-    
+
     products = Product.get(name)
 
     '''TODO(Karan): Handle login '''

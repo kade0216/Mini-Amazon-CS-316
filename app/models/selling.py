@@ -59,7 +59,8 @@ class Selling:
         """
         Changes the product quantity records for a given item corresponding to a
         given seller in the Selling's table. If the resulting quantity is negative
-        the quantity is switched to 0.
+        the quantity is switched to 0. All resulting quanties of 0 are removed
+        from the seller's inventory.
 
         Adds quantity_diff (can be negative) to current quantity of a product.
         """
@@ -69,20 +70,22 @@ class Selling:
 
         new_quantity = product_quantity + quantity_diff
 
-        if new_quantity < 0:
-            new_quantity = 0
+        # if the seller's inventory for a product is 0 it should be removed
+        if new_quantity <= 0:
+            Selling.remove_product_from_seller_inventory(seller_id, product_name)
 
-        app.db.execute_with_no_return(
-            """
-        UPDATE Selling
-        SET quantity_in_inventory= :new_quantity
-        WHERE seller_id = :seller_id
-        AND product_name = :product_name
-        """,
-            new_quantity=new_quantity,
-            seller_id=seller_id,
-            product_name=product_name,
-        )
+        else:
+            app.db.execute_with_no_return(
+                """
+            UPDATE Selling
+            SET quantity_in_inventory= :new_quantity
+            WHERE seller_id = :seller_id
+            AND product_name = :product_name
+            """,
+                new_quantity=new_quantity,
+                seller_id=seller_id,
+                product_name=product_name,
+            )
 
     @staticmethod
     def does_seller_sell_product(seller_id, product_name):

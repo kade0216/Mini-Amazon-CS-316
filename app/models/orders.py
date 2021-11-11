@@ -12,14 +12,14 @@ class Orders:
     @staticmethod
     def get(id):
         rows = app.db.execute('''
-            SELECT buyer_id, 
-                seller_id, 
-                product_name, 
-                quantity, 
-                fulfilllment_status, 
+            SELECT buyer_id,
+                seller_id,
+                product_name,
+                quantity,
+                fulfilllment_status,
                 time_purchased
             FROM Orders
-            WHERE 
+            WHERE
                 buyer_id = :buyer_id
                 time_purchased = :time_purchased
                 seller_id = :seller_id
@@ -34,11 +34,11 @@ class Orders:
     @staticmethod
     def get_all_by_uid_since(uid, since):
         rows = app.db.execute('''
-            SELECT buyer_id, 
-                seller_id, 
-                product_name, 
-                quantity, 
-                fulfilllment_status, 
+            SELECT buyer_id,
+                seller_id,
+                product_name,
+                quantity,
+                fulfilllment_status,
                 time_purchased
             FROM Orders
             WHERE buyer_id = :buyer_id
@@ -48,3 +48,22 @@ class Orders:
                 buyer_id=uid,
                 since=since)
         return [Orders(*row) for row in rows]
+
+    @staticmethod
+    def create_new_order(buyer_id, seller_id, product_name, quantity, timestamp):
+        """
+        Creates a new order.
+
+        Note that the DB will default to assiging a fufilment status of FALSE
+        """
+        app.db.execute_with_no_return(
+            """
+        INSERT INTO Orders
+        VALUES (:buyer_id, :timestamp, :seller_id, :product_name, :quantity, FALSE)
+        """,
+            buyer_id=buyer_id,
+            seller_id=seller_id,
+            product_name=product_name,
+            quantity=quantity,
+            timestamp=timestamp
+        )
