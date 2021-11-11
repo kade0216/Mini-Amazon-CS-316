@@ -16,9 +16,10 @@ class Product:
         #name = '\'' + name + '\''
         rows = app.db.execute('''
         SELECT *
-        FROM Product, Selling
+        FROM Product, Selling, Seller
         WHERE name = :name
         AND name = product_name
+        AND seller_id = user_id
         ''',
         name=name)
 
@@ -30,9 +31,10 @@ class Product:
     def get_all(available=True):
         rows = app.db.execute('''
         SELECT *
-        FROM Product, Selling
+        FROM Product, Selling, Seller
         WHERE available = :available
         AND name = product_name
+        AND seller_id = user_id
         ''',
         available=available)
         return rows
@@ -46,15 +48,15 @@ class Product:
         return [row[0] for row in rows]
 
     def get_search(search):
-        #print(search)
+        #pattern=("%" + search + "%")
         rows = app.db.execute('''
         SELECT *
         FROM Product, Selling
-        WHERE name LIKE '%:search%'
+        WHERE name LIKE :pattern
         AND name = product_name
         ''',
-        search=search)
-        #print(rows)
+        pattern=("%" + search + "%"))
+
         return rows
 
     @staticmethod
@@ -67,9 +69,10 @@ class Product:
         #category_name = '\'' + category_name + '\''
         rows = app.db.execute('''
         SELECT *
-        FROM Product, Selling
+        FROM Product, Selling, Seller
         WHERE category_name = :category_name
         AND name = product_name
+        AND seller_id = user_id
         ''',
         category_name = category_name)
         
@@ -84,8 +87,9 @@ class Product:
 
         rows = app.db.execute('''
         SELECT *
-        FROM Product, Selling
+        FROM Product, Selling, Seller
         WHERE name = product_name
+        AND seller_id = user_id
         ORDER BY price
         ''',
         bool=bool)
@@ -101,8 +105,9 @@ class Product:
 
         rows = app.db.execute('''
         SELECT *
-        FROM Product, Selling
+        FROM Product, Selling, Seller
         WHERE name = product_name
+        AND seller_id = user_id
         ORDER BY price DESC
         ''',
         bool=bool)
