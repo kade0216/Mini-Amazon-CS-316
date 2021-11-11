@@ -43,7 +43,7 @@
       <tr>
         <th scope="row"> <a href="{{ url_for('index.get_product_page', name=product.name)}}">{{product.name}}</a> </th>
         <td>{{product.price}}</td>
-        <td><img src="/static/css/images/{{product.name}}.jpeg" alt={{product.name}} style="width:auto;height:50px"></td>
+        <td><img src="/static/css/images/{{product.category_name}}.jpeg" alt={{product.name}} style="width:auto;height:50px"></td>
         <td>{{product.description}}</td>
       </tr>
     {% endfor %}
