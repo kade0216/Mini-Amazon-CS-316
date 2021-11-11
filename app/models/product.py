@@ -67,12 +67,14 @@ class Product:
         #category_name = '\'' + category_name + '\''
         rows = app.db.execute('''
         SELECT *
-        FROM Product
+        FROM Product, Selling
         WHERE category_name = :category_name
+        AND name = product_name
         ''',
         category_name = category_name)
         
-        return [Product(*row) for row in rows]
+        return rows
+        #return [Product(*row) for row in rows]
 
     @staticmethod
     def sort_by_price_low_to_high(bool):
