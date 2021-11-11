@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<h2>Product Orders:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product Name</th>
+      <th scope="col">Buyer ID</th>
+      <th scope="col">Fullfillment Status</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Final Price</th>
+      <th scope="col">Date Purchased</th>
+      <th scope="col">Product Page</th>
+      <th scope="col">Fufill Order?</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in order_history%}
+      <tr>
+        <th scope="row">{{order.product_name}}</th>
+        <td>{{order.buyer_id}}</td>
+        <td>{{order.fulfillment_status}}</td>
+        <td>{{order.quantity}}
+        <td>{{order.final_price}}
+        <td>{{order.time_purchased}}</td>
+        <td> <a href="{{ url_for('index.get_product_page', name=order.product_name) }}" type="button" class="btn btn-light">go to page!</a></td>
+        <td> <a href="{{ url_for('seller.fufill_order', buyer_id=order.buyer_id, time_purchased=order.time_purchased, product_name=order.product_name) }}" type="button" class="btn btn-dark">Fufill Order</a></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<br><br>
+
+{% endblock %}

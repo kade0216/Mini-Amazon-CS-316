@@ -81,6 +81,8 @@ Account ID: {{ user.id }}
       <th scope="col">Product Name</th>
       <th scope="col">Seller ID</th>
       <th scope="col">Fullfillment Status</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Final Price</th>
       <th scope="col">Date Purchased</th>
       <th scope="col">Product Page</th>
     </tr>
@@ -90,7 +92,9 @@ Account ID: {{ user.id }}
       <tr>
         <th scope="row">{{order.product_name}}</th>
         <td>{{order.seller_id}}</td>
-        <td>{{order.fulfilllment_status}}</td>
+        <td>{{order.fulfillment_status}}</td>
+        <td>{{order.quantity}}
+        <td>{{order.final_price}}
         <td>{{order.time_purchased}}</td>
         <td> <a href="{{ url_for('index.get_product_page', name=order.product_name) }}" type="button" class="btn btn-light">go to page!</a></td>
       </tr>

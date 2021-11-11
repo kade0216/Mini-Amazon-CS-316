@@ -43,8 +43,9 @@ CREATE TABLE Orders (
     seller_id INT NOT NULL REFERENCES Seller(user_id),
     product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
     quantity INT NOT NULL,
-    fulfilllment_status BOOLEAN DEFAULT FALSE,
-    order_page_link VARCHAR(255),
+    fulfillment_status BOOLEAN DEFAULT FALSE,
+    detailed_product_link VARCHAR(255),
+    final_price FLOAT NOT NULL,
     PRIMARY KEY(buyer_id, time_purchased, seller_id, product_name)
 );
 

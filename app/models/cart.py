@@ -239,14 +239,16 @@ class Cart:
 
         user_cart = app.db.execute(
             """
-            SELECT buyer_id, product_name, seller_id, quantity
-            FROM Cart
-            WHERE buyer_id = :user_id
+            SELECT Cart.buyer_id, Cart.product_name, Cart.seller_id, Cart.quantity, Selling.price
+            FROM Cart, Selling
+            WHERE Cart.seller_id = Selling.seller_id
+            AND Cart.product_name = Selling.product_name
+            AND Cart.buyer_id = :user_id
             """,
             user_id=user_id,
         )
 
-        all_items = [Cart(*item) for item in user_cart]
+        all_items = [OrderSheet(*item) for item in user_cart]
 
         # Insert all items into cart into as one Order
         current_timestamp = datetime.datetime.now()
@@ -260,6 +262,7 @@ class Cart:
                 item.product_name,
                 item.quantity,
                 timestampStr,
+                item.quantity * item.final_unit_price
             )
 
             seller_name = Seller.get_seller_name(item.seller_id)
@@ -277,6 +280,16 @@ class ProductSellers:
     def __init__(self, product_name, seller_name):
         self.product_name = product_name
         self.seller_name = seller_name
+
+class OrderSheet:
+    """ POPO to handle all order entries"""
+
+    def __init__(self, buyer_id, product_name, seller_id, quantity, final_unit_price):
+        self.buyer_id = buyer_id
+        self.product_name = product_name
+        self.seller_id = seller_id
+        self.quantity = quantity
+        self.final_unit_price = final_unit_price
 
 
 class CompleteUserCart:
