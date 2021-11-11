@@ -105,3 +105,86 @@ class User(UserMixin):
             """,
                 id=id)
         return User(*(rows[0])) if rows else None
+
+    @staticmethod
+    def change_fname(uid, fname):
+        app.db.execute("""
+                UPDATE Users
+                SET firstname = :fname
+                WHERE id = :uid
+                RETURNING id
+                """,
+                    uid=uid,
+                    fname=fname)
+
+    @staticmethod
+    def change_lname(uid, lname):
+        app.db.execute("""
+                UPDATE Users
+                SET lastname = :lname
+                WHERE id = :uid
+                RETURNING id
+                """,
+                    uid=uid,
+                    lname=lname)
+
+    @staticmethod
+    def change_email(uid, email):
+        app.db.execute("""
+                UPDATE Users
+                SET email = :email
+                WHERE id = :uid
+                RETURNING id
+                """,
+                    uid=uid,
+                    email=email)
+
+    @staticmethod
+    def change_address(uid, address):
+        app.db.execute("""
+                UPDATE Users
+                SET address = :address
+                WHERE id = :uid
+                RETURNING id
+                """,
+                    uid=uid,
+                    address=address)
+
+    @staticmethod
+    def change_password(uid, password):
+        app.db.execute("""
+                UPDATE Users
+                SET password = :password
+                WHERE id = :uid
+                RETURNING id
+                """,
+                    uid=uid,
+                    password=password)
+
+    @staticmethod
+    def change_store(uid, store_name):
+        #TODO: handle error if user inputs duplicate name
+        app.db.execute("""
+                UPDATE Seller
+                SET seller_name = :store_name
+                WHERE user_id = :uid
+                RETURNING user_id
+                """,
+                    uid=uid,
+                    store_name=store_name)
+
+    @staticmethod
+    def get_seller(uid):
+        rows = app.db.execute("""
+                SELECT seller_name
+                FROM Seller
+                WHERE user_id = :uid
+                """,
+                    uid=uid)
+
+        if rows:
+            return rows[0][0]
+        return None
+
+
+    

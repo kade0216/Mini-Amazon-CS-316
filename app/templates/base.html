@@ -53,7 +53,7 @@
         {% if current_user.is_authenticated %}
           Hello {{current_user.firstname}}! 
           <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>
-          <a href="{{ url_for('users.dash') }}" type="button" class="btn btn-light">Dashboard</a>
+          <a href="{{ url_for('users.dash', user_id=current_user.id) }}" type="button" class="btn btn-light">Dashboard</a>
           <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Home</a>
         {% else %}
           <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
