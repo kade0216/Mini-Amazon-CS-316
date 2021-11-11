@@ -38,16 +38,6 @@ def index():
                            categories=categories)
 
 
-@bp.route('/seller-inventory/<user_id>', methods=['GET'])
-def get_seller_inventory_page(user_id):
-    seller_inventory = Selling.get_all_for_seller(user_id)
-    
-    '''TODO(Sellers Guru (vikramrk)): Handle login '''
-
-    return render_template('sellerinventory.html',
-                           seller_inventory=seller_inventory)
-
-
 @bp.route('/user-product-reviews/<user_id>', methods=['GET'])
 def get_product_reviews_by_user(user_id):
     review_list = Product_Review.get_all_reviews_by_buyer(user_id)

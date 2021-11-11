@@ -4,6 +4,8 @@
 
 <br><br>
 
+<a href="{{ url_for('seller.display_order_history')}}" type="button" class="btn btn-dark">Check Order Fufillment Status</a>
+
 <h2>Your products on the market:</h2>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
@@ -11,6 +13,7 @@
       <th scope="col">Product Name</th>
       <th scope="col">Price</th>
       <th scope="col">Quantity Available</th>
+      <th scope="col">Remove?</th>
     </tr>
   </thead>
   <tbody>
@@ -18,7 +21,23 @@
       <tr>
         <th scope="row">{{product.product_name}}</th>
         <td>{{product.price}}</td>
-        <td>{{product.quantity_in_inventory}}</td>
+        <td>{{product.quantity_in_inventory}}
+          <form action="{{ url_for('seller.add_quantity_to_inventory_item', product_name=product.product_name)}}" method="post">
+              <label for="add_quantity">Add quantity:</label>
+              <input name='quantity_diff' type="number" step="1" min=0>
+              <input type="submit" value="Submit">
+          </form>
+          <br>
+          <form action="{{ url_for('seller.subtract_quantity_from_inventory_item', product_name=product.product_name) }}" method="post">
+              <label for="subtract_quantity">Subtract quantity:</label>
+              <input name='quantity_diff' type="number" step="1" min=0>
+              <input type="submit" value="Submit">
+          </form>
+        </td>
+        <td><form action="{{ url_for('seller.remove_product_from_seller_inventory', product_name=product.product_name) }}" method="post">
+            <input type="image" src="/static/icons/delete_button.png" alt="Remove?" style=width:50px;height="50px";>
+          </form>
+        </td>
       </tr>
     {% endfor %}
   </tbody>
