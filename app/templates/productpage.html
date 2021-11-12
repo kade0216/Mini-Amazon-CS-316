@@ -47,5 +47,72 @@
 </table>
 
 <br><br>
+{% if current_user.is_authenticated %}
+{% if review_exists %}
+<h2> Your rating for this product!</h2>
+Product Name: {{ product[0].name }} <br>
+Your Rating: {{rating}}
+<br>
+<form action="{{ url_for('index.change_product_rating', product_name=product[0].name)}}" method="post">
+  <label for="add_rating">Change Rating (from 1 to 5):</label>
+  <input name='rating' type="number" min=1 max=5 step=1>
+  <input type="submit" value="Submit">
+</form>
+
+<br>
+<form action="{{ url_for('index.delete_product_rating', product_name=product[0].name)}}" method="post">
+  <input type="submit" value="Delete">
+</form>
+
+<br>
+
+{% else %}
+
+<h2>Add a Rating for This Product!</h2>
+Product Name: {{ product[0].name }}
+<form action="{{ url_for('index.add_review_product', product_name=product[0].name)}}" method="post">
+  <label for="add_rating">Rate from 1 to 5:</label>
+  <input name='rating' type="number" min=1 max=5 step=1>
+  <input type="submit" value="Submit">
+</form>
+
+<br>
+
+{% endif %}
+
+{% else %}
+<br>
+Please log in to add a rating for this product.
+<br>
+{% endif %}
+
+
+<h2>Other Reviews for this Product:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">User ID</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Date</th>
+      <th scope="col">Upvotes</th>
+      <th scope="col">Downvotes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product_review in product_review_list %}
+      <tr>
+        <td>{{product_review.buyer_id}}</td>
+        <td>{{product_review.rating}}</td>
+        <td>{{product_review.date}}</td>
+        <td>{{product_review.upvote_count}}</td>
+        <td>{{product_review.downvote_count}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+<br><br>
 
 {% endblock %}

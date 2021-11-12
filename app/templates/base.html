@@ -54,6 +54,8 @@
           Hello {{current_user.firstname}}!
           <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>
           <a href="{{ url_for('users.dash', user_id=current_user.id) }}" type="button" class="btn btn-light">Dashboard</a>
+          <a href="{{ url_for('index.get_reviews_by_user') }}" type="button" class="btn btn-light">Your Reviews</a>
+
           <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Home</a>
           <a href="{{ url_for('cart.get_users_cart', user_id=current_user.id) }}" type="button" class="btn btn-light">Your Cart</a>
           <a href="{{ url_for('seller.get_seller_inventory_page') }}" type="button" class="btn btn-light"> Seller Page</a>
