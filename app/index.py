@@ -4,6 +4,7 @@ from flask.ctx import RequestContext
 from flask_login import current_user
 from flask import request
 import datetime
+from flask import redirect, url_for
 
 from .models.product import Product
 from .models.selling import Selling
@@ -73,10 +74,22 @@ def get_reviews_for_seller(seller_id):
 def get_product_page(name):
 
     products = Product.get(name)
+    product_review_list = Product_Review.get_all_reviews_for_product(name)
+    if current_user.is_authenticated:
+        logged_in = True
+        if Product_Review.review_exists(name, current_user.id):
+            rating_exists = True
+            review = Product_Review.getRating(name,current_user.id)
+            rating = review.rating
+        else:
+            rating_exists = False
+            rating=-1
+    else:
+        logged_in = None
+        rating_exists=False
+        rating=-1
 
-    '''TODO(Karan): Handle login '''
-
-    return render_template('productpage.html', product=products)
+    return render_template('productpage.html', product=products, logged_in=logged_in, review_exists=rating_exists,rating=rating,product_review_list=product_review_list)
 
 @bp.route('/product_category/<category>', methods=['GET'])
 def get_cat_page(category):
@@ -136,3 +149,31 @@ def get_product__sort_high_to_low():
     '''TODO(Karan): Handle login '''
 
     return render_template('productpage.html', product=products_high_to_low)
+
+@bp.route('/reviews', methods=['GET'])
+def get_reviews_by_user():
+    	seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
+    	product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
+    	return render_template('user_reviews.html',
+			     	seller_review_list=seller_review_list,
+			     	product_review_list=product_review_list)
+
+@bp.route('/add_review_product/<product_name>', methods=['POST'])
+def add_review_product(product_name):
+    rating = request.form['rating']
+
+    Product_Review.add_review(product_name, current_user.id, rating)
+    return redirect(url_for('index.get_product_page', name=product_name))
+
+@bp.route('/change_product_rating/<product_name>', methods=['POST'])
+def change_product_rating(product_name):
+    newRating = request.form['rating']
+
+    Product_Review.change_rating(product_name, current_user.id, newRating)
+    return redirect(url_for('index.get_product_page', name=product_name))
+
+@bp.route('/delete_product_rating/<product_name>', methods=['POST'])
+def delete_product_rating(product_name):
+
+    Product_Review.delete_rating(product_name, current_user.id)
+    return redirect(url_for('index.get_product_page', name=product_name))
