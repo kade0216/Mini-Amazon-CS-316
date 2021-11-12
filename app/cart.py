@@ -22,7 +22,7 @@ def add_item_to_cart(product_name, seller_id):
     quantity_diff = request.form["quantity"]
     Cart.add_item_to_cart(current_user.id, product_name, seller_id, int(quantity_diff))
 
-    flash(f"{product_name} sold by {seller_id} successfully added to cart!")
+    flash(f"{product_name} sold by Seller #{seller_id} successfully added to cart!")
 
     return redirect(url_for("index.get_product_page",name=product_name))
 
