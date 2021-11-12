@@ -1,0 +1,12 @@
+﻿Link to Gitlab repo: https://gitlab.oit.duke.edu/vr82/mini-amazon-skeleton-zebra
+The code for creating and populating a sample database is under the db/data folder, titled create.py.
+Link to video of our website: https://drive.google.com/file/d/1GYTU3BU6c5PUXuixAZlcBZQwMDbcVhaA/view?usp=sharing
+
+
+
+
+Karan Desai: Products Guru, I worked on implementing product pages for each product, displaying all necessary information about the product, including seller information and quantity. I also created a form for users to add quantities of a product to their cart. I also created buttons and pages to filter by category, price (low to high or high to low), and search by keywords. I also incorporated images for products, which are the same image for all items within a category for now.
+Vikram Ruppa-Kasai: Sellers Guru, I implemented all basic requirements for inventory/order fulfillment. I made inventory pages that list products and sales for that user, ways to update product inventory and available quantity, and remove items from the inventory. I added back-end and front-end infrastructure for a seller to view their history of orders that have been fulfilled or need to be fulfilled.
+Pranav Sharma: Social Guru, I implemented a Your Reviews page for users to view the ratings that they have made. In the product page, I built the option to rate that specific product from 1 to 5. After they’ve rated that product, they can view it in Your Reviews, on the product page along with ratings from other users; they can also edit or delete that review. I built the Flask routes for getting all reviews by a user, for a seller, or for a product.
+Shubham Joshi: Cart Guru, I implemented the cart interface for every user; this interface features a dynamic view of the products that the user has marked for purchase. In addition, I implemented full-stack capability to both view and edit the price and quantity of each individual item, as well as the total price of the cart. 
+Bianca Saputra: Users Guru, I worked on creating the user dashboard as well as creating private and public views for the user account. I added functionality for users to add balance and withdraw to their account, as well as see their previously purchased orders with a link to the product page for a user to reorder. I’ve also started creating the seller’s page. I also worked on the data generation for our team.
