@@ -24,7 +24,8 @@ class User(UserMixin):
 
         if not rows:  # email not found
             return None
-        elif email == 'bes41@duke.edu': #get test user without dealing with unhashing pws
+        #get test user without dealing with unhashing pws
+        elif email == 'bes41@duke.edu' or email == 'vr82@duke.edu': 
             return User(*(rows[0][1:]))
         elif not check_password_hash(rows[0][0], password):
             # incorrect password
@@ -185,6 +186,3 @@ class User(UserMixin):
         if rows:
             return rows[0][0]
         return None
-
-
-    
