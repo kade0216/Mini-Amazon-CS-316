@@ -1,4 +1,5 @@
 import random, string, csv
+db = 'db/data/'
 
 def createUser():
     fnames= ['James', 'Mary', 'Robert', 'Patricia', 'John', 'Jennifer', 'Michael', 'Linda', 'William', 'Elizabeth', 'David', 'Barbara', 'Richard', 'Susan', 'Joseph', 'Jessica', 'Thomas', 'Sarah', 'Charles', 'Karen', 'Christopher', 'Nancy', 'Daniel', 'Lisa', 'Matthew', 'Betty', 'Anthony', 'Margaret', 'Mark', 'Sandra', 'Donald', 'Ashley', 'Steven', 'Kimberly', 'Paul', 'Emily', 'Andrew', 'Donna', 'Joshua', 'Michelle']
@@ -7,7 +8,7 @@ def createUser():
 
     streets= ['Second', 'Third', 'First', 'Fourth', 'Park', 'Fifth', 'Main', 'Sixth', 'Oak', 'Seventh', 'Pine', 'Maple', 'Cedar', 'Eighth', 'Elm', 'View', 'Washington', 'Ninth', 'Lake', 'Hill']
 
-    with open('Users.csv', mode='w') as f:
+    with open(db + 'Users.csv', mode='w') as f:
         for i in range(500):
             id = i
             fname = random.choice(fnames)
@@ -24,7 +25,7 @@ def createUser():
             w.writerow([id, email, password, fname, lname, address, balance])
 
 def createBuyers():
-    with open('Buyer.csv', mode='w') as f:
+    with open(db + 'Buyer.csv', mode='w') as f:
         for i in range(301):
             w = csv.writer(f, delimiter=',')
             w.writerow([i])
@@ -33,7 +34,7 @@ def createSellers():
     stores = ['All Things More', 'Beautiful Charm', 'Ambrosia Store', 'African Paradise', 'Alike Desire', 'All My Grace', 'American Eagle Shop', 'Actioner Sports Store', 'Adaline’s Wardrobe', 'Addiction Like', 'American Blues', 'Ancient Crust', 'Ancient Grounds', 'Angelic Threads', 'Anytime Buys', 'Apple Alley', 'Apple Blossoms', 'Apple Grand Central', 'Around The Clock Shop', 'Authentic Shoppe', 'BALENCIAGA', 'Balsamic', 'Banana Wear', 'Baskets Of Berries', 'Bayside Cavern', 'Bean Box', 'Beef Quest', 'Bella Bella Boutique', 'Bend the Trend', 'Berries And Bushes', 'Berries Galore', 'Berry Farm', 'Berry Land', 'Best Discount', 'Best Indulgence', 'Best Mart', 'Best of Harvests', 'Best Price', 'BestBuy', 'Bestir Service', 'Better Buys', 'Bien Habillé', 'Big Mall', 'Big Mart', 'Bikini Beans', 'Billowy Love', 'Bitternut', 'Black Eye Coffee', 'Blackbird Boutique', 'Blacklight Clothing', 'Blessed Bounty', 'Blessed Fruits', 'Bloomingdale’s', 'Blue Diamond', 'Blue Mall', 'Blue Market', 'Blue Shelves', 'Blueberry Bean', 'Bluebill Open mall', 'Bluebird Store', 'Blush Boutique', 'Body Canvas', 'Bon Comida', 'Bookstore', 'Boomers Apparel', 'Bountiful Berries', 'Boutique de Paris', 'Brandy Melville', 'Brick And Cyber', 'Bruno’s Groceries', 'Budding Business', 'Budget Banquet', 'Budget Beauty', 'Bumble Bee Boutique', 'Bunny Shop', 'Burger Garden', 'Burgundy Boutique', 'Burlington', 'Burly Giggles', 'Bursting Baskets', 'Bursting With Fruit', 'Burton', 'Business Bustle', 'Butter Buds', 'By the Handful', 'Cafe Corner Shots', 'Cafe Linger', 'Calm Charm', 'Calm Glitter', 'Campfire Clothes', 'Carbonated Corner', 'Careful Dishing', 'Carmine', 'Catered Care', 'Cavern Cooks', 'Celestial Citrus Farms', 'Changing Seasons', 'Chapeau Chic', 'Chaperon', 'Charlie’s Retail', 'Charm Farm', 'Charming Charlotte', 'Chateaux', 'Cheat on Wheels', 'Cheeky Chic', 'Cheereal', 'Chef Naturelle', 'Chic Château', 'Choose And Track', 'Chowhound']
 
     storeslst = []
-    with open('Seller.csv', mode='w') as f:
+    with open(db + 'Seller.csv', mode='w') as f:
         for i in range(200):
             id = i
             store = random.choice(stores) + str(random.randint(100,999))
@@ -61,8 +62,8 @@ def createProducts():
     health=['toothbrush', 'retainer', 'flosser', 'floss', 'soap', 'shampoo', 'conditioner', 'gel', 'pomade', 'mousse', 'hairspray', 'volumizer', 'hairbrush', 'mask', 'vitamin', 'tablet', 'pill', 'cream', 'lotion', 'moisturizer', 'supplement', 'dumbbell', 'kettlebell', 'foamroller', 'ball', 'hulahoop', 'mat', 'foambloack', 'yogamat', 'bar']
 
     products = []
-
-    with open('Product.csv', mode='w') as f:
+    avail_prods = []
+    with open(db + 'Product.csv', mode='w') as f:
         for i in range(250):
             name = random.choice(colors)+" "+random.choice(qualities)+" "+random.choice(books)+" book"
             cat = 'books'
@@ -72,6 +73,8 @@ def createProducts():
 
             if name not in products:
                 products.append(name)
+                if avail == True:
+                    avail_prods.append(name)
                 w = csv.writer(f, delimiter=',')
                 w.writerow([name, cat, url, avail, desc])
 
@@ -84,6 +87,8 @@ def createProducts():
 
             if name not in products:
                 products.append(name)
+                if avail == True:
+                    avail_prods.append(name)
                 w = csv.writer(f, delimiter=',')
                 w.writerow([name, cat, url, avail, desc])
 
@@ -96,6 +101,8 @@ def createProducts():
 
             if name not in products:
                 products.append(name)
+                if avail == True:
+                    avail_prods.append(name)
                 w = csv.writer(f, delimiter=',')
                 w.writerow([name, cat, url, avail, desc])
 
@@ -108,6 +115,8 @@ def createProducts():
 
             if name not in products:
                 products.append(name)
+                if avail == True:
+                    avail_prods.append(name)
                 w = csv.writer(f, delimiter=',')
                 w.writerow([name, cat, url, avail, desc])
 
@@ -120,10 +129,12 @@ def createProducts():
 
             if name not in products:
                 products.append(name)
+                if avail == True:
+                    avail_prods.append(name)
                 w = csv.writer(f, delimiter=',')
                 w.writerow([name, cat, url, avail, desc])
 
-    with open('Orders.csv', mode='w') as f:
+    with open(db + 'Orders.csv', mode='w') as f:
         for i in range(100):
             buyer_id= random.randint(0,300)
             yr = str(random.randint(1970,2021))
@@ -147,10 +158,10 @@ def createProducts():
                 w.writerow([buyer_id, ts, seller_id, prod, quantity, status, url, final_price])
 
     selllst = []
-    with open('Selling.csv', mode='w') as f:
+    with open(db + 'Selling.csv', mode='w') as f:
         for i in range(500):
             seller_id = random.randint(0,199)
-            prod = random.choice(products)
+            prod = random.choice(avail_prods)
             price = random.randint(1,1000)
             quant = random.randint(1,1000)
 
@@ -159,7 +170,7 @@ def createProducts():
                 w = csv.writer(f, delimiter=',')
                 w.writerow([seller_id, prod, price, quant])
 
-    with open('Cart.csv', mode='w') as f:
+    with open(db + 'Cart.csv', mode='w') as f:
         for i in range(500):
             buyer_id= random.randint(0,300)
             seller_id = random.randint(0,199)
@@ -169,7 +180,7 @@ def createProducts():
             w = csv.writer(f, delimiter=',')
             w.writerow([buyer_id, prod, seller_id, quant])
 
-    with open('Product_Review.csv', mode='w') as f:
+    with open(db + 'Product_Review.csv', mode='w') as f:
         for i in range(500):
             buyer_id= random.randint(0,299)
             prod = random.choice(products)

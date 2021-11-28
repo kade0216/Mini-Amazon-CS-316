@@ -4,34 +4,42 @@
 
 <br><br>
 
-<!-- <form action="users.php" method="GET"> -->
-<h5>Search bar:</h5>
+<h5>Search parameters:</h5>
 <form action="{{ url_for('index.get_search_results')}}" method="POST">
+    <label>Search item keyword:</label>
     <input type="text" placeholder="Type here" name="search" id="search"/>
-    <!-- <input id="submit" type="button" value="Search" class="btn btn-light"> -->
+    <br>
+    <label>Select item category:</label>
+    <select id='category' name='category'>
+      <option value=''></option>
+      {% for cat in categories%}
+        <option value={{cat}}>{{cat}}</option>
+      {% endfor %}
+    </select>
+    <br>
+    <select id='sort' name='sort'>
+      <option value=''></option>
+      <option value='asc'>Price low to high</option>
+      <option value='desc'>Price high to low</option>
+    </select>
+    <br>
     <button class="btn btn-light" type="submit" value="submit">Search</button>
 </form>
-<!-- </form> -->
 
-<h5>Categories:</h5>
-{% for cat in categories%}
-    <a href="{{ url_for('index.get_cat_page', category=cat) }}" type="button" class="btn btn-light">{{cat}}</a>
-{% endfor %}
-
-<h5>Sort by:</h5>
-<a href="{{ url_for('index.get_product__sort_low_to_high') }}" type="button" class="btn btn-light">Price low to high</a>
-<a href="{{ url_for('index.get_product__sort_high_to_low') }}" type="button" class="btn btn-light">Price high to low</a>
-
-<!-- <img src=”/static/images/vanilla_ice_cream.jpeg” alt='vanilla ice cream'>  -->
-
+{% if search_params %}
+  Search parameters:
+  {% for param in search_params%}
+    {{param}}
+  {% endfor %}
+  <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">clear!</a>
+{% endif %}
 
 <h2>Products for sale:</h2>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
-      <!-- <th scope="col">Product ID</th> -->
       <th scope="col">Product Name</th>
-      <th scope="col">Price</th>
+      <th scope="col">Price Starting From</th>
       <th scope="col">Image</th>
       <th scope="col">Description</th>
     </tr>
