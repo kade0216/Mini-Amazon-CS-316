@@ -75,11 +75,37 @@ Account ID: {{ user.id }}
 <br><br>
 
 <h2>Your recent orders:</h2>
+<b>{{ order_history|length }} orders </b> placed 
+{% if since %} since {{since}} {% endif %}
+{% if item_search %} with items matching {{item_search}} {% endif %}
+{% if seller_search %} and seller matching {{seller_search}} {% endif %}
+
+<form method="post" action="{{ url_for('users.dash', user_id=current_user.id, filter=True)}}">
+  <label>see orders placed in: </label>
+  <select id='since' name='since'>
+    <option value="15000"></option>
+    <option value="90">past 3 months</option>
+    <option value="365">past year</option>
+    <option value="730">past 2 years</option>
+    <option value="1825">past 5 years</option>
+    <option value="15000">all</option>
+  </select>
+  <label>and/or search for item by name: </label>
+  <input id='item_search' name='item_search'>
+  <label>and/or search for seller by name: </label>
+  <input id='seller_search' name='seller_search'>
+  <input type="submit" value="get!">
+</form>
+<form method="post" action="{{ url_for('users.dash', user_id=current_user.id)}}">
+  <input type="submit" value="clear search parameters!" >
+</form>
+
+<br><br>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
       <th scope="col">Product Name</th>
-      <th scope="col">Seller ID</th>
+      <th scope="col">Seller Name</th>
       <th scope="col">Fullfillment Status</th>
       <th scope="col">Quantity</th>
       <th scope="col">Final Price</th>
