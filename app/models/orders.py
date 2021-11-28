@@ -1,4 +1,5 @@
 from flask import current_app as app
+import datetime
 
 class Orders:
     def __init__(self, buyer_id, seller_id, product_name, quantity, fulfillment_status, time_purchased, final_price):
@@ -29,22 +30,31 @@ class Orders:
         return [Orders(*row) for row in rows]
 
     @staticmethod
-    def get_all_by_uid_since(uid, since):
+    def get_order_history(uid, 
+                          since=datetime.datetime(1980, 9, 14, 0, 0, 0), 
+                          item_search='', seller_search=''):
         rows = app.db.execute('''
-            SELECT buyer_id,
-                seller_id,
-                product_name,
-                quantity,
-                fulfillment_status,
-                time_purchased,
-                final_price
-            FROM Orders
-            WHERE buyer_id = :buyer_id
-            AND time_purchased >= :since
-            ORDER BY time_purchased DESC
+            SELECT Orders.buyer_id,
+                Seller.seller_name,
+                Orders.product_name,
+                Orders.quantity,
+                Orders.fulfillment_status,
+                Orders.time_purchased,
+                Orders.final_price
+            FROM Orders, Seller
+            WHERE Orders.buyer_id = :buyer_id
+            AND Orders.seller_id = Seller.user_id
+            AND Orders.time_purchased >= :since
+            AND Orders.product_name LIKE :item_search
+            AND Seller.seller_name LIKE :seller_search
+            ORDER BY Orders.time_purchased DESC
             ''',
                 buyer_id=uid,
-                since=since)
+                since=since,
+                item_search=("%" + item_search + "%"),
+                seller_search=("%" + seller_search + "%"),
+                )
+        app.logger.error(seller_search)
         return [Orders(*row) for row in rows]
 
     @staticmethod

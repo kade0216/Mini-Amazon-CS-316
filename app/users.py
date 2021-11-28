@@ -7,6 +7,7 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask_babel import _, lazy_gettext as _l
 from flask import current_app as app
 import datetime
+from werkzeug.exceptions import BadRequestKeyError
 
 from .models.user import User
 from .models.orders import Orders
@@ -81,19 +82,37 @@ def logout():
     logout_user()
     return redirect(url_for('index.index'))
 
-@bp.route('/dash/<user_id>')
-def dash(user_id):
-    order_history = Orders.get_all_by_uid_since(
-            user_id, datetime.datetime(1980, 9, 14, 0, 0, 0))
-
+@bp.route('/dash/<user_id>', methods=['GET', 'POST'])
+@bp.route('/dash/<user_id>/<filter>', methods=['GET', 'POST'])
+def dash(user_id, filter=False):
     account_balance = User.get_account_balance(user_id)
     user = User.get(user_id)
     seller_name = User.get_seller(user_id)
-    app.logger.error(seller_name)
-    return render_template('dash.html', order_history=order_history
-                                      , account_balance=account_balance
-                                      , user=user
-                                      , seller_name=seller_name)
+
+    if bool(filter) == True:
+        since = datetime.datetime.now() - datetime.timedelta(int(request.form['since']))
+        item_search = request.form['item_search']
+        seller_search = request.form['seller_search']
+        order_history = Orders.get_order_history(
+            user_id, 
+            since,
+            item_search,
+            seller_search)
+
+        return render_template('dash.html', order_history=order_history,
+                                            account_balance=account_balance,
+                                            user=user,
+                                            seller_name=seller_name,
+                                            since=since.strftime("%m/%d/%y"),
+                                            item_search=item_search,
+                                            seller_search=seller_search)
+    
+    order_history = Orders.get_order_history(user_id)
+
+    return render_template('dash.html', order_history=order_history,
+                                        account_balance=account_balance,
+                                        user=user,
+                                        seller_name=seller_name)
 
 @bp.route('/add_balance/<user_id>', methods=['POST', 'GET'])
 def add_balance(user_id):
