@@ -1,43 +1,56 @@
 from flask import current_app as app
 
-#from .selling import Selling
-
 class Product:
-    def __init__(self, name, category_name, image_url, available, description):
+    def __init__(self, name, category_name, image_url, available, description, price,
+                       seller_name="", quantity=0, seller_id=-1):
         self.name = name
         self.category_name = category_name
         self.image_url = image_url
         self.available = available
         self.description = description
+        self.seller_name = seller_name
+        self.price = price
+        self.quantity_in_inventory = quantity
+        self.seller_id = seller_id
 
     @staticmethod
     def get(name):
-        #print(name)
-        #name = '\'' + name + '\''
         rows = app.db.execute('''
-        SELECT *
+        SELECT name, 
+               category_name,
+               image_url,
+               available,
+               description,
+               price,
+               seller_name,
+               quantity_in_inventory,
+               seller_id
         FROM Product, Selling, Seller
         WHERE name = :name
+        AND available = True
         AND name = product_name
         AND seller_id = user_id
         ''',
         name=name)
 
-        return rows
-        #return [Product(*(rows[0])) if rows is not None else None]
-
+        return [Product(*row) for row in rows]
 
     @staticmethod
     def get_all(available=True):
         rows = app.db.execute('''
-        SELECT *
-        FROM Product, Selling, Seller
+        SELECT name, 
+               category_name,
+               image_url,
+               available,
+               description,
+               MIN(price)
+        FROM Product, Selling
         WHERE available = :available
         AND name = product_name
-        AND seller_id = user_id
+        GROUP BY name
         ''',
         available=available)
-        return rows
+        return [Product(*row) for row in rows]
 
     def get_categories():
         rows = app.db.execute('''
@@ -47,73 +60,70 @@ class Product:
 
         return [row[0] for row in rows]
 
-    def get_search(search):
-        #pattern=("%" + search + "%")
+    def get_search_desc(item_name, category):
         rows = app.db.execute('''
-        SELECT *
+        SELECT name, 
+               category_name,
+               image_url,
+               available,
+               description,
+               MIN(price) as price
         FROM Product, Selling
-        WHERE name LIKE :pattern
+        WHERE name LIKE :item_name
         AND name = product_name
-        ''',
-        pattern=("%" + search + "%"))
-
-        return rows
-
-    @staticmethod
-    def get_products_in_category(category_name):
-        """
-        Gets all products within given category
-        """
-        print(category_name)
-
-        #category_name = '\'' + category_name + '\''
-        rows = app.db.execute('''
-        SELECT *
-        FROM Product, Selling, Seller
-        WHERE category_name = :category_name
-        AND name = product_name
-        AND seller_id = user_id
-        ''',
-        category_name = category_name)
-        
-        return rows
-        #return [Product(*row) for row in rows]
-
-    @staticmethod
-    def sort_by_price_low_to_high(bool):
-        """
-        Sort the products on the page from price low to high
-        """
-
-        rows = app.db.execute('''
-        SELECT *
-        FROM Product, Selling, Seller
-        WHERE name = product_name
-        AND seller_id = user_id
-        ORDER BY price
-        ''',
-        bool=bool)
-        #print(rows)
-        #return [Product(*row) for row in rows]
-        return rows
-
-    @staticmethod
-    def sort_by_price_high_to_low(bool):
-        """
-        Sort the products on the page from price low to high
-        """
-
-        rows = app.db.execute('''
-        SELECT *
-        FROM Product, Selling, Seller
-        WHERE name = product_name
-        AND seller_id = user_id
+        AND category_name LIKE :category
+        AND available = True
+        GROUP BY name
         ORDER BY price DESC
         ''',
-        bool=bool)
-        #print(rows)
-        #return [Product(*row) for row in rows]
-        return rows
+        item_name=("%" + item_name + "%"),
+        category=("%" + category + "%"),
+        )
+
+        return [Product(*row) for row in rows]
+
+    def get_search_asc(item_name, category):
+        rows = app.db.execute('''
+        SELECT name, 
+               category_name,
+               image_url,
+               available,
+               description,
+               MIN(price) as price
+        FROM Product, Selling
+        WHERE name LIKE :item_name
+        AND name = product_name
+        AND category_name LIKE :category
+        AND available = True
+        GROUP BY name
+        ORDER BY price ASC
+        ''',
+        item_name=("%" + item_name + "%"),
+        category=("%" + category + "%"),
+        )
+
+        return [Product(*row) for row in rows]
+
+    def get_search(item_name, category):
+        rows = app.db.execute('''
+        SELECT name, 
+               category_name,
+               image_url,
+               available,
+               description,
+               MIN(price) as price
+        FROM Product, Selling
+        WHERE name LIKE :item_name
+        AND name = product_name
+        AND category_name LIKE :category
+        AND available = True
+        GROUP BY name
+        ''',
+        item_name=("%" + item_name + "%"),
+        category=("%" + category + "%"),
+        )
+
+        return [Product(*row) for row in rows]
 
     @staticmethod
     def does_product_exist(product_name):
@@ -122,11 +132,27 @@ class Product:
 
         Returns boolean T/F.
         """
-        product_name = '\'' + product_name + '\''
         rows = app.db.execute('''
         SELECT *
         FROM Product
         WHERE name = :product_name
+        ''',
+        product_name=product_name)
+
+        return len(rows) > 0
+
+    @staticmethod
+    def is_product_available(product_name):
+        """
+        Checks whether a product is available
+
+        Returns boolean T/F.
+        """
+        rows = app.db.execute('''
+        SELECT *
+        FROM Product
+        WHERE name = :product_name
+        AND available = True
         ''',
         product_name=product_name)
 
@@ -139,19 +165,12 @@ class Product:
         Adds a new product to products table
         Throws an exception if the product already exisits in the product inventory. 
         """
-        
 
         if (Product.does_product_exist(name)):
             app.logger.error(
                 f"Cannot add {name} because it already exists in the Product table"
             )
             return
-
-
-        #name = '\'' + name + '\''
-        #category_name = '\'' + category_name + '\''
-        #image_url = '\'' + image_url + '\''
-        #description = '\'' + description + '\''
         
         app.db.execute_with_no_return(
             """
@@ -168,7 +187,7 @@ class Product:
     def remove_product_from_products(name):
         """
         Removes an exisiting product from products
-        Throws an exception if the product does not exisit in the product inventory
+        Throws an exception if the product does not exist in the product inventory
         """
 
         if not (Product.does_product_exist(name)):
@@ -178,7 +197,6 @@ class Product:
             )
             return
 
-        name = '\'' + name + '\''
         app.db.execute_with_no_return(
             """
         DELETE FROM Product
