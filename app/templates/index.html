@@ -3,36 +3,48 @@
 {% block content %}
 
 <br><br>
-
 <h5>Search parameters:</h5>
 <form action="{{ url_for('index.get_search_results')}}" method="POST">
     <label>Search item keyword:</label>
-    <input type="text" placeholder="Type here" name="search" id="search"/>
+    <input name="search" id="search" value={{item_search}}>
     <br>
     <label>Select item category:</label>
     <select id='category' name='category'>
-      <option value=''></option>
+      {% if category %} <option value={{category}} selected hidden></option>
+      {% else %} <option value='' selected hidden></option>
+      {% endif %}
       {% for cat in categories%}
         <option value={{cat}}>{{cat}}</option>
       {% endfor %}
     </select>
     <br>
+    <label>Sort items:</label>
     <select id='sort' name='sort'>
-      <option value=''></option>
-      <option value='asc'>Price low to high</option>
-      <option value='desc'>Price high to low</option>
+      {% if sort %} <option value={{sort}} selected hidden></option>
+      {% else %} <option value='' selected hidden></option>
+      {% endif %}
+      <option value='price_ascending'>Price low to high</option>
+      <option value='price_descending'>Price high to low</option>
     </select>
     <br>
-    <button class="btn btn-light" type="submit" value="submit">Search</button>
+    <button type="submit" name='page' id='page' value="1">search!</button>
+    <br>
+    <br>
+    go to page: 
+    {% for n in range((avail_products|length/10)|round(0,'ceil')|int) %}
+      <input type="submit" name='page' id='page' value={{n|int + 1}}>
+    {% endfor %}
 </form>
 
-{% if search_params %}
-  Search parameters:
-  {% for param in search_params%}
-    {{param}}
-  {% endfor %}
-  <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">clear!</a>
-{% endif %}
+
+Search parameters:
+{% for param in search_params%}
+  {{param}}
+{% endfor %}
+
+<br>
+
+<a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">clear search parameters!</a>
 
 <h2>Products for sale:</h2>
 <table class='table table-hover table-bordered container'>
@@ -45,7 +57,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for product in avail_products%}
+    {% for product in avail_products[(page_num|int - 1) * 10:page_num|int*10]%}
       <tr>
         <th scope="row"> <a href="{{ url_for('index.get_product_page', name=product.name)}}">{{product.name}}</a> </th>
         <td>{{product.price}}</td>

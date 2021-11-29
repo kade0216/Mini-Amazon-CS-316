@@ -25,7 +25,8 @@ def index():
     # render the page by adding information to the index.html file
     return render_template('index.html',
                            avail_products=products,
-                           categories=categories)
+                           categories=categories,
+                           page_num=1)
 
 @bp.route('/user-product-reviews/<user_id>', methods=['GET'])
 def get_product_reviews_by_user(user_id):
@@ -87,9 +88,9 @@ def get_search_results():
         category = request.form['category']
         sort = request.form['sort']
 
-        if sort == 'asc':
+        if sort == 'price_ascending':
             products = Product.get_search_asc(search, category)
-        elif sort == 'desc':
+        elif sort == 'price_descending':
             products = Product.get_search_desc(search, category)
         else:
             products = Product.get_search(search, category)
@@ -100,7 +101,11 @@ def get_search_results():
     return render_template('index.html',
                             avail_products=products,
                             categories=categories,
-                            search_params=[search, category, sort])
+                            search_params=[search, category, sort.replace('_', ' ')],
+                            item_search=search,
+                            category=category,
+                            sort=sort,
+                            page_num=request.form.get('page'))
 
 @bp.route('/reviews', methods=['GET'])
 def get_reviews_by_user():
