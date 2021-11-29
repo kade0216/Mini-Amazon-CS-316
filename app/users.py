@@ -104,15 +104,18 @@ def dash(user_id, filter=False):
                                             user=user,
                                             seller_name=seller_name,
                                             since=since.strftime("%m/%d/%y"),
+                                            since_days=int(request.form['since']),
                                             item_search=item_search,
-                                            seller_search=seller_search)
+                                            seller_search=seller_search,
+                                            page_num=request.form.get('page'))
     
     order_history = Orders.get_order_history(user_id)
 
     return render_template('dash.html', order_history=order_history,
                                         account_balance=account_balance,
                                         user=user,
-                                        seller_name=seller_name)
+                                        seller_name=seller_name,
+                                        page_num=1)
 
 @bp.route('/add_balance/<user_id>', methods=['POST', 'GET'])
 def add_balance(user_id):

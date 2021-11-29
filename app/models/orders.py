@@ -54,7 +54,6 @@ class Orders:
                 item_search=("%" + item_search + "%"),
                 seller_search=("%" + seller_search + "%"),
                 )
-        app.logger.error(seller_search)
         return [Orders(*row) for row in rows]
 
     @staticmethod
