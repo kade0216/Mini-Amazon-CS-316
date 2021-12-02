@@ -30,8 +30,8 @@ class Orders:
         return [Orders(*row) for row in rows]
 
     @staticmethod
-    def get_order_history(uid, 
-                          since=datetime.datetime(1980, 9, 14, 0, 0, 0), 
+    def get_order_history(uid,
+                          since=datetime.datetime(1980, 9, 14, 0, 0, 0),
                           item_search='', seller_search=''):
         rows = app.db.execute('''
             SELECT Orders.buyer_id,
@@ -47,14 +47,22 @@ class Orders:
             AND Orders.time_purchased >= :since
             AND Orders.product_name LIKE :item_search
             AND Seller.seller_name LIKE :seller_search
-            ORDER BY Orders.time_purchased DESC
             ''',
                 buyer_id=uid,
                 since=since,
                 item_search=("%" + item_search + "%"),
                 seller_search=("%" + seller_search + "%"),
                 )
-        return [Orders(*row) for row in rows]
+
+        rows = [Orders(*row) for row in rows]
+        order_dict =  {}
+        for row in rows:
+            if row.time_purchased not in order_dict:
+                order_dict[row.time_purchased] = []
+            order_dict[row.time_purchased].append(row)
+
+        orders = sorted(order_dict.items(), reverse=True)
+        return [order[1] for order in orders]
 
     @staticmethod
     def create_new_order(buyer_id, seller_id, product_name, quantity, timestamp, final_price):
