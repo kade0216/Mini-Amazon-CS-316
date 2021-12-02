@@ -1,10 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+<br> <br>
 
-<br><br>
-
-{% if current_user.is_authenticated %}
 <h2>Dashboard</h2>
 
 <br>
@@ -56,6 +54,16 @@ Address: {{ user.address }}
 </form>
 <br>
 Account ID: {{ user.id }}
+<br><br>
+
+{% if seller_name == None %}
+Become a seller?
+<form action="{{ url_for('users.become_seller', user_id=user.id) }}" method="post">
+  <label for="change_password">Seller name:</label>
+  <input name='seller_name'>
+  <input type="submit" value="join the Amazon family!">
+</form>
+{% endif %}
 
 <br><br>
 
@@ -134,20 +142,6 @@ Account ID: {{ user.id }}
       </tr>
     {% endfor %}
   </tbody>
-</table>
+</table> 
 
-{% else %}
-<h2>Account Information</h2>
-<br>
-Name: {{ user.firstname }} {{ user.lastname }}
-<br>
-Account ID: {{ user.id }}
-<br>
-{% if seller_name %}
-Email: {{ user.email }}
-<br>
-Store Name: {{ seller_name }}
-{% endif %}
-
-{% endif %}
 {% endblock %}

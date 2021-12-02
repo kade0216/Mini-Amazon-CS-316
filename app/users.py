@@ -10,6 +10,7 @@ import datetime
 from werkzeug.exceptions import BadRequestKeyError
 
 from .models.user import User
+from .models.seller import Seller
 from .models.orders import Orders
 
 
@@ -116,6 +117,12 @@ def dash(user_id, filter=False):
                                         user=user,
                                         seller_name=seller_name,
                                         page_num=1)
+
+@bp.route('/become_seller/<user_id>', methods=['POST', 'GET'])
+def become_seller(user_id):
+    seller_name = request.form['seller_name']
+    Seller.become_seller(user_id, seller_name)
+    return redirect(url_for('users.dash', user_id=user_id))
 
 @bp.route('/add_balance/<user_id>', methods=['POST', 'GET'])
 def add_balance(user_id):

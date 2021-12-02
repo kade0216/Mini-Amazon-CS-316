@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<h2>Account Information</h2>
+<br>
+Name: {{ user.firstname }} {{ user.lastname }}
+<br>
+Account ID: {{ user.id }}
+<br>
+{% if seller_name %}
+Email: {{ user.email }}
+<br>
+Store Name: {{ seller_name }}
+{% endif %}
+
+{% endif %}
+{% endblock %}
