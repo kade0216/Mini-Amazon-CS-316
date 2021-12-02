@@ -93,7 +93,7 @@ Become a seller?
 <br><br>
 
 <h2>Your recent orders:</h2>
-<b>{{ order_history|length }} orders </b> placed 
+<b>{{ order_history|length }} orders </b> placed
 {% if since %} since {{since}} {% endif %}
 {% if item_search %} with items matching {{item_search}} {% endif %}
 {% if seller_search %} and seller matching {{seller_search}} {% endif %}
@@ -116,7 +116,7 @@ Become a seller?
   <input id='seller_search' name='seller_search' value={{seller_search}}>
   <button type="submit" name='page' id='page' value="1">search!</button>
   <br>
-  go to page: 
+  go to page:
   {% for n in range((order_history|length/10)|round(0,'ceil')|int) %}
     <input type="submit" name='page' id='page' value={{n|int + 1}}>
   {% endfor %}
@@ -140,16 +140,19 @@ Become a seller?
     </tr>
   </thead>
   <tbody>
-    {% for order in order_history[(page_num|int - 1) * 10:page_num|int*10]%}
-      <tr>
-        <th scope="row">{{order.product_name}}</th>
-        <td>{{order.seller_id}}</td>
-        <td>{{order.fulfillment_status}}</td>
-        <td>{{order.quantity}}
-        <td>{{order.final_price}}
-        <td>{{order.time_purchased}}</td>
-        <td> <a href="{{ url_for('index.get_product_page', name=order.product_name) }}" type="button" class="btn btn-light">go to page!</a></td>
-      </tr>
+    {% for order_group in order_history[(page_num|int - 1) * 10:page_num|int*10]%}
+      {% for order in order_group%}
+        <tr>
+          <th scope="row">{{order.product_name}}</th>
+          <td>{{order.seller_id}}</td>
+          <td>{{order.fulfillment_status}}</td>
+          <td>{{order.quantity}}
+          <td>{{order.final_price}}
+          <td>{{order.time_purchased}}</td>
+          <td> <a href="{{ url_for('index.get_product_page', name=order.product_name) }}" type="button" class="btn btn-light">go to page!</a></td>
+        </tr>
+
+        {% endfor %}
     {% endfor %}
   </tbody>
 </table> 
