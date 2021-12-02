@@ -133,7 +133,11 @@ Become a seller?
       <thead>
         <tr>
           <th scope="col">Order Placed: {{order_group[0].time_purchased}}</th>
-          
+          {% set totals = [] %}
+          {% for order in order_group %}
+            {% if totals.append(order.final_price * order.quantity) %}{% endif %}
+          {% endfor %}
+          <th scope="col">Total Price: ${{ '%0.2f' | format(totals | sum) }} </th>
         </tr>
       </thead>
       <thead class="thead-dark">
@@ -158,6 +162,7 @@ Become a seller?
           <td> <a href="{{ url_for('index.get_product_page', name=order.product_name) }}" type="button" class="btn btn-light">go to page!</a></td>
         </tr>
       {% endfor %}
+      <td></td>
     {% endfor %}
   </tbody>
 </table> 
