@@ -14,6 +14,7 @@ class Cart:
         self.seller_id = seller_id
         self.quantity = quantity
 
+    @staticmethod
     def get_current_cart(user_id):
         """
         Retrieves the user's current cart.
@@ -41,6 +42,7 @@ class Cart:
 
         return [CompleteUserCart(*row) for row in cart_entries]
 
+    @staticmethod
     def does_product_exist_in_cart(user_id, product_name, seller_name):
         """
         Returns True if a product sold by a given seller exisits within a
