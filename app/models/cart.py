@@ -70,7 +70,7 @@ class Cart:
         it is inserted into the cart as a new item.
         """
 
-        seller_name = Seller.get_seller_name(seller_id)
+        seller_name = Seller.get(seller_id).seller_name
 
         if Cart.does_product_exist_in_cart(user_id, product_name, seller_name):
             Cart.change_product_quantity_in_cart(user_id, product_name, seller_name, quantity)
@@ -265,7 +265,7 @@ class Cart:
                 item.quantity * item.final_unit_price
             )
 
-            seller_name = Seller.get_seller_name(item.seller_id)
+            seller_name = Seller.get(item.seller_id).seller_name
             Cart.remove_item_from_cart(item.buyer_id, item.product_name, seller_name)
 
             Selling.change_product_quantity(

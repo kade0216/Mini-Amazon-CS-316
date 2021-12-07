@@ -7,24 +7,14 @@ class Seller:
         self.seller_name = seller_name
 
     @staticmethod
-    def get_seller_name(user_id):
-        """
-        Given a user id return the corresponding seller name
-        """
-        rows = app.db.execute(
-            """
-            SELECT seller_name
+    def get(user_id):
+        rows = app.db.execute("""
+            SELECT user_id, seller_name
             FROM Seller
-            WHERE user_id = :seller_id
+            WHERE user_id = :user_id
             """,
-            seller_id=user_id,
-        )
-
-        if rows:
-            # only 1 seller name for each seller_id
-            return rows[0][0]
-
-        return None
+                user_id=user_id)
+        return Seller(*(rows[0])) if rows else None
 
     @staticmethod
     def get_seller_id(seller_name):
@@ -45,7 +35,7 @@ class Seller:
 
     @staticmethod
     def become_seller(uid, seller_name):
-        if Seller.get_seller_name(uid) is None:
+        if Seller.get(uid) is None:
             rows = app.db.execute("""
                     INSERT INTO Seller(user_id, seller_name)
                     VALUES(:uid, :seller_name)

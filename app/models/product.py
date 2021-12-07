@@ -68,8 +68,8 @@ class Product:
 
         return [row[0] for row in rows]
 
-    def get_search_desc(item_name, category, min, max):
-        rows = app.db.execute('''
+    def get_search(item_name, category, min, max, sort=None):
+        sql = '''
         SELECT name,
                category_name,
                image_url,
@@ -83,62 +83,18 @@ class Product:
         AND available = True
         GROUP BY name
         HAVING MIN(price) > :min AND MAX(price) < :max
-        ORDER BY price DESC
-        ''',
-        item_name=("%" + item_name + "%"),
-        category=("%" + category + "%"),
-        min=min,
-        max=max
-        )
+        '''
+        if sort == 'price_ascending':
+            sql = sql + '\n' + 'ORDER BY price ASC'
+        elif sort == 'price_descending':
+            sql = sql + '\n' + 'ORDER BY price DESC'
 
-        return [Product(*row) for row in rows]
-
-    def get_search_asc(item_name, category, min, max):
-        rows = app.db.execute('''
-        SELECT name,
-               category_name,
-               image_url,
-               available,
-               description,
-               MIN(price) as price
-        FROM Product, Selling
-        WHERE name LIKE :item_name
-        AND name = product_name
-        AND category_name LIKE :category
-        AND available = True
-        GROUP BY name
-        HAVING MIN(price) > :min AND MAX(price) < :max
-        ORDER BY price ASC
-        ''',
-        item_name=("%" + item_name + "%"),
-        category=("%" + category + "%"),
-        min=min,
-        max=max
-        )
-
-        return [Product(*row) for row in rows]
-
-    def get_search(item_name, category, min, max):
-        rows = app.db.execute('''
-        SELECT name,
-               category_name,
-               image_url,
-               available,
-               description,
-               MIN(price) as price
-        FROM Product, Selling
-        WHERE name LIKE :item_name
-        AND name = product_name
-        AND category_name LIKE :category
-        AND available = True
-        GROUP BY name
-        HAVING MIN(price) > :min AND MAX(price) < :max
-        ''',
-        item_name=("%" + item_name + "%"),
-        category=("%" + category + "%"),
-        min=min,
-        max=max
-        )
+        rows = app.db.execute(sql,
+                    item_name=("%" + item_name + "%"),
+                    category=("%" + category + "%"),
+                    min=min,
+                    max=max
+                )
 
         return [Product(*row) for row in rows]
 
