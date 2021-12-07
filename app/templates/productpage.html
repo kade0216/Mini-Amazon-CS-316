@@ -10,13 +10,35 @@
 
 {% if available %}
 <h2>Product Details:</h2>
+  <tbody>
+    {% if prod%}
+      <tr>
+        <br>
+        <h3 > Product Name: {{prod.name}}</h3>
+        <!-- <td>{{prod.price}}</td> -->
+        <!-- <th scope="col">Image</th> -->
+        <br>
+        <h4 > Description: {{prod.description}}</h4>
+        <!-- <img src="/static/css/images/{{prod.category_name}}.jpeg" alt={{prod.name}} style="width:150px;height:150px;margin-left:200px;"> -->
+        <img src={{prod.image_url}} alt={{prod.name}} style="width:150px;height:150px;margin-left:200px;">
+        <br>
+        <br>
+      </tr>
+    {% endif %}
+  </tbody>
+{% else %}
+<h2>This product is no longer available.</h2>
+{% endif %}
+
+{% if available %}
+<h2>Seller Details:</h2>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
-      <th scope="col">Product Name</th>
+      <!-- <th scope="col">Product Name</th> -->
       <th scope="col">Price</th>
-      <th scope="col">Image</th>
-      <th scope="col">Description</th>
+      <!-- <th scope="col">Image</th> -->
+      <!-- <th scope="col">Description</th> -->
       <th scope="col">Seller</th>
       <th scope="col">Seller Quantity</th>
       <th scope="col">Add Quantity</th>
@@ -25,10 +47,10 @@
   <tbody>
     {% for prod in product%}
       <tr>
-        <th scope="row">{{prod.name}}</th>
+        <!-- <th scope="row">{{prod.name}}</th> -->
         <td>{{prod.price}}</td>
-        <td><img src="/static/css/images/{{prod.category_name}}.jpeg" alt={{prod.name}} style="width:auto;height:50px"></td>
-        <td>{{prod.description}}</td>
+        <!-- <td><img src="/static/css/images/{{prod.category_name}}.jpeg" alt={{prod.name}} style="width:auto;height:50px"></td> -->
+        <!-- <td>{{prod.description}}</td> -->
         <td>{{prod.seller_name}}</td>
         <td>{{prod.quantity_in_inventory}}</td>
         <td>
@@ -38,12 +60,6 @@
       </form></td>
       </tr>
     {% endfor %}
-    <!-- {% for product in seller_inventory%}
-      <tr>
-        <th scope="row">{{product.price}}</th>
-        <td>{{product.quantity_in_inventory}}</td>
-      </tr>
-    {% endfor %} -->
   </tbody>
 </table>
 {% else %}

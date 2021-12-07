@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/split_screen.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('.js-example-basic-single').select2();
+});
+</script>
+
+<div class="split left">
+  <div class="centered">
+    <h2>Add an existing Amazon product to your seller inventory!</h2>
+
+    <select class="js-example-basic-single" name=selected-product id="select-product" placeholder="Pick an exisiting product to sell" form="exisitingprodform">
+      <option value="">Select a product</option>
+      {% for product in all_products %}
+        <option value="{{product}}">{{product}}</option>
+      {% endfor %}
+    </select>
+
+  <br><br>
+
+  <form action="{{ url_for('seller.add_new_product')}}" method="POST" id="exisitingprodform"  enctype=multipart/form-data>
+      <label for="new_product_quantity">Set quantity:</label>
+      <input name='new_product_quantity' type="number" required style="width:60px;" step="1" min=0>
+      <label for="new_product_price">Set unit price:</label>
+      <input name='new_product_price' type="number" required style="width:80px;" step="0.01" min=0.01>
+      <br>
+      <button type="submit" name='page' id='page' value="1">submit!</button>
+      <br>
+  </form>
+</div>
+</div>
+
+<div class="split right">
+  <div class="centered">
+    <h2>Create new product!</h2>
+    <form action="{{ url_for('seller.create_new_product')}}" method="POST"  enctype=multipart/form-data>
+        <label for="new_product_name">Product name:</label>
+        <input type="text" required name="new_product_name" id="new_product_name" style="width:350px;" value={{new_product_name}} >
+        <br>
+        <label>Product description:</label>
+        <input type="text" required name="new_product_des" id="new_product_des" style="width:500px;" value={{new_product_des}}>
+        <br>
+        <br>
+        <label for="new_product_quantity">Set quantity:</label>
+        <input name='new_product_quantity' type="number" required style="width:60px;" step="1" min=0>
+        <label for="new_product_price">Set unit price:</label>
+        <input name='new_product_price' type="number" required style="width:80px;" step="0.01" min=0.01>
+        <br>
+        <br>
+        <label>Image URL:</label>
+        <input type="text" required name="new_product_image" id="new_product_image" style="width:500px;" value={{new_product_image}}>
+        <br>
+        <br>
+        <label>Select item category:</label>
+        <select id='category' name='category' required style="height:30px;width:120px;">
+          {% if category %} <option value={{category}} selected hidden></option>
+          {% else %} <option value='' selected hidden></option>
+          {% endif %}
+          {% for cat in categories%}
+            <option value={{cat}}>{{cat}}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <button type="submit" name='page' id='page' value="1">submit!</button>
+        <br>
+    </form>
+    <br>
+  </div>
+  <!-- <a href="{{ url_for('seller.create_new_product_page') }}" type="button" class="btn btn-dark">clear product parameters!</a> -->
+</div>
+
+
+
+<!-- Search parameters:
+{% for param in search_params%}
+  {{param}}
+{% endfor %} -->
+
+<br>
+
+
+
+{% endblock %}

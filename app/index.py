@@ -78,7 +78,7 @@ def get_product_page(name):
         rating_exists=False
         rating=-1
 
-    return render_template('productpage.html', name=name, product=products, logged_in=logged_in, review_exists=rating_exists,rating=rating,product_review_list=product_review_list, available=avail)
+    return render_template('productpage.html', name=name, prod = products[0],product=products, logged_in=logged_in, review_exists=rating_exists,rating=rating,product_review_list=product_review_list, available=avail)
 
 @bp.route('/search', methods=['POST', 'GET'])
 def get_search_results():
@@ -88,12 +88,20 @@ def get_search_results():
         category = request.form['category']
         sort = request.form['sort']
 
+        min_price = request.form['min_product_price']
+        max_price = request.form['max_product_price']
+
+        if min_price == '':
+            min_price = 0
+        if max_price == '':
+            max_price = 1000000000
+
         if sort == 'price_ascending':
-            products = Product.get_search_asc(search, category)
+            products = Product.get_search_asc(search, category, min_price, max_price)
         elif sort == 'price_descending':
-            products = Product.get_search_desc(search, category)
+            products = Product.get_search_desc(search, category, min_price, max_price)
         else:
-            products = Product.get_search(search, category)
+            products = Product.get_search(search, category, min_price, max_price)
 
     categories = Product.get_categories()
 
@@ -101,10 +109,12 @@ def get_search_results():
     return render_template('index.html',
                             avail_products=products,
                             categories=categories,
-                            search_params=[search, category, sort.replace('_', ' ')],
+                            search_params=[search, category, sort.replace('_', ' '), min_price, max_price],
                             item_search=search,
                             category=category,
                             sort=sort,
+                            min_price=min_price,
+                            max_price=max_price,
                             page_num=request.form.get('page'))
 
 @bp.route('/reviews', methods=['GET'])
