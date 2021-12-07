@@ -176,10 +176,14 @@ def change_password(user_id):
 @bp.route('/change_store/<user_id>', methods=['POST', 'GET'])
 def change_store(user_id):
     change = request.form['change']
-
     if (Seller.does_seller_exist(change)):
         flash(f"{change} already exists! Choose a different seller name.")
         return redirect(url_for('users.dash', user_id=user_id))
     else:
         User.change_store(user_id, change)
         return redirect(url_for('users.dash', user_id=user_id))
+
+@bp.route('/<user_id>')
+def get_public_user_page(user_id):
+    user = User.get(user_id)
+    return render_template('user_public_page.html', user=user)
