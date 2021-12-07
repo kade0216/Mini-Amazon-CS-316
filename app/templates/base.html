@@ -59,7 +59,6 @@
 
           <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Home</a>
           <a href="{{ url_for('cart.get_users_cart', user_id=current_user.id) }}" type="button" class="btn btn-light">Your Cart</a>
-          <a href="{{ url_for('seller.get_seller_inventory_page') }}" type="button" class="btn btn-light"> Seller Page</a>
         {% else %}
           <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
         {% endif %}

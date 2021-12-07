@@ -96,12 +96,7 @@ def get_search_results():
         if max_price == '':
             max_price = 1000000000
 
-        if sort == 'price_ascending':
-            products = Product.get_search_asc(search, category, min_price, max_price)
-        elif sort == 'price_descending':
-            products = Product.get_search_desc(search, category, min_price, max_price)
-        else:
-            products = Product.get_search(search, category, min_price, max_price)
+        products = Product.get_search(search, category, min_price, max_price, sort)
 
     categories = Product.get_categories()
 

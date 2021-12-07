@@ -55,24 +55,14 @@ class User(UserMixin):
         return balance[0][0]
 
     @staticmethod
-    def add_balance(uid, balance):
-        app.db.execute("""
+    def change_balance(uid, balance, change):
+        sql = """
                 UPDATE Users
-                SET balance = balance + :balance
+                SET balance = balance""" + change +  """:balance
                 WHERE id = :uid
                 RETURNING id
-                """,
-                    uid=uid,
-                    balance=balance)
-
-    @staticmethod
-    def withdraw_balance(uid, balance):
-        app.db.execute("""
-                UPDATE Users
-                SET balance = balance - :balance
-                WHERE id = :uid
-                RETURNING id
-                """,
+                """
+        app.db.execute(sql,
                     uid=uid,
                     balance=balance)
 
@@ -108,59 +98,15 @@ class User(UserMixin):
         return User(*(rows[0])) if rows else None
 
     @staticmethod
-    def change_fname(uid, fname):
+    def change_info(uid, change, new):
         app.db.execute("""
                 UPDATE Users
-                SET firstname = :fname
+                SET """ + change + """ = :new
                 WHERE id = :uid
                 RETURNING id
                 """,
                     uid=uid,
-                    fname=fname)
-
-    @staticmethod
-    def change_lname(uid, lname):
-        app.db.execute("""
-                UPDATE Users
-                SET lastname = :lname
-                WHERE id = :uid
-                RETURNING id
-                """,
-                    uid=uid,
-                    lname=lname)
-
-    @staticmethod
-    def change_email(uid, email):
-        app.db.execute("""
-                UPDATE Users
-                SET email = :email
-                WHERE id = :uid
-                RETURNING id
-                """,
-                    uid=uid,
-                    email=email)
-
-    @staticmethod
-    def change_address(uid, address):
-        app.db.execute("""
-                UPDATE Users
-                SET address = :address
-                WHERE id = :uid
-                RETURNING id
-                """,
-                    uid=uid,
-                    address=address)
-
-    @staticmethod
-    def change_password(uid, password):
-        app.db.execute("""
-                UPDATE Users
-                SET password = :password
-                WHERE id = :uid
-                RETURNING id
-                """,
-                    uid=uid,
-                    password=password)
+                    new=new)
 
     @staticmethod
     def change_store(uid, store_name):
@@ -173,16 +119,3 @@ class User(UserMixin):
                 """,
                     uid=uid,
                     store_name=store_name)
-
-    @staticmethod
-    def get_seller(uid):
-        rows = app.db.execute("""
-                SELECT seller_name
-                FROM Seller
-                WHERE user_id = :uid
-                """,
-                    uid=uid)
-
-        if rows:
-            return rows[0][0]
-        return None

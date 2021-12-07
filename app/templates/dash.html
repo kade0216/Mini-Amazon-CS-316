@@ -5,7 +5,11 @@
 
 <h2>Dashboard</h2>
 
-<br>
+{% if seller_name %}
+<a href="{{ url_for('seller.get_seller_inventory_page') }}" type="button" class="btn btn-light"> Seller Page</a>
+{% endif %}
+
+<br><br>
 
 <h2>Account Information</h2>
 First Name: {{ user.firstname }}

@@ -88,7 +88,7 @@ def logout():
 def dash(user_id, filter=False):
     account_balance = User.get_account_balance(user_id)
     user = User.get(user_id)
-    seller_name = User.get_seller(user_id)
+    seller_name = Seller.get(user_id).seller_name
 
     if bool(filter) == True:
         since = datetime.datetime.now() - datetime.timedelta(int(request.form['since']))
@@ -127,44 +127,44 @@ def become_seller(user_id):
 @bp.route('/add_balance/<user_id>', methods=['POST', 'GET'])
 def add_balance(user_id):
     balance = request.form['balance']
-    User.add_balance(user_id, balance)
+    User.change_balance(user_id, balance, '+')
 
     return redirect(url_for('users.dash', user_id=user_id))
 
 @bp.route('/withdraw_balance/<user_id>', methods=['POST', 'GET'])
 def withdraw_balance(user_id):
     balance = request.form['balance']
-    User.withdraw_balance(user_id, balance)
+    User.change_balance(user_id, balance, '-')
     return redirect(url_for('users.dash', user_id=user_id))
 
 @bp.route('/change_fname/<user_id>', methods=['POST', 'GET'])
 def change_fname(user_id):
-    change = request.form['change']
-    User.change_fname(user_id, change)
+    new = request.form['change']
+    User.change_info(user_id, 'firstname', new)
     return redirect(url_for('users.dash', user_id=user_id))
 
 @bp.route('/change_lname/<user_id>', methods=['POST', 'GET'])
 def change_lname(user_id):
-    change = request.form['change']
-    User.change_lname(user_id, change)
+    new = request.form['change']
+    User.change_info(user_id, 'lastname', new)
     return redirect(url_for('users.dash', user_id=user_id))
 
 @bp.route('/change_email/<user_id>', methods=['POST', 'GET'])
 def change_email(user_id):
-    change = request.form['change']
-    User.change_email(user_id, change)
+    new = request.form['change']
+    User.change_info(user_id, 'email', new)
     return redirect(url_for('users.dash', user_id=user_id))
 
 @bp.route('/change_address/<user_id>', methods=['POST', 'GET'])
 def change_address(user_id):
-    change = request.form['change']
-    User.change_address(user_id, change)
+    new = request.form['change']
+    User.change_info(user_id, 'address', new)
     return redirect(url_for('users.dash', user_id=user_id))
 
 @bp.route('/change_password/<user_id>', methods=['POST', 'GET'])
 def change_password(user_id):
-    change = request.form['change']
-    User.change_password(user_id, change)
+    new = request.form['change']
+    User.change_info(user_id, 'password', new)
     return redirect(url_for('users.dash', user_id=user_id))
 
 @bp.route('/change_store/<user_id>', methods=['POST', 'GET'])
