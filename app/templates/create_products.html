@@ -72,6 +72,9 @@ $(document).ready(function() {
         <br>
     </form>
     <br>
+    {% for mesg in get_flashed_messages() %}
+    <p><strong> {{ mesg }} </strong></p>
+    {% endfor %}
   </div>
   <!-- <a href="{{ url_for('seller.create_new_product_page') }}" type="button" class="btn btn-dark">clear product parameters!</a> -->
 </div>

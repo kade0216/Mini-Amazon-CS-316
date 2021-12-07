@@ -166,7 +166,7 @@ def change_product_rating(product_name,summary):
     newReview = request.form['review']
     Product_Review.change_rating(product_name, current_user.id, newRating, newReview)
     if summary=='0':
-    	return redirect(url_for('index.get_product_page', name=product_name))
+        return redirect(url_for('index.get_product_page', name=product_name))
     else:
     	return redirect(url_for('index.get_reviews_by_user'))
 
@@ -174,9 +174,8 @@ def change_product_rating(product_name,summary):
 def delete_product_rating(product_name,summary):
 
     Product_Review.delete_rating(product_name, current_user.id)
-
     if summary=='0':
-    	return redirect(url_for('index.get_product_page', name=product_name))
+        return redirect(url_for('index.get_product_page', name=product_name))
     else:
     	return redirect(url_for('index.get_reviews_by_user'))
 
@@ -187,6 +186,6 @@ def delete_product_text_review(product_name,summary):
     Product_Review.delete_text_review(product_name, current_user.id)
 
     if summary=='0':
-    	return redirect(url_for('index.get_product_page', name=product_name))
+        return redirect(url_for('index.get_product_page', name=product_name))
     else:
     	return redirect(url_for('index.get_reviews_by_user'))
