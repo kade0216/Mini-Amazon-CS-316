@@ -23,14 +23,14 @@ def createUser():
 
             w = csv.writer(f, delimiter=',')
             w.writerow([id, email, password, fname, lname, address, balance])
-	w.writerow([500, "bes41@duke.edu","passwor","Bianca","Saputra","5 Fifth St.",10102])
+        w.writerow([500, "bes41@duke.edu","passwor","Bianca","Saputra","5 Fifth St.",10102])
 
 def createBuyers():
     with open(db + 'Buyer.csv', mode='w') as f:
         for i in range(301):
             w = csv.writer(f, delimiter=',')
             w.writerow([i])
-	w.writerow([500])
+        w.writerow([500])
 
 def createSellers():
     stores = ['All Things More', 'Beautiful Charm', 'Ambrosia Store', 'African Paradise', 'Alike Desire', 'All My Grace', 'American Eagle Shop', 'Actioner Sports Store', 'Adaline’s Wardrobe', 'Addiction Like', 'American Blues', 'Ancient Crust', 'Ancient Grounds', 'Angelic Threads', 'Anytime Buys', 'Apple Alley', 'Apple Blossoms', 'Apple Grand Central', 'Around The Clock Shop', 'Authentic Shoppe', 'BALENCIAGA', 'Balsamic', 'Banana Wear', 'Baskets Of Berries', 'Bayside Cavern', 'Bean Box', 'Beef Quest', 'Bella Bella Boutique', 'Bend the Trend', 'Berries And Bushes', 'Berries Galore', 'Berry Farm', 'Berry Land', 'Best Discount', 'Best Indulgence', 'Best Mart', 'Best of Harvests', 'Best Price', 'BestBuy', 'Bestir Service', 'Better Buys', 'Bien Habillé', 'Big Mall', 'Big Mart', 'Bikini Beans', 'Billowy Love', 'Bitternut', 'Black Eye Coffee', 'Blackbird Boutique', 'Blacklight Clothing', 'Blessed Bounty', 'Blessed Fruits', 'Bloomingdale’s', 'Blue Diamond', 'Blue Mall', 'Blue Market', 'Blue Shelves', 'Blueberry Bean', 'Bluebill Open mall', 'Bluebird Store', 'Blush Boutique', 'Body Canvas', 'Bon Comida', 'Bookstore', 'Boomers Apparel', 'Bountiful Berries', 'Boutique de Paris', 'Brandy Melville', 'Brick And Cyber', 'Bruno’s Groceries', 'Budding Business', 'Budget Banquet', 'Budget Beauty', 'Bumble Bee Boutique', 'Bunny Shop', 'Burger Garden', 'Burgundy Boutique', 'Burlington', 'Burly Giggles', 'Bursting Baskets', 'Bursting With Fruit', 'Burton', 'Business Bustle', 'Butter Buds', 'By the Handful', 'Cafe Corner Shots', 'Cafe Linger', 'Calm Charm', 'Calm Glitter', 'Campfire Clothes', 'Carbonated Corner', 'Careful Dishing', 'Carmine', 'Catered Care', 'Cavern Cooks', 'Celestial Citrus Farms', 'Changing Seasons', 'Chapeau Chic', 'Chaperon', 'Charlie’s Retail', 'Charm Farm', 'Charming Charlotte', 'Chateaux', 'Cheat on Wheels', 'Cheeky Chic', 'Cheereal', 'Chef Naturelle', 'Chic Château', 'Choose And Track', 'Chowhound']
@@ -45,7 +45,7 @@ def createSellers():
                 storeslst.append(store)
                 w = csv.writer(f, delimiter=',')
                 w.writerow([id, store])
-	w.writerow([500, "Saputra Sponges"])
+        w.writerow([500, "Saputra Sponges"])
 
 def createProducts():
     colors=['red', 'green', 'blue', 'teal', 'orange', 'yellow', 'maroon', 'pink', 'lilac', 'rose', 'magenta', 'rust', 'burgundy', 'grass', 'lime', 'lemon', 'white', 'cream', 'indigo', 'purple', 'oatmeal', 'beige', 'black', 'grey', 'charcoal', 'tin', 'gold', 'silver', 'brick', 'blush', 'khaki', 'violet', 'coral', 'salmon', 'brown', 'bronze', 'tan']
