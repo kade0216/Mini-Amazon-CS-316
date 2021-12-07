@@ -31,6 +31,28 @@
 
 <br><br>
 
+<h2> Your feedback for this product!</h2>
+<b>Your Rating:</b> {{product_review_to_edit.rating}} <br>
+<b>Your Review:</b> {{product_review_to_edit.reviewText}}<br>
+<br>
+<h2> Edit your feedback for this product.</h2>
+<form action="{{ url_for('index.change_product_rating', product_name=product_review_to_edit.product_name,summary=1)}}" method="post">
+  <label for="add_rating"><b>Change Rating (from 1 to 5):</b></label>
+  <input name='rating' type="number" min=1 max=5 step=1><br>
+  <textarea rows = "5" cols = "60" name = "review" id="review" maxlength=1000 placeholder="Change your text review here (optional)..."></textarea><br>
+  <input type="submit" value="Submit">
+</form>
+<br>
+<form action="{{ url_for('index.delete_product_text_review', product_name=product_review_to_edit.product_name,summary=1)}}" method="post">
+  <input type="submit" value="Delete Text Review">
+</form><br>
+<form action="{{ url_for('index.delete_product_rating', product_name=product_review_to_edit.product_name,summary=1)}}" method="post">
+  <input type="submit" value="Delete Entire Review">
+</form>
+
+<br>
+
+
 <h2>Your Product Reviews:</h2>
 <b>Select a rating to edit or delete it.</b>
 <table class='table table-hover table-bordered container'>
@@ -42,8 +64,6 @@
       <th scope="col">Text Review</th>
       <th scope="col">Upvotes</th>
       <th scope="col">Downvotes</th>
-      <th scope="col">Edit</th>
-
     </tr>
   </thead>
   <tbody>
@@ -55,10 +75,6 @@
 	<td>{{product_review.reviewText}}</td>
         <td>{{product_review.upvote_count}}</td>
         <td>{{product_review.downvote_count}}</td>
-	<td>
-          <form action="{{ url_for('index.get_reviews_by_user_with_product_edit', product_name=product_review.product_name)}}" method="post">
-          <input type="submit" value="Edit">
-        </form></td>
       </tr>
     {% endfor %}
   </tbody>

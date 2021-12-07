@@ -56,7 +56,7 @@
         <td>
           <form action="{{ url_for('cart.add_item_to_cart', product_name=prod.name, seller_id=prod.seller_id)}}" method="post">
           <input name='quantity' type="number" step="1" min=0>
-          <input type="submit" value="Add to Cart"> </td>
+          <input type="submit" value="Add to Cart">
       </form></td>
       </tr>
     {% endfor %}
@@ -69,19 +69,23 @@
 <br><br>
 {% if current_user.is_authenticated %}
 {% if review_exists %}
-<h2> Your rating for this product!</h2>
-Product Name: {{ name }} <br>
-Your Rating: {{rating}}
+<h2> Your feedback for this product!</h2>
+<b>Your Rating:</b> {{rating}} <br>
+<b>Your Review:</b> {{reviewText}}<br>
 <br>
-<form action="{{ url_for('index.change_product_rating', product_name=name)}}" method="post">
-  <label for="add_rating">Change Rating (from 1 to 5):</label>
-  <input name='rating' type="number" min=1 max=5 step=1>
+<h2> Edit your feedback for this product.</h2>
+<form action="{{ url_for('index.change_product_rating', product_name=name,summary=0)}}" method="post">
+  <label for="add_rating"><b>Change Rating (from 1 to 5):</b></label>
+  <input name='rating' type="number" min=1 max=5 step=1><br>
+  <textarea rows = "5" cols = "60" name = "review" id="review" maxlength=1000 placeholder="Change your text review here (optional)..."></textarea><br>
   <input type="submit" value="Submit">
 </form>
-
 <br>
-<form action="{{ url_for('index.delete_product_rating', product_name=name)}}" method="post">
-  <input type="submit" value="Delete">
+<form action="{{ url_for('index.delete_product_text_review', product_name=name,summary=0)}}" method="post">
+  <input type="submit" value="Delete Text Review">
+</form><br>
+<form action="{{ url_for('index.delete_product_rating', product_name=name,summary=0)}}" method="post">
+  <input type="submit" value="Delete Entire Review">
 </form>
 
 <br>
@@ -89,10 +93,10 @@ Your Rating: {{rating}}
 {% else %}
 
 <h2>Add a Rating for This Product!</h2>
-Product Name: {{ name }}
 <form action="{{ url_for('index.add_review_product', product_name=name)}}" method="post">
-  <label for="add_rating">Rate from 1 to 5:</label>
-  <input name='rating' type="number" min=1 max=5 step=1>
+  <label for="add_rating">Rate from 1 to 5 (required):</label>
+  <input name='rating' type="number" min=1 max=5 step=1 required> <br>
+  <textarea rows = "5" cols = "60" name = "review" id="review" maxlength=1000 placeholder="Enter your text review here (optional)..."></textarea><br>
   <input type="submit" value="Submit">
 </form>
 
@@ -101,19 +105,20 @@ Product Name: {{ name }}
 {% endif %}
 
 {% else %}
-<br>
+<br> <br>
 Please log in to add a rating for this product.
-<br>
+<br> <br>
 {% endif %}
 
 
-<h2>Other Reviews for this Product:</h2>
+<h2>All Reviews for this Product:</h2>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
-      <th scope="col">User ID</th>
-      <th scope="col">Rating</th>
+      <th scope="col">User</th>
       <th scope="col">Date</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Reviews</th>
       <th scope="col">Upvotes</th>
       <th scope="col">Downvotes</th>
     </tr>
@@ -121,9 +126,10 @@ Please log in to add a rating for this product.
   <tbody>
     {% for product_review in product_review_list %}
       <tr>
-        <td>{{product_review.buyer_id}}</td>
-        <td>{{product_review.rating}}</td>
+        <td>{{product_review.reviewer_name}}</td>
         <td>{{product_review.date}}</td>
+        <td>{{product_review.rating}}</td>
+	<td>{{product_review.reviewText}}</td>
         <td>{{product_review.upvote_count}}</td>
         <td>{{product_review.downvote_count}}</td>
       </tr>

@@ -56,6 +56,7 @@ CREATE TABLE Product_Review (
     date DATE,
     upvote_count INT,
     downvote_count INT,
+    reviewText VARCHAR(1000),
     PRIMARY KEY(product_name, buyer_id)
 );
 
