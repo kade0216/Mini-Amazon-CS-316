@@ -57,14 +57,7 @@
           <a href="{{ url_for('users.dash', user_id=current_user.id) }}" type="button" class="btn btn-light">Dashboard</a>
           <a href="{{ url_for('index.get_reviews_by_user') }}" type="button" class="btn btn-light">Your Reviews</a>
           <a href="{{ url_for('cart.get_users_cart', user_id=current_user.id) }}" type="button" class="btn btn-light">Your Cart</a>
-<<<<<<< HEAD
-=======
-          <a href="{{ url_for('seller.get_seller_inventory_page') }}" type="button" class="btn btn-light"> Seller Page</a>
           <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>
-<<<<<<< HEAD
->>>>>>> reorder buttons
-=======
->>>>>>> 05010e1efb9980ec1be654627c83b6c0ec76df1f
         {% else %}
           <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
         {% endif %}
