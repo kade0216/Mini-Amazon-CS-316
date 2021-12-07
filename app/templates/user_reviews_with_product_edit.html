@@ -49,12 +49,18 @@
 <form action="{{ url_for('index.delete_product_rating', product_name=product_review_to_edit.product_name,summary=1)}}" method="post">
   <input type="submit" value="Delete Entire Review">
 </form>
+<br>
+<form action="{{ url_for('index.get_reviews_by_user')}}">
+  <input type="submit" value="Cancel Edit">
+</form>
+
 
 <br>
 
 
 <h2>Your Product Reviews:</h2>
-<b>Select a rating to edit or delete it.</b>
+<b>Finish or cancel your current edit to edit another review, and dynamically sort all reviews.</b>
+
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
@@ -72,8 +78,12 @@
         <th scope="row">{{product_review.product_name}}</th>
         <td>{{product_review.date}}</td>
 	<td>{{product_review.rating}}</td>
-	<td>{{product_review.reviewText}}</td>
-        <td>{{product_review.upvote_count}}</td>
+	{% if product_review.reviewText|length >0 %}
+	<td><details><summary><b>Read review</b></summary>{{product_review.reviewText}}</details></td>
+        {% else %}
+	<td>No text review</td>
+        {% endif %}	
+	<td>{{product_review.upvote_count}}</td>
         <td>{{product_review.downvote_count}}</td>
       </tr>
     {% endfor %}

@@ -32,7 +32,23 @@
 <br><br>
 
 <h2>Your Product Reviews:</h2>
-<b>Select a rating to edit or delete it.</b>
+<b>Select a rating to edit or delete it.</b><br><br>
+<br>
+    <form action="{{ url_for('index.get_sorted_reviews_by_user')}}" method="POST">
+    <label>Sort reviews:</label>
+    <select id='sortProduct' name='sortProduct'>
+      {% if sort %} <option value={{sort}} selected hidden></option>
+      {% else %} <option value='' selected hidden></option>
+      {% endif %}
+      <option value='reverse_chronological'>Reverse chronological</option>
+      <option value='chronological'>Chronological</option>
+      <option value='rating_low_to_high'>Rating low to high</option>
+      <option value='rating_high_to_low'>Rating high to low</option>
+    </select>
+    <button type="submit" name='submit' id='submit' value="1">sort!</button>
+    </form>
+    <br>
+
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
@@ -42,7 +58,7 @@
       <th scope="col">Text Review</th>
       <th scope="col">Upvotes</th>
       <th scope="col">Downvotes</th>
-      <th scope="col">Edit</th>
+      <th scope="col"></th>
 
     </tr>
   </thead>
@@ -52,12 +68,16 @@
         <th scope="row">{{product_review.product_name}}</th>
         <td>{{product_review.date}}</td>
 	<td>{{product_review.rating}}</td>
-	<td>{{product_review.reviewText}}</td>
+	{% if product_review.reviewText|length >0 %}
+	<td><details><summary><b>Read review</b></summary>{{product_review.reviewText}}</details></td>
+        {% else %}
+	<td>No text review</td>
+        {% endif %}
         <td>{{product_review.upvote_count}}</td>
         <td>{{product_review.downvote_count}}</td>
 	<td>
           <form action="{{ url_for('index.get_reviews_by_user_with_product_edit', product_name=product_review.product_name)}}" method="post">
-          <input type="submit" value="Edit">
+          <input type="submit" value="Edit/Delete">
         </form></td>
       </tr>
     {% endfor %}
