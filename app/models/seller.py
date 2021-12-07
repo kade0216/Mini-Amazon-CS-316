@@ -20,8 +20,11 @@ class Seller:
             seller_id=user_id,
         )
 
-        # only 1 seller name for each seller_id
-        return rows[0][0]
+        if rows:
+            # only 1 seller name for each seller_id
+            return rows[0][0]
+
+        return None
 
     @staticmethod
     def get_seller_id(seller_name):
@@ -39,3 +42,18 @@ class Seller:
 
         # only 1 seller name for each seller_id
         return rows[0][0]
+
+    @staticmethod
+    def become_seller(uid, seller_name):
+        if Seller.get_seller_name(uid) is None:
+            rows = app.db.execute("""
+                    INSERT INTO Seller(user_id, seller_name)
+                    VALUES(:uid, :seller_name)
+                    RETURNING user_id
+                    """,
+                        uid=uid,
+                        seller_name=seller_name)
+            return rows
+        return None
+
+        
