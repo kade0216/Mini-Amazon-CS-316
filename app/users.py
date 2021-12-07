@@ -183,7 +183,11 @@ def change_store(user_id):
         User.change_store(user_id, change)
         return redirect(url_for('users.dash', user_id=user_id))
 
-@bp.route('/user_page/<user_id>')
+@bp.route('/user_profile/<user_id>')
 def get_public_user_page(user_id):
     user = User.get(user_id)
-    return render_template('user_public_page.html', user=user)
+    if Seller.get(user_id) is None:
+    	return render_template('user_public_page.html', user=user,seller=True)
+    else:
+        return render_template('user_public_page.html', user=user,seller=False)
+	

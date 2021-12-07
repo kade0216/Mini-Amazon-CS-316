@@ -89,6 +89,55 @@ def get_product_page(name):
 
     return render_template('productpage.html', name=name, prod=products[0], product=products, logged_in=logged_in, review_exists=rating_exists,rating=rating,product_review_list=product_review_list, available=avail, reviewText=reviewText)
 
+
+@bp.route('/sorted_product_page/<name>', methods=['GET','POST'])
+def get_sorted_product_page(name):
+    products = Product.get(name)
+    product_review_list = Product_Review.get_all_reviews_for_product(name)
+    avail = Product.is_product_available(name)
+    
+    sort = request.form['sortProduct']
+    if sort=='reverse_chronological':
+        product_review_list.sort(key=lambda x: x.date)
+        product_review_list.reverse() 
+    elif sort=='chronological':
+        product_review_list.sort(key=lambda x: x.date)
+    elif sort=='rating_high_to_low':
+        product_review_list.sort(key=lambda x: x.rating)
+        product_review_list.reverse()
+    elif sort=='rating_low_to_high':
+        product_review_list.sort(key=lambda x: x.rating)
+    else:
+        product_review_list.sort(key=lambda x: x.date)
+        product_review_list.reverse()
+    
+    for product_review in product_review_list:
+        uid = product_review.buyer_id
+        user = User.get(uid)
+        reviewer_name = user.firstname + " " + user.lastname
+        product_review.reviewer_name = reviewer_name
+
+    if current_user.is_authenticated:
+        logged_in = True
+        if Product_Review.review_exists(name, current_user.id):
+            rating_exists = True
+            review = Product_Review.getRating(name,current_user.id)
+            rating = review.rating
+            reviewText= review.reviewText
+        else:
+            rating_exists = False
+            rating=-1
+            reviewText= ""
+    else:
+        logged_in = None
+        rating_exists=False
+        rating=-1
+        reviewText= ""
+
+    return render_template('productpage.html', name=name, prod = products[0], product=products, logged_in=logged_in, review_exists=rating_exists,rating=rating,product_review_list=product_review_list, available=avail, reviewText=reviewText)
+
+
+
 @bp.route('/search', methods=['POST', 'GET'])
 def get_search_results():
     products = []
@@ -121,8 +170,9 @@ def get_search_results():
                             max_price=max_price,
                             page_num=request.form.get('page'))
 
-@bp.route('/reviews', methods=['GET'])
+@bp.route('/reviews', methods=['GET','POST'])
 def get_reviews_by_user():
+    
     seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
     product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
     seller_review_list.sort(key=lambda x: x.date)
@@ -134,8 +184,50 @@ def get_reviews_by_user():
                      seller_review_list=seller_review_list,
                      product_review_list=product_review_list)
 
+
+@bp.route('/reviews-sorted', methods=['GET','POST'])
+def get_sorted_reviews_by_user():
+    
+    sort = request.form['sortProduct']
+    if sort=='reverse_chronological':
+        seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
+        product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
+        seller_review_list.sort(key=lambda x: x.date)
+        seller_review_list.reverse()
+        product_review_list.sort(key=lambda x: x.date)
+        product_review_list.reverse() 
+    elif sort=='chronological':
+        seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
+        product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
+        seller_review_list.sort(key=lambda x: x.date)
+        product_review_list.sort(key=lambda x: x.date)
+    elif sort=='rating_high_to_low':
+        seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
+        product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
+        seller_review_list.sort(key=lambda x: x.rating)
+        seller_review_list.reverse()
+        product_review_list.sort(key=lambda x: x.rating)
+        product_review_list.reverse()
+    elif sort=='rating_low_to_high':
+        seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
+        product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
+        seller_review_list.sort(key=lambda x: x.rating)
+        product_review_list.sort(key=lambda x: x.rating)
+    else:
+        seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
+        product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
+        seller_review_list.sort(key=lambda x: x.date)
+        seller_review_list.reverse()
+        product_review_list.sort(key=lambda x: x.date)
+        product_review_list.reverse()
+
+    return render_template('user_reviews.html',
+                     seller_review_list=seller_review_list,
+                     product_review_list=product_review_list)
+
 @bp.route('/reviews-edit-product/<product_name>',methods=['GET','POST'])
 def get_reviews_by_user_with_product_edit(product_name):
+
     seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
     product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
     seller_review_list.sort(key=lambda x: x.date)
@@ -168,7 +260,7 @@ def change_product_rating(product_name,summary):
     if summary=='0':
         return redirect(url_for('index.get_product_page', name=product_name))
     else:
-    	return redirect(url_for('index.get_reviews_by_user'))
+        return redirect(url_for('index.get_reviews_by_user'))
 
 @bp.route('/delete_product_rating/<product_name>/<summary>', methods=['POST'])
 def delete_product_rating(product_name,summary):
@@ -177,7 +269,7 @@ def delete_product_rating(product_name,summary):
     if summary=='0':
         return redirect(url_for('index.get_product_page', name=product_name))
     else:
-    	return redirect(url_for('index.get_reviews_by_user'))
+        return redirect(url_for('index.get_reviews_by_user'))
 
 
 @bp.route('/delete_product_text_review/<product_name>/<summary>', methods=['POST'])
@@ -188,4 +280,4 @@ def delete_product_text_review(product_name,summary):
     if summary=='0':
         return redirect(url_for('index.get_product_page', name=product_name))
     else:
-    	return redirect(url_for('index.get_reviews_by_user'))
+        return redirect(url_for('index.get_reviews_by_user'))
