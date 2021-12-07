@@ -87,7 +87,7 @@ def get_product_page(name):
         rating=-1
         reviewText= ""
 
-    return render_template('productpage.html', name=name, product=products, logged_in=logged_in, review_exists=rating_exists,rating=rating,product_review_list=product_review_list, available=avail, reviewText=reviewText)
+    return render_template('productpage.html', name=name, prod=products[0], product=products, logged_in=logged_in, review_exists=rating_exists,rating=rating,product_review_list=product_review_list, available=avail, reviewText=reviewText)
 
 @bp.route('/search', methods=['POST', 'GET'])
 def get_search_results():
