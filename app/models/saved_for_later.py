@@ -45,7 +45,7 @@ class SavedForLater:
         it is inserted into the cart as a new item.
         """
 
-        seller_name = Seller.get_seller_name(seller_id)
+        #seller_name = Seller.get_seller_name(seller_id)
 
         if Cart.does_product_exist_in_cart(user_id, product_name, seller_name):
             Cart.change_product_quantity_in_cart(user_id, product_name, seller_name, quantity)
