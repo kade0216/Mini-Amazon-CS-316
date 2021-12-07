@@ -85,3 +85,11 @@ CREATE TABLE Cart (
     quantity INT NOT NULL,
     PRIMARY KEY(buyer_id, product_name, seller_id)
 );
+
+CREATE TABLE SavedForLater (
+    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
+    product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
+    seller_id INT NOT NULL REFERENCES Seller(user_id),
+    quantity INT NOT NULL,
+    PRIMARY KEY(buyer_id, product_name, seller_id)
+);
