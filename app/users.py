@@ -121,8 +121,14 @@ def dash(user_id, filter=False):
 @bp.route('/become_seller/<user_id>', methods=['POST', 'GET'])
 def become_seller(user_id):
     seller_name = request.form['seller_name']
-    Seller.become_seller(user_id, seller_name)
-    return redirect(url_for('users.dash', user_id=user_id))
+
+    if (Seller.does_seller_exist(seller_name)):
+        flash(f"{seller_name} already exists! Choose a different seller name.")
+        return redirect(url_for('users.dash', user_id=user_id))
+
+    else: 
+        Seller.become_seller(user_id, seller_name)
+        return redirect(url_for('users.dash', user_id=user_id))
 
 @bp.route('/add_balance/<user_id>', methods=['POST', 'GET'])
 def add_balance(user_id):
@@ -170,5 +176,10 @@ def change_password(user_id):
 @bp.route('/change_store/<user_id>', methods=['POST', 'GET'])
 def change_store(user_id):
     change = request.form['change']
-    User.change_store(user_id, change)
-    return redirect(url_for('users.dash', user_id=user_id))
+
+    if (Seller.does_seller_exist(change)):
+        flash(f"{change} already exists! Choose a different seller name.")
+        return redirect(url_for('users.dash', user_id=user_id))
+    else:
+        User.change_store(user_id, change)
+        return redirect(url_for('users.dash', user_id=user_id))
