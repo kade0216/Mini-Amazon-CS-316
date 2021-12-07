@@ -46,4 +46,16 @@ class Seller:
             return rows
         return None
 
+    @staticmethod
+    def does_seller_exist(seller_name):
+        rows = app.db.execute(
+            """
+            SELECT user_id
+            FROM Seller
+            WHERE seller_name = :seller_name
+            """,
+            seller_name=seller_name,
+        )
+
+        return len(rows) > 0
         

@@ -28,6 +28,9 @@ Last Name: {{ user.lastname }}
 <br>
 
 {% if seller_name %}
+{% for mesg in get_flashed_messages() %}
+  <p><strong> {{ mesg }} </strong></p>
+{% endfor %}
 Store Name: {{ seller_name }}
 <form action="{{ url_for('users.change_store', user_id=user.id) }}" method="post">
   <label for="change_lname">Change store name:</label>
@@ -62,6 +65,9 @@ Account ID: {{ user.id }}
 
 {% if seller_name == None %}
 Become a seller?
+{% for mesg in get_flashed_messages() %}
+  <p><strong> {{ mesg }} </strong></p>
+{% endfor %}
 <form action="{{ url_for('users.become_seller', user_id=user.id) }}" method="post">
   <label for="change_password">Seller name:</label>
   <input name='seller_name'>
