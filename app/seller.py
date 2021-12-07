@@ -84,13 +84,15 @@ def create_new_product():
         url = request.form['new_product_image']
         category = request.form['category']
 
-    seller_id = current_user.id
+    if (Product.does_product_exist(name)):
+        flash(f"{name} already exists! Instead, add existing product to seller inventory.")
+        return redirect(url_for('seller.create_new_product_page')) 
+    else:
+        seller_id = current_user.id
+        Product.create_new_product(seller_id, name, category, url, description, price, product_quantity)
+        categories = Product.get_categories()
+        return redirect(url_for("seller.get_seller_inventory_page"))
 
-    Product.create_new_product(seller_id, name, category, url, description, price, product_quantity)
-
-    categories = Product.get_categories()
-
-    return redirect(url_for("seller.get_seller_inventory_page"))
 
 @bp.route("/seller/add_product", methods=['POST', "GET"])
 def add_new_product():

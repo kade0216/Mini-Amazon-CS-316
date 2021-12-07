@@ -112,7 +112,7 @@ def createProducts():
         for i in range(250):
             name = random.choice(colors)+" "+random.choice(qualities)+" "+random.choice(electronics)
             cat = 'electronics'
-            url = 'https://lh3.googleusercontent.com/proxy/p4WGo9OqEL2NWLwXXH-o5siXk0kbsiIbNaOxXYvv4V7kxWLERRgzYMqOjVZj037M_UB3ndWvU9VLA4-AFxet9t8j4KVjyV2_ozvmehN1h6epo3nIbsUX'
+            url = 'https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
             avail = random.choice([True, False])
             desc = name
 
