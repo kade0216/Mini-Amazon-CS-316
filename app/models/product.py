@@ -16,7 +16,7 @@ class Product:
     @staticmethod
     def get(name):
         rows = app.db.execute('''
-        SELECT name, 
+        SELECT name,
                category_name,
                image_url,
                available,
@@ -38,7 +38,7 @@ class Product:
     @staticmethod
     def get_all(available=True):
         rows = app.db.execute('''
-        SELECT name, 
+        SELECT name,
                category_name,
                image_url,
                available,
@@ -52,6 +52,14 @@ class Product:
         available=available)
         return [Product(*row) for row in rows]
 
+    def get_all_product_names():
+        rows = app.db.execute('''
+        SELECT name
+        FROM Product
+        ''')
+
+        return [row[0] for row in rows]
+
     def get_categories():
         rows = app.db.execute('''
         SELECT *
@@ -60,9 +68,9 @@ class Product:
 
         return [row[0] for row in rows]
 
-    def get_search_desc(item_name, category):
+    def get_search_desc(item_name, category, min, max):
         rows = app.db.execute('''
-        SELECT name, 
+        SELECT name,
                category_name,
                image_url,
                available,
@@ -74,17 +82,20 @@ class Product:
         AND category_name LIKE :category
         AND available = True
         GROUP BY name
+        HAVING MIN(price) > :min AND MAX(price) < :max
         ORDER BY price DESC
         ''',
         item_name=("%" + item_name + "%"),
         category=("%" + category + "%"),
+        min=min,
+        max=max
         )
 
         return [Product(*row) for row in rows]
 
-    def get_search_asc(item_name, category):
+    def get_search_asc(item_name, category, min, max):
         rows = app.db.execute('''
-        SELECT name, 
+        SELECT name,
                category_name,
                image_url,
                available,
@@ -96,17 +107,20 @@ class Product:
         AND category_name LIKE :category
         AND available = True
         GROUP BY name
+        HAVING MIN(price) > :min AND MAX(price) < :max
         ORDER BY price ASC
         ''',
         item_name=("%" + item_name + "%"),
         category=("%" + category + "%"),
+        min=min,
+        max=max
         )
 
         return [Product(*row) for row in rows]
 
-    def get_search(item_name, category):
+    def get_search(item_name, category, min, max):
         rows = app.db.execute('''
-        SELECT name, 
+        SELECT name,
                category_name,
                image_url,
                available,
@@ -118,9 +132,12 @@ class Product:
         AND category_name LIKE :category
         AND available = True
         GROUP BY name
+        HAVING MIN(price) > :min AND MAX(price) < :max
         ''',
         item_name=("%" + item_name + "%"),
         category=("%" + category + "%"),
+        min=min,
+        max=max
         )
 
         return [Product(*row) for row in rows]
@@ -158,12 +175,31 @@ class Product:
 
         return len(rows) > 0
 
+    @staticmethod
+    def does_seller_sell_product(seller_id, product_name):
+        """
+        Checks whether a seller sells a given product.
+
+        Returns boolean T/F.
+        """
+        rows = app.db.execute(
+            """
+            SELECT seller_id, product_name
+            FROM Selling
+            WHERE seller_id = :seller_id
+            AND product_name = :product_name
+            """,
+            seller_id=seller_id,
+            product_name=product_name,
+        )
+
+        return len(rows) > 0
 
     @staticmethod
-    def add_new_product_to_products(name, category_name, image_url, description):
+    def create_new_product(seller_id, name, category_name, image_url, description, price, quantity):
         """
-        Adds a new product to products table
-        Throws an exception if the product already exisits in the product inventory. 
+        Adds a new product information to products and selling tables
+        Throws an exception if the product already exisits in the product inventory.
         """
 
         if (Product.does_product_exist(name)):
@@ -171,7 +207,7 @@ class Product:
                 f"Cannot add {name} because it already exists in the Product table"
             )
             return
-        
+
         app.db.execute_with_no_return(
             """
         INSERT INTO Product
@@ -181,6 +217,41 @@ class Product:
             category_name=category_name,
             image_url=image_url,
             description=description
+        )
+
+        app.db.execute_with_no_return(
+            """
+        INSERT INTO Selling
+        VALUES (:seller_id, :name, :price, :quantity)
+        """,
+            seller_id=seller_id,
+            name=name,
+            price=price,
+            quantity=quantity
+        )
+
+    @staticmethod
+    def add_new_product_to_seller(seller_id, name, price, quantity):
+        """
+        Adds a preexisting product to a seller's inventory
+        Throws an exception if the product already exisits in the seller inventory.
+        """
+
+        if (Product.does_seller_sell_product(seller_id, name)):
+            app.logger.error(
+                f"Cannot add {name} because it already exists in the Selling table"
+            )
+            return
+
+        app.db.execute_with_no_return(
+            """
+        INSERT INTO Selling
+        VALUES (:seller_id, :name, :price, :quantity)
+        """,
+            seller_id=seller_id,
+            name=name,
+            price=price,
+            quantity=quantity
         )
 
     @staticmethod
@@ -204,3 +275,26 @@ class Product:
         """,
             name=name)
 
+    @staticmethod
+    def change_product_price(seller_id, name, price_change):
+        """
+        Changes the product price for a given item corresponding to a
+        given seller in the Selling's table.
+        """
+
+        # if the seller's inventory for a product is 0 it should be removed
+        # if new_quantity <= 0:
+        #     Selling.remove_product_from_seller_inventory(seller_id, product_name)
+
+
+        app.db.execute_with_no_return(
+            """
+        UPDATE Selling
+        SET price= :new_price
+        WHERE seller_id = :seller_id
+        AND product_name = :product_name
+        """,
+            new_price=price_change,
+            seller_id=seller_id,
+            product_name=name,
+        )

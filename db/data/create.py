@@ -67,7 +67,7 @@ def createProducts():
         for i in range(250):
             name = random.choice(colors)+" "+random.choice(qualities)+" "+random.choice(books)+" book"
             cat = 'books'
-            url = 'url'
+            url = 'https://casperblog.imgix.net/blog/wp-content/uploads/2020/10/books-1200x880-1.png?auto=format'
             avail = random.choice([True, False])
             desc = name
 
@@ -81,7 +81,7 @@ def createProducts():
         for i in range(250):
             name = random.choice(colors)+" "+random.choice(qualities)+" "+random.choice(household)
             cat = 'household'
-            url = 'url'
+            url = 'https://www.thespruce.com/thmb/fBWufqtqOR_O8ZpyJhxs8dsPBUE=/4200x2800/filters:fill(auto,1)/how-to-easily-pack-the-kitchen-2436462-MICHELLE-01_HERO_01-669eedd679b74b77a87c94e86d543186.jpg'
             avail = random.choice([True, False])
             desc = name
 
@@ -95,7 +95,7 @@ def createProducts():
         for i in range(250):
             name = random.choice(colors)+" "+random.choice(qualities)+" "+random.choice(clothes)
             cat = 'clothes'
-            url = 'url'
+            url = 'https://images.theconversation.com/files/293774/original/file-20190924-54793-157i3zo.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop'
             avail = random.choice([True, False])
             desc = name
 
@@ -109,7 +109,7 @@ def createProducts():
         for i in range(250):
             name = random.choice(colors)+" "+random.choice(qualities)+" "+random.choice(electronics)
             cat = 'electronics'
-            url = 'url'
+            url = 'https://lh3.googleusercontent.com/proxy/p4WGo9OqEL2NWLwXXH-o5siXk0kbsiIbNaOxXYvv4V7kxWLERRgzYMqOjVZj037M_UB3ndWvU9VLA4-AFxet9t8j4KVjyV2_ozvmehN1h6epo3nIbsUX'
             avail = random.choice([True, False])
             desc = name
 
@@ -123,7 +123,7 @@ def createProducts():
         for i in range(250):
             name = random.choice(colors)+" "+random.choice(qualities)+" "+random.choice(health)
             cat = 'health'
-            url = 'url'
+            url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-eyat5LK2OFU5OOdg-2jAxmCKfaqCRO6YArx6k5wUtgWJHRFvwn5S9oID9LzALswwfj0&usqp=CAU'
             avail = random.choice([True, False])
             desc = name
 
