@@ -23,6 +23,12 @@ bp = Blueprint('index', __name__)
 def index():
     # get all available products for sale:
     products = Product.get_all(True)
+    for product in products:
+        product.rating=[round(x,2) for x in Product_Review.get_summary_for_product(product.name)]
+        if product.rating[0] >= 3.5:
+            product.starred = 1
+        else:
+            product.starred = 0
     categories = Product.get_categories()
 
     # render the page by adding information to the index.html file
@@ -69,11 +75,22 @@ def get_product_page(name):
     seller_info = []
     for product in products:
         seller_name = product.seller_name
-        seller_info.append([round(x,2) for x in Seller_Review.get_summary_for_seller_name(seller_name)])
-
+        summary = [round(x,2) for x in Seller_Review.get_summary_for_seller_name(seller_name)]
+        if summary[0] >= 3.5:
+            summary.append(1)
+        else:
+            summary.append(0)
+        seller_info.append(summary)
+        
     product_review_list = Product_Review.get_all_reviews_for_product(name)
     product_avg = round(Product_Review.get_summary_for_product(name)[0],2)
     product_count = round(Product_Review.get_summary_for_product(name)[1],2)
+
+    if product_avg >= 3.5:
+        products[0].starred = 1
+    else:
+        products[0].starred = 0
+        
     avail = Product.is_product_available(name)
     for product_review in product_review_list:
         uid = product_review.buyer_id
@@ -123,12 +140,22 @@ def get_sorted_product_page(name):
     seller_info = []
     for product in products:
         seller_name = product.seller_name
-        seller_info.append([round(x,2) for x in Seller_Review.get_summary_for_seller_name(seller_name)])
+        summary = [round(x,2) for x in Seller_Review.get_summary_for_seller_name(seller_name)]
+        if summary[0] >= 3.5:
+            summary.append(1)
+        else:
+            summary.append(0)
+        seller_info.append(summary)
 
-
+    
     product_avg = round(Product_Review.get_summary_for_product(name)[0],2)
     product_count = round(Product_Review.get_summary_for_product(name)[1],2)
-
+    
+    if product_avg >= 3.5:
+        products[0].starred = 1
+    else:
+        products[0].starred = 0
+        
     sort = request.form['sortProduct']
     if sort=='reverse_chronological':
         product_review_list.sort(key=lambda x: x.date)
@@ -214,7 +241,12 @@ def get_search_results():
             max_rating = 5
 
         products = Product.get_search(search, category, min_price, max_price, min_rating, max_rating, sort)
-
+        for product in products:
+            product.rating=[round(x,2) for x in Product_Review.get_summary_for_product(product.name)]
+            if product.rating[0] >= 3.5:
+                product.starred = 1
+            else:
+                product.starred = 0
     categories = Product.get_categories()
 
     # render the page by adding information to the index.html file

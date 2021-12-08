@@ -74,6 +74,7 @@
     <tr>
       <th scope="col">Product Name</th>
       <th scope="col">Price Starting From</th>
+      <th scope="col">Rating</th>
       <th scope="col">Image</th>
       <th scope="col">Description</th>
     </tr>
@@ -83,6 +84,12 @@
       <tr>
         <th scope="row"> <a href="{{ url_for('index.get_product_page', name=product.name)}}">{{product.name}}</a> </th>
         <td>{{product.price}}</td>
+        <td>{{product.rating[0]}} ({{product.rating[1]}} Reviews)
+	{% if product.starred==1 %}
+	<img src="/static/icons/starred.png" alt="(Well-Rated!)" width="20" height="20">
+	{% endif %}
+
+	</td>
         <td><img src={{product.image_url}} alt={{product.name}} style="width:auto;height:50px"></td>
         <td>{{product.description}}</td>
       </tr>
