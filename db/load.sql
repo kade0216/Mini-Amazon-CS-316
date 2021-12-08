@@ -9,3 +9,4 @@
 \COPY Message FROM 'data/Message.csv' WITH DELIMITER ',' NULL '' CSV
 \COPY Product_Review FROM 'data/Product_Review.csv' WITH DELIMITER ',' NULL '' CSV
 \COPY Seller_Review FROM 'data/Seller_Review.csv' WITH DELIMITER ',' NULL '' CSV
+\COPY SavedForLater FROM 'data/Saved_For_Later.csv' WITH DELIMITER ',' NULL '' CSV

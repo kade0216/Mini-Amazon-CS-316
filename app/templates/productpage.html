@@ -56,8 +56,16 @@
         <td>
           <form action="{{ url_for('cart.add_item_to_cart', product_name=prod.name, seller_id=prod.seller_id)}}" method="post">
           <input name='quantity' type="number" step="1" min=0>
-          <input type="submit" value="Add to Cart">
-      </form></td>
+          <!-- <input type="submit" value="Add to Cart"> -->
+          <button type="submit" formaction="{{ url_for('cart.add_item_to_cart', product_name=prod.name, seller_id=prod.seller_id)}}">
+            Add to Cart
+          </button>
+
+          <button type="submit" formaction="{{ url_for('cart.add_item_to_save_for_later', product_name=prod.name, seller_id=prod.seller_id)}}">
+              Save For Later
+          </button>
+
+          </form></td>
       </tr>
     {% endfor %}
   </tbody>
