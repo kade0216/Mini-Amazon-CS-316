@@ -7,7 +7,11 @@ class ProductReviewVote:
         self.reviewer_id = reviewer_id
         self.product_name = product_name
         self.upvote = upvote
-
+    
+    """
+    Add a vote to the table for a review by a specific user, from a specific user, 
+    for a specific product.
+    """
     @staticmethod
     def add_vote(voter_id,reviewer_id,product_name,upvote):
         rows = app.db.execute("""
@@ -21,6 +25,10 @@ class ProductReviewVote:
                     upvote=upvote)
         return True
     
+    """
+    Retrieve a vote from the table for a review by a specific user, from a specific user, 
+    for a specific product.
+    """
     @staticmethod
     def get_vote(voter_id, reviewer_id, product_name):
         rows = app.db.execute("""
@@ -35,7 +43,10 @@ class ProductReviewVote:
                               product_name=product_name)
         return ProductReviewVote(*(rows[0])) if rows else None
 
-    
+    """
+    Delete a vote from the table for a review by a specific user, from a specific user, 
+    for a specific product.
+    """
     @staticmethod
     def delete_vote(voter_id, reviewer_id, product_name):
         app.db.execute_with_no_return("""
@@ -48,6 +59,10 @@ class ProductReviewVote:
 		    reviewer_id=reviewer_id,
 		    product_name=product_name)
 
+    """
+    Check if a vote from the table for a review by a specific user, from a specific user, 
+    for a specific product exists.
+    """
     @staticmethod
     def vote_exists(voter_id, reviewer_id, product_name):
         rows = app.db.execute("""
