@@ -155,7 +155,8 @@ def dash(user_id, filter=False):
                                             seller_values=seller_values,
                                             seller_labels=seller_labels)
 
-    get_order_history_grouped_by_timestamp = Orders.get_order_history_grouped_by_timestamp(current_user.id)
+    get_order_history_grouped_by_timestamp = Orders.get_order_history_grouped_by_timestamp(current_user.id) 
+    print(get_order_history_grouped_by_timestamp[0][0].seller_id)
 
     return render_template('dash.html', order_history=get_order_history_grouped_by_timestamp,
                                         account_balance=account_balance,
@@ -236,8 +237,11 @@ def change_store(user_id):
 
 @bp.route('/user_profile/<user_id>')
 def get_public_user_page(user_id):
-    user = User.get(user_id)
+    if not user_id.isnumeric():
+        user_id = Seller.get_seller_id(user_id)
     if Seller.get(user_id) is not None:
+        
+        user = User.get(user_id)
         seller = Seller.get(user_id)
         seller_avg = round(Seller_Review.get_summary_for_seller(user_id)[0],2)
         seller_count = round(Seller_Review.get_summary_for_seller(user_id)[1],2)
@@ -250,6 +254,7 @@ def get_public_user_page(user_id):
 
         if current_user.is_authenticated:
             logged_in = True
+            ordered = Orders.check_if_order_exists_between_buyer_seller(current_user.id, user_id)
             for seller_review in seller_review_list:
                 uid = seller_review.buyer_id
 
@@ -264,29 +269,33 @@ def get_public_user_page(user_id):
                 review = Seller_Review.get(user_id,current_user.id)
                 rating = review.rating
                 reviewText= review.reviewText
-                return render_template('user_public_page.html', logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+                seller_review_list_most_popular = copy.deepcopy(seller_review_list)
+                seller_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
+                seller_review_list_most_popular.reverse()
+                seller_review_list_most_popular = seller_review_list_most_popular[0:3]
+                return render_template('user_public_page.html', ordered=ordered, seller_review_list_most_popular=seller_review_list_most_popular, logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
 
             else:
                 rating_exists = False
                 rating=-1
-                reviewText= ""
-                
-            
+                reviewText= ""            
 
         else:
             logged_in = None
             rating_exists=False
             rating=-1
             reviewText= ""
+            ordered=-1
             
         seller_review_list_most_popular = copy.deepcopy(seller_review_list)
         seller_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
         seller_review_list_most_popular.reverse()
         seller_review_list_most_popular = seller_review_list_most_popular[0:3]
-        
-        return render_template('user_public_page.html', seller_review_list_most_popular=seller_review_list_most_popular, logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+
+        return render_template('user_public_page.html', ordered=ordered, seller_review_list_most_popular=seller_review_list_most_popular, logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
 
     else:
+        user = User.get(user_id)
         return render_template('user_public_page.html', user=user,seller=False)
 
 @bp.route('/dash/detailed_order_page/<timestamp>')
@@ -297,7 +306,8 @@ def get_detailed_order_page(timestamp):
 
 @bp.route('/sorted_seller_page/<seller_id>', methods=['GET','POST'])
 def get_sorted_seller_page(seller_id):
-
+    if not seller_id.isnumeric():
+        seller_id = Seller.get_seller_id(seller_id)
     sort = request.form['sortSeller']
     user = User.get(seller_id)
     if Seller.get(seller_id) is not None:
@@ -332,6 +342,8 @@ def get_sorted_seller_page(seller_id):
         seller_count = round(Seller_Review.get_summary_for_seller(seller_id)[1],2)
 
         if current_user.is_authenticated:
+            ordered = Orders.check_if_order_exists_between_buyer_seller(current_user.id, seller_id)
+            print(ordered)
             logged_in = True
             for seller_review in seller_review_list:
                 uid = seller_review.buyer_id
@@ -345,21 +357,27 @@ def get_sorted_seller_page(seller_id):
                 review = Seller_Review.get(seller_id,current_user.id)
                 rating = review.rating
                 reviewText= review.reviewText
-                return render_template('user_public_page.html', logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+                seller_review_list_most_popular = copy.deepcopy(seller_review_list)
+                seller_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
+                seller_review_list_most_popular.reverse()
+                seller_review_list_most_popular = seller_review_list_most_popular[0:3]
+                return render_template('user_public_page.html', ordered=ordered,seller_review_list_most_popular=seller_review_list_most_popular,logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
 
             else:
                 rating_exists = False
                 rating=-1
                 reviewText= ""
+
         else:
             logged_in = None
             rating_exists=False
             rating=-1
             reviewText= ""
+            ordered=-1
             
         seller_review_list_most_popular = copy.deepcopy(seller_review_list)
         seller_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
         seller_review_list_most_popular.reverse()
         seller_review_list_most_popular = seller_review_list_most_popular[0:3]
         
-        return render_template('user_public_page.html', seller_review_list_most_popular=seller_review_list_most_popular,logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+        return render_template('user_public_page.html', ordered=ordered, seller_review_list_most_popular=seller_review_list_most_popular,logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
