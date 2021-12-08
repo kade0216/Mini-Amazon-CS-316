@@ -73,12 +73,7 @@ def get_product_page(name):
         user = User.get(uid)
         reviewer_name = user.firstname + " " + user.lastname
         product_review.reviewer_name = reviewer_name
-        if Vote.vote_exists(current_user.id,uid,name):
-            tempVote = Vote.get_vote(current_user.id,uid,name)
-            product_review.vote = tempVote
-        else:
-            product_review.vote = -1
-
+        
     if current_user.is_authenticated:
         logged_in = True
         for product_review in product_review_list:
