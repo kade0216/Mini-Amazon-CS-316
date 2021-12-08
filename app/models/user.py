@@ -99,6 +99,8 @@ class User(UserMixin):
 
     @staticmethod
     def change_info(uid, change, new):
+        if change == 'password':
+            new = generate_password_hash(new)
         app.db.execute("""
                 UPDATE Users
                 SET """ + change + """ = :new

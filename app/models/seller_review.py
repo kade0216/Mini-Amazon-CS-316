@@ -98,7 +98,22 @@ class Seller_Review:
         else:
             avg = count / len(seller_reviews)
             return [avg,len(seller_reviews)]
-            
+
+    @staticmethod
+    def get_summary_for_seller_name(seller_name):
+        rows = app.db.execute("""
+		SELECT Seller_Review.rating
+		FROM Seller_Review, Seller
+		WHERE Seller.user_id = Seller_Review.seller_id AND
+        Seller.seller_name = :seller_name
+		""",
+            seller_name=seller_name)
+        
+        if len(rows)==0:
+            return [0,0]
+        else:
+            avg = sum([int(rate[0]) for rate in list(rows)]) / len(rows)
+            return [avg,len(rows)]
     
     @staticmethod
     def change_rating(seller_id,buyer_id,newRating,newReview):

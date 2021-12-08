@@ -7,7 +7,6 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask_babel import _, lazy_gettext as _l
 from flask import current_app as app
 import datetime
-from werkzeug.exceptions import BadRequestKeyError
 
 from .models.user import User
 from .models.seller import Seller
@@ -89,7 +88,12 @@ def logout():
 def dash(user_id, filter=False):
     account_balance = User.get_account_balance(user_id)
     user = User.get(user_id)
-    seller_name = Seller.get(user_id).seller_name
+    seller = Seller.get(user_id)
+    
+    if seller:
+        seller_name = seller.seller_name
+    else:
+        seller_name = None
 
     full_order_history = Orders.get_order_history(user_id)
 

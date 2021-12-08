@@ -64,6 +64,12 @@ def get_reviews_for_seller(seller_id):
 @bp.route('/product_page/<name>', methods=['GET'])
 def get_product_page(name):
     products = Product.get(name)
+
+    seller_info = []
+    for product in products:
+        seller_name = product.seller_name
+        seller_info.append(Seller_Review.get_summary_for_seller_name(seller_name))
+
     product_review_list = Product_Review.get_all_reviews_for_product(name)
     product_avg = round(Product_Review.get_summary_for_product(name)[0],2)
     product_count = round(Product_Review.get_summary_for_product(name)[1],2)
@@ -100,7 +106,19 @@ def get_product_page(name):
         rating=-1
         reviewText= ""
 
-    return render_template('productpage.html', name=name, prod=products[0], product=products, logged_in=logged_in, review_exists=rating_exists,rating=rating,product_review_list=product_review_list, available=avail, reviewText=reviewText,product_avg=product_avg,product_count=product_count)
+    return render_template('productpage.html', 
+                                    name=name, 
+                                    prod=products[0], 
+                                    product=products, 
+                                    logged_in=logged_in, 
+                                    review_exists=rating_exists,
+                                    rating=rating,
+                                    product_review_list=product_review_list, 
+                                    available=avail, 
+                                    reviewText=reviewText,
+                                    product_avg=product_avg,
+                                    product_count=product_count,
+                                    seller_info=seller_info)
 
 
 @bp.route('/sorted_product_page/<name>', methods=['GET','POST'])
