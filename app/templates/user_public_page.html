@@ -5,6 +5,10 @@
 {% if isSeller==True %}
 <h2>Seller Information</h2>
 <b>Seller Name:</b> {{ seller.seller_name }} <br>
+<b>Seller Email:</b> {{ email }} 
+<a href="mailto:{{email}}">Send Email</a><br>
+<b>Seller Address:</b> {{ address }} <br>
+
 <b>Seller Review Summary:</b> {{ seller_avg }} ({{ seller_count }})
 {% if seller_avg >= 3.5 %}
 <img src="/static/icons/starred.png" alt="(Well-Rated!)" width="20" height="20">
@@ -191,6 +195,6 @@ Please log in to add a rating for this seller.
 <b>First Name:</b> {{ user.firstname }}
 <br>
 <b>Last Name:</b> {{ user.lastname }}
-<br><br>
+<br>
 {% endif %}
 {% endblock %}
