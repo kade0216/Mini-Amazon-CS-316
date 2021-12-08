@@ -15,6 +15,10 @@ class Product:
 
     @staticmethod
     def get(name):
+        """
+        Retrieves all information about a given product name from the Product, Selling, Seller tables.
+        """
+
         rows = app.db.execute('''
         SELECT name,
                category_name,
@@ -37,6 +41,10 @@ class Product:
 
     @staticmethod
     def get_all(available=True):
+        """
+        Retrieves all products which are available and groups by name.
+        """
+
         rows = app.db.execute('''
         SELECT name,
                category_name,
@@ -53,6 +61,10 @@ class Product:
         return [Product(*row) for row in rows]
 
     def get_all_product_names():
+        """
+        Retrieves all all names of products in Product.
+        """
+
         rows = app.db.execute('''
         SELECT name
         FROM Product
@@ -61,6 +73,10 @@ class Product:
         return [row[0] for row in rows]
 
     def get_categories():
+        """
+        Retrieves all categories from Category.
+        """
+
         rows = app.db.execute('''
         SELECT *
         FROM Category
@@ -68,7 +84,13 @@ class Product:
 
         return [row[0] for row in rows]
 
-    def get_search(item_name, category, min, max, sort=None):
+    def get_search(item_name, category, min, max, min_rat, max_rat, sort=None):
+        """
+        Searches products by name, category, min/max price, min/max rating and assumes no sorting by price
+        increasing or decreasing.
+        If sort is given (price inc or dec), the products are sorted.
+        """
+
         sql = '''
         SELECT name,
                category_name,
@@ -76,13 +98,14 @@ class Product:
                available,
                description,
                MIN(price) as price
-        FROM Product, Selling
+        FROM Product, Selling, Product_Review
         WHERE name LIKE :item_name
-        AND name = product_name
+        AND name = Selling.product_name
+        AND Selling.product_name = Product_Review.product_name
         AND category_name LIKE :category
         AND available = True
         GROUP BY name
-        HAVING MIN(price) > :min AND MAX(price) < :max
+        HAVING MIN(price) > :min AND MAX(price) < :max AND AVG(rating) >= :min_rat AND AVG(rating) <= :max_rat
         '''
         if sort == 'price_ascending':
             sql = sql + '\n' + 'ORDER BY price ASC'
@@ -93,7 +116,9 @@ class Product:
                     item_name=("%" + item_name + "%"),
                     category=("%" + category + "%"),
                     min=min,
-                    max=max
+                    max=max,
+                    min_rat=min_rat,
+                    max_rat=max_rat
                 )
 
         return [Product(*row) for row in rows]

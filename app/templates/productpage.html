@@ -15,12 +15,12 @@
       <tr>
         <br>
         <h3> Product Name: {{prod.name}}</h3>
-	<b>Seller Review Summary:</b> {{ product_avg }} ({{ product_count }})
 
         <!-- <td>{{prod.price}}</td> -->
         <!-- <th scope="col">Image</th> -->
         <br>
         <h4 > Description: {{prod.description}}</h4>
+        <h5 > Product Review Summary: {{ product_avg }} ({{ product_count }} Reviews) </h5>
         <!-- <img src="/static/css/images/{{prod.category_name}}.jpeg" alt={{prod.name}} style="width:150px;height:150px;margin-left:200px;"> -->
         <img src={{prod.image_url}} alt={{prod.name}} style="width:150px;height:150px;margin-left:200px;">
         <br>

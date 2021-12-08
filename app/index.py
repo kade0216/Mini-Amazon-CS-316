@@ -110,6 +110,7 @@ def get_sorted_product_page(name):
     avail = Product.is_product_available(name)
     product_avg = round(Product_Review.get_summary_for_product(name)[0],2)
     product_count = round(Product_Review.get_summary_for_product(name)[1],2)
+
     sort = request.form['sortProduct']
     if sort=='reverse_chronological':
         product_review_list.sort(key=lambda x: x.date)
@@ -163,12 +164,20 @@ def get_search_results():
         min_price = request.form['min_product_price']
         max_price = request.form['max_product_price']
 
+        min_rating = request.form['min_product_rating']
+        max_rating = request.form['max_product_rating']
+
         if min_price == '':
             min_price = 0
         if max_price == '':
             max_price = 1000000000
 
-        products = Product.get_search(search, category, min_price, max_price, sort)
+        if min_rating == '':
+            min_rating = 0
+        if max_rating== '':
+            max_rating = 5
+
+        products = Product.get_search(search, category, min_price, max_price, min_rating, max_rating, sort)
 
     categories = Product.get_categories()
 
@@ -176,12 +185,14 @@ def get_search_results():
     return render_template('index.html',
                             avail_products=products,
                             categories=categories,
-                            search_params=[search, category, sort.replace('_', ' '), min_price, max_price],
+                            search_params=[search, category, sort.replace('_', ' '), min_price, max_price, min_rating, max_rating],
                             item_search=search,
                             category=category,
                             sort=sort,
                             min_price=min_price,
                             max_price=max_price,
+                            min_rating=min_rating,
+                            max_rating=max_rating,
                             page_num=request.form.get('page'))
 
 @bp.route('/reviews', methods=['GET','POST'])
