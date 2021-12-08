@@ -1,6 +1,8 @@
 from flask import current_app as app
 import datetime
 
+from .seller import Seller
+
 class Orders:
     def __init__(self, buyer_id, seller_id, product_name, quantity, fulfillment_status, time_purchased, final_price):
         self.buyer_id = buyer_id
@@ -83,6 +85,33 @@ class Orders:
             timestamp=timestamp,
             final_price=final_price
         )
+
+    @staticmethod
+    def get_single_order(buyer_id, time_purchased):
+        """ Gets all relevant information for a the detailed order page"""
+        rows = app.db.execute(
+        """
+        SELECT buyer_id,
+            seller_id,
+            product_name,
+            quantity,
+            fulfillment_status,
+            time_purchased,
+            final_price
+        FROM Orders
+        WHERE buyer_id = :buyer_id
+        AND time_purchased = :time_purchased
+        """,
+            buyer_id=buyer_id,
+            time_purchased=time_purchased
+        )
+
+        rows = [Orders(*row) for row in rows]
+
+        for row in rows:
+            row.seller_id = Seller.get(row.seller_id).seller_name
+
+        return rows
 
     @staticmethod
     def fufill_order(buyer_id, time_purchased, seller_id, product_name):

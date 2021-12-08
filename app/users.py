@@ -95,7 +95,7 @@ def dash(user_id, filter=False):
         item_search = request.form['item_search']
         seller_search = request.form['seller_search']
         order_history = Orders.get_order_history(
-            user_id, 
+            user_id,
             since,
             item_search,
             seller_search)
@@ -109,7 +109,7 @@ def dash(user_id, filter=False):
                                             item_search=item_search,
                                             seller_search=seller_search,
                                             page_num=request.form.get('page'))
-    
+
     order_history = Orders.get_order_history(user_id)
 
     return render_template('dash.html', order_history=order_history,
@@ -126,7 +126,7 @@ def become_seller(user_id):
         flash(f"{seller_name} already exists! Choose a different seller name.")
         return redirect(url_for('users.dash', user_id=user_id))
 
-    else: 
+    else:
         Seller.become_seller(user_id, seller_name)
         return redirect(url_for('users.dash', user_id=user_id))
 
@@ -190,4 +190,9 @@ def get_public_user_page(user_id):
     	return render_template('user_public_page.html', user=user,seller=True)
     else:
         return render_template('user_public_page.html', user=user,seller=False)
-	
+
+@bp.route('/dash/detailed_order_page/<timestamp>')
+def get_detailed_order_page(timestamp):
+    orders = Orders.get_single_order(current_user.id, timestamp)
+
+    return render_template('detailed_order_page.html', timestamp=timestamp, orders=orders)

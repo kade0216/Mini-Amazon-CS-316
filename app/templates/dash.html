@@ -6,7 +6,7 @@
 <h2>Dashboard</h2>
 
 {% if seller_name %}
-<a href="{{ url_for('seller.get_seller_inventory_page') }}" type="button" class="btn btn-light"> Seller Page</a>
+<a href="{{ url_for('seller.get_seller_inventory_page') }}" type="button" class="btn btn-dark"> Seller Page</a>
 {% endif %}
 
 <br><br>
@@ -138,6 +138,7 @@ Become a seller?
             {% if totals.append(order.final_price * order.quantity) %}{% endif %}
           {% endfor %}
           <th scope="col">Total Price: ${{ '%0.2f' | format(totals | sum) }} </th>
+          <th scope="col"> <a href="{{ url_for('users.get_detailed_order_page', timestamp=order_group[0].time_purchased) }}" type="button" class="btn btn-dark">Detailed Order Page</a>
         </tr>
       </thead>
       <thead class="thead-dark">
@@ -159,12 +160,12 @@ Become a seller?
           <td>{{order.quantity}}
           <td>{{order.final_price}}
           <td>{{order.time_purchased}}</td>
-          <td> <a href="{{ url_for('index.get_product_page', name=order.product_name) }}" type="button" class="btn btn-light">go to page!</a></td>
+          <td> <a href="{{ url_for('index.get_product_page', name=order.product_name) }}" type="button" class="btn btn-dark">go to page!</a></td>
         </tr>
       {% endfor %}
       <td></td>
     {% endfor %}
   </tbody>
-</table> 
+</table>
 
 {% endblock %}
