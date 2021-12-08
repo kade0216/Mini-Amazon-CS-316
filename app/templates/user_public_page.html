@@ -80,7 +80,7 @@ Please log in to add a rating for this seller.
   <tbody>
     {% for seller_review in seller_review_list_most_popular %}
       <tr>
-        <td>{{seller_review.reviewer_name}}</td>
+        <th scope="row"> <a href="{{ url_for('users.get_user_public_profile', user_id=seller_review.buyer_id)}}">{{seller_review.reviewer_name}}</a> </th>
         <td>{{seller_review.date}}</td>
         <td>{{seller_review.rating}}</td>
 	<td>{{seller_review.reviewText}}</td>
@@ -152,7 +152,7 @@ Please log in to add a rating for this seller.
   <tbody>
     {% for seller_review in seller_review_list %}
       <tr>
-        <td>{{seller_review.reviewer_name}}</td>
+        <th scope="row"> <a href="{{ url_for('users.get_user_public_profile', user_id=seller_review.buyer_id)}}">{{seller_review.reviewer_name}}</a> </th>
         <td>{{seller_review.date}}</td>
         <td>{{seller_review.rating}}</td>
 	<td>{{seller_review.reviewText}}</td>
