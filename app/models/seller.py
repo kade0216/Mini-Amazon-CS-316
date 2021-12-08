@@ -8,6 +8,9 @@ class Seller:
 
     @staticmethod
     def get(user_id):
+        """
+        Given a seller_name return the corresponding user_id
+        """
         rows = app.db.execute("""
             SELECT user_id, seller_name
             FROM Seller
@@ -19,7 +22,7 @@ class Seller:
     @staticmethod
     def get_seller_id(seller_name):
         """
-        Given a seller_name return the corresponding user_id
+        Given a seller_name return the corresponding seller name
         """
         rows = app.db.execute(
             """
@@ -35,6 +38,10 @@ class Seller:
 
     @staticmethod
     def become_seller(uid, seller_name):
+        """
+        Enables a user to become a seller by inserting into the Seller db
+        """
+
         if Seller.get(uid) is None:
             rows = app.db.execute("""
                     INSERT INTO Seller(user_id, seller_name)
@@ -48,6 +55,12 @@ class Seller:
 
     @staticmethod
     def does_seller_exist(seller_name):
+        """
+        Checks to see if a seller exists.
+
+        Returns T/F
+        """
+
         rows = app.db.execute(
             """
             SELECT user_id
