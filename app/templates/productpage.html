@@ -55,7 +55,7 @@
         <td>{{prod.quantity_in_inventory}}</td>
         <td>
           <form action="{{ url_for('cart.add_item_to_cart', product_name=prod.name, seller_id=prod.seller_id)}}" method="post">
-          <input name='quantity' type="number" step="1" min=0>
+          <input name='quantity' type="number" step="1" min=1 value=1>
           <!-- <input type="submit" value="Add to Cart"> -->
           <button type="submit" formaction="{{ url_for('cart.add_item_to_cart', product_name=prod.name, seller_id=prod.seller_id)}}">
             Add to Cart
