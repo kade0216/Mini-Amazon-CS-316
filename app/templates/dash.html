@@ -13,7 +13,7 @@
 <h2>Dashboard</h2>
 
 {% if seller_name %}
-<a href="{{ url_for('seller.get_seller_inventory_page') }}" type="button" class="btn btn-light"> Seller Page</a>
+<a href="{{ url_for('seller.get_seller_inventory_page') }}" type="button" class="btn btn-dark"> Seller Page</a>
 {% endif %}
 
 <br><br>
@@ -100,7 +100,7 @@ Become a seller?
 <br><br>
 
 <h2>Your recent orders:</h2>
-<b>{{ order_history|length }} orders </b> placed 
+<b>{{ order_history|length }} orders </b> placed
 {% if since %} since {{since}} {% endif %}
 {% if item_search %} with items matching {{item_search}} {% endif %}
 {% if seller_search %} and seller matching {{seller_search}} {% endif %}
@@ -123,7 +123,7 @@ Become a seller?
   <input id='seller_search' name='seller_search' value={{seller_search}}>
   <button type="submit" name='page' id='page' value="1">search!</button>
   <br>
-  go to page: 
+  go to page:
   {% for n in range((order_history|length/10)|round(0,'ceil')|int) %}
     <input type="submit" name='page' id='page' value={{n|int + 1}}>
   {% endfor %}
@@ -135,31 +135,45 @@ Become a seller?
 
 <br><br>
 <table class='table table-hover table-bordered container'>
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Product Name</th>
-      <th scope="col">Seller Name</th>
-      <th scope="col">Fullfillment Status</th>
-      <th scope="col">Quantity</th>
-      <th scope="col">Final Price</th>
-      <th scope="col">Date Purchased</th>
-      <th scope="col">Product Page</th>
-    </tr>
-  </thead>
   <tbody>
-    {% for order in order_history[(page_num|int - 1) * 10:page_num|int*10]%}
-      <tr>
-        <th scope="row">{{order.product_name}}</th>
-        <td>{{order.seller_id}}</td>
-        <td>{{order.fulfillment_status}}</td>
-        <td>{{order.quantity}}
-        <td>{{order.final_price}}
-        <td>{{order.time_purchased}}</td>
-        <td> <a href="{{ url_for('index.get_product_page', name=order.product_name) }}" type="button" class="btn btn-light">go to page!</a></td>
-      </tr>
+    {% for order_group in order_history[(page_num|int - 1) * 10:page_num|int*10]%}
+      <thead>
+        <tr>
+          <th scope="col">Order Placed: {{order_group[0].time_purchased}}</th>
+          {% set totals = [] %}
+          {% for order in order_group %}
+            {% if totals.append(order.final_price * order.quantity) %}{% endif %}
+          {% endfor %}
+          <th scope="col">Total Price: ${{ '%0.2f' | format(totals | sum) }} </th>
+          <th scope="col"> <a href="{{ url_for('users.get_detailed_order_page', timestamp=order_group[0].time_purchased) }}" type="button" class="btn btn-dark">Detailed Order Page</a>
+        </tr>
+      </thead>
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Product Name</th>
+          <th scope="col">Seller Name</th>
+          <th scope="col">Fullfillment Status</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Price Paid</th>
+          <th scope="col">Date Purchased</th>
+          <th scope="col">Product Page</th>
+        </tr>
+      </thead>
+      {% for order in order_group%}
+        <tr>
+          <th scope="row">{{order.product_name}}</th>
+          <td>{{order.seller_id}}</td>
+          <td>{{order.fulfillment_status}}</td>
+          <td>{{order.quantity}}
+          <td>{{order.final_price}}
+          <td>{{order.time_purchased}}</td>
+          <td> <a href="{{ url_for('index.get_product_page', name=order.product_name) }}" type="button" class="btn btn-dark">go to page!</a></td>
+        </tr>
+      {% endfor %}
+      <td></td>
     {% endfor %}
   </tbody>
-</table> 
+</table>
 
 <h2>Order Analytics</h2>
 {% if dollar_labels %}  
