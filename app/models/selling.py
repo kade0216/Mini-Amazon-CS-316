@@ -142,15 +142,15 @@ class Selling:
             quantity=quantity,
         )
 
+        if not Product.is_product_available(product_name):
+            Product.change_product_availability(product_name, True)
+
     @staticmethod
     def remove_product_from_seller_inventory(seller_id, product_name):
         """
         Removes an exisiting product from a seller's inventory
         Throws an exception if the product does not exisit in the seller's inventory.
 
-
-        Note: (TODO: Seller's Guru: if after removal, the product has no remaining sellers,
-        remove product (blocked by lack of remove product method))
         """
 
         if not (Selling.does_seller_sell_product(seller_id, product_name)):
@@ -169,3 +169,16 @@ class Selling:
             seller_id=seller_id,
             product_name=product_name,
         )
+
+        #If no sellers sell this product we should make the product unavailble
+        rows = app.db.execute(
+        """
+        SELECT *
+        FROM Selling
+        WHERE product_name = :product_name
+        """,
+            product_name=product_name
+        )
+
+        if len(rows) == 0:
+            Product.change_product_availability(product_name, False)

@@ -28,7 +28,10 @@
         <td>{{order.final_price}}
         <td>{{order.time_purchased}}</td>
         <td> <a href="{{ url_for('index.get_product_page', name=order.product_name) }}" type="button" class="btn btn-light">go to page!</a></td>
-        <td> <a href="{{ url_for('seller.fufill_order', buyer_id=order.buyer_id, time_purchased=order.time_purchased, product_name=order.product_name) }}" type="button" class="btn btn-dark">Fufill Order</a></td>
+        <td>
+          {% if not order.fulfillment_status %}
+          <a href="{{ url_for('seller.fufill_order', buyer_id=order.buyer_id, time_purchased=order.time_purchased, product_name=order.product_name) }}" type="button" class="btn btn-dark">Fufill Order</a></td>
+          {% endif %}
       </tr>
     {% endfor %}
   </tbody>

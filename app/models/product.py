@@ -161,6 +161,24 @@ class Product:
         return len(rows) > 0
 
     @staticmethod
+    def change_product_availability(product_name, status = True):
+        """
+        If status is True (default) change product availability to available
+        If status is False change product availability to unavailable
+
+        """
+
+        rows = app.db.execute_with_no_return('''
+        UPDATE Product
+        SET available = :status
+        WHERE name = :product_name
+        ''',
+        product_name=product_name,
+        status=status)
+
+        app.logger.info("Successfully changed product availability status")
+
+    @staticmethod
     def does_seller_sell_product(seller_id, product_name):
         """
         Checks whether a seller sells a given product.
@@ -242,6 +260,9 @@ class Product:
     @staticmethod
     def remove_product_from_products(name):
         """
+        DEPRECATED: do not use without good reason! Instead of removing
+        products it is preffered that we make them unavailable.
+
         Removes an exisiting product from products
         Throws an exception if the product does not exist in the product inventory
         """
