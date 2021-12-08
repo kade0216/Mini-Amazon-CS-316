@@ -88,13 +88,22 @@ CREATE TABLE Cart (
     PRIMARY KEY(buyer_id, product_name, seller_id)
 );
 
-CREATE TABLE Vote (
+CREATE TABLE ProductReviewVote (
     voter_id INT NOT NULL REFERENCES Buyer(user_id),
     reviewer_id INT NOT NULL REFERENCES Buyer(user_id),
     product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
-    upvote INT NOT NULL REFERENCES Seller(user_id),
+    upvote INT NOT NULL,
     PRIMARY KEY(voter_id, reviewer_id, product_name)
 );
+
+CREATE TABLE SellerReviewVote (
+    voter_id INT NOT NULL REFERENCES Buyer(user_id),
+    reviewer_id INT NOT NULL REFERENCES Buyer(user_id),
+    seller_id INT NOT NULL REFERENCES Seller(user_id),
+    upvote INT NOT NULL,
+    PRIMARY KEY(voter_id, reviewer_id, seller_id)
+);
+
 
 CREATE TABLE SavedForLater (
     buyer_id INT NOT NULL REFERENCES Buyer(user_id),

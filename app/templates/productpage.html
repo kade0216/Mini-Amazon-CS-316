@@ -109,6 +109,58 @@
 Please log in to add a rating for this product.
 <br> <br>
 {% endif %}
+<h2> Most Popular Reviews for this Product:</h2>
+
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Date</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Reviews</th>
+      <th scope="col">Upvotes</th>
+      <th scope="col">Downvotes</th>
+      {% if current_user.is_authenticated %}
+      <th scope="col">Vote</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for product_review in product_review_list_most_popular %}
+      <tr>
+        <td>{{product_review.reviewer_name}}</td>
+        <td>{{product_review.date}}</td>
+        <td>{{product_review.rating}}</td>
+	<td>{{product_review.reviewText}}</td>
+        <td>{{product_review.upvote_count}}</td>
+        <td>{{product_review.downvote_count}}</td>
+        {% if current_user.is_authenticated %}
+	<td>
+	{% if product_review.buyer_id != current_user.id %}
+	{% if product_review.vote == 1 %}
+        <form action="{{ url_for('index.delete_product_upvote', product_name=product_review.product_name, buyer_id=product_review.buyer_id)}}" method="post">
+        <input type="submit" value="Delete Upvote">
+        </form>
+	{% elif product_review.vote == 0 %}
+        <form action="{{ url_for('index.delete_product_downvote', product_name=product_review.product_name, buyer_id=product_review.buyer_id)}}" method="post">
+        <input type="submit" value="Delete Downvote">
+        </form>
+	{% elif product_review.vote == -1 %}
+        <form action="{{ url_for('index.add_product_upvote', product_name=product_review.product_name, buyer_id=product_review.buyer_id)}}" method="post">
+        <input type="image" src="/static/icons/upvote_button.png" alt="Upvote" style=width:50px;height="50px";>
+        </form>
+        <form action="{{ url_for('index.add_product_downvote', product_name=product_review.product_name, buyer_id=product_review.buyer_id)}}" method="post">
+        <input type="image" src="/static/icons/downvote_button.png" alt="Downvote" style=width:50px;height="50px";>
+        </form>
+	{% endif %}
+	{% endif %}
+	{% endif %}
+	</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br><br>
 
 <form action="{{ url_for('index.get_sorted_product_page',name=name)}}" method="POST">
     <label>Sort reviews:</label>
@@ -120,6 +172,9 @@ Please log in to add a rating for this product.
       <option value='chronological'>Chronological</option>
       <option value='rating_low_to_high'>Rating low to high</option>
       <option value='rating_high_to_low'>Rating high to low</option>
+      <option value='most_to_least_popular'>Most to least popular</option>
+      <option value='least_to_most_popular'>Least to most popular</option>
+
     </select>
     <button type="submit" name='submit' id='submit' value="1">sort!</button>
     </form>
@@ -136,7 +191,10 @@ Please log in to add a rating for this product.
       <th scope="col">Reviews</th>
       <th scope="col">Upvotes</th>
       <th scope="col">Downvotes</th>
+      {% if current_user.is_authenticated %}
+
       <th scope="col">Vote</th>
+      {% endif %}
 
     </tr>
   </thead>
@@ -148,16 +206,29 @@ Please log in to add a rating for this product.
         <td>{{product_review.rating}}</td>
 	<td>{{product_review.reviewText}}</td>
         <td>{{product_review.upvote_count}}</td>
+        <td>{{product_review.downvote_count}}</td>
+        {% if current_user.is_authenticated %}
 	<td>
+	{% if product_review.buyer_id != current_user.id %}
 	{% if product_review.vote == 1 %}
-	Upvoted
+        <form action="{{ url_for('index.delete_product_upvote', product_name=product_review.product_name, buyer_id=product_review.buyer_id)}}" method="post">
+        <input type="submit" value="Delete Upvote">
+        </form>
 	{% elif product_review.vote == 0 %}
-	Downvoted
+        <form action="{{ url_for('index.delete_product_downvote', product_name=product_review.product_name, buyer_id=product_review.buyer_id)}}" method="post">
+        <input type="submit" value="Delete Downvote">
+        </form>
 	{% elif product_review.vote == -1 %}
-	Vote
+        <form action="{{ url_for('index.add_product_upvote', product_name=product_review.product_name, buyer_id=product_review.buyer_id)}}" method="post">
+        <input type="image" src="/static/icons/upvote_button.png" alt="Upvote" style=width:50px;height="50px";>
+        </form>
+        <form action="{{ url_for('index.add_product_downvote', product_name=product_review.product_name, buyer_id=product_review.buyer_id)}}" method="post">
+        <input type="image" src="/static/icons/downvote_button.png" alt="Downvote" style=width:50px;height="50px";>
+        </form>
+	{% endif %}
+	{% endif %}
 	{% endif %}
 	</td>
-        <td>{{product_review.downvote_count}}</td>
       </tr>
     {% endfor %}
   </tbody>

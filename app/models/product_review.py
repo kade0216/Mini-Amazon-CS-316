@@ -159,24 +159,44 @@ class Product_Review:
 
     @staticmethod
     def addUpvote(product_name, buyer_id):
-        app.db.execute("""
+        app.db.execute_with_no_return("""
         UPDATE Product_Review
+        SET upvote_count = upvote_count + 1
         WHERE product_name = :product_name
         AND buyer_id = :buyer_id
-        SET upvote_count = (SELECT upvote_count FROM Product_Review WHERE product_name = :product_name AND buyer_id = :buyer_id) + 1
         """,
                               product_name=product_name,
                               buyer_id=buyer_id)
-        return 0
 
     @staticmethod
     def addDownvote(product_name, buyer_id):
-        app.db.execute("""
+        app.db.execute_with_no_return("""
         UPDATE Product_Review
+        SET downvote_count = downvote_count + 1
         WHERE product_name = :product_name
         AND buyer_id = :buyer_id
-        SET downvote_count = (SELECT downvote_count FROM Product_Review WHERE product_name = :product_name AND buyer_id = :buyer_id) + 1
         """,
                               product_name=product_name,
                               buyer_id=buyer_id)
-        return 0
+    
+    @staticmethod
+    def deleteUpvote(product_name, buyer_id):
+        app.db.execute_with_no_return("""
+        UPDATE Product_Review
+        SET upvote_count = upvote_count - 1
+        WHERE product_name = :product_name
+        AND buyer_id = :buyer_id
+        """,
+                              product_name=product_name,
+                              buyer_id=buyer_id)
+
+    @staticmethod
+    def deleteDownvote(product_name, buyer_id):
+        app.db.execute_with_no_return("""
+        UPDATE Product_Review
+        SET downvote_count = downvote_count - 1
+        WHERE product_name = :product_name
+        AND buyer_id = :buyer_id
+        """,
+                              product_name=product_name,
+                              buyer_id=buyer_id)

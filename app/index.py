@@ -5,14 +5,15 @@ from flask_login import current_user
 from flask import request
 import datetime
 from flask import redirect, url_for
-
+import copy
 from .models.product import Product
 from .models.selling import Selling
 from .models.seller import Seller
 from .models.product_review import Product_Review
 from .models.seller_review import Seller_Review
 from .models.user import User
-from .models.vote import Vote
+from .models.product_review_vote import ProductReviewVote
+from .models.seller_review_vote import SellerReviewVote
 
 from flask import Blueprint
 bp = Blueprint('index', __name__)
@@ -85,8 +86,8 @@ def get_product_page(name):
         for product_review in product_review_list:
             uid = product_review.buyer_id
             user = User.get(uid)
-            if Vote.vote_exists(current_user.id,uid,name):
-                tempVote = Vote.get_vote(current_user.id,uid,name)
+            if ProductReviewVote.vote_exists(current_user.id,uid,name):
+                tempVote = ProductReviewVote.get_vote(current_user.id,uid,name).upvote
                 product_review.vote = tempVote
             else:
                 product_review.vote = -1
@@ -105,20 +106,13 @@ def get_product_page(name):
         rating_exists=False
         rating=-1
         reviewText= ""
+    
+    product_review_list_most_popular = copy.deepcopy(product_review_list)
+    product_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
+    product_review_list_most_popular.reverse()
+    product_review_list_most_popular = product_review_list_most_popular[0:3]
 
-    return render_template('productpage.html', 
-                                    name=name, 
-                                    prod=products[0], 
-                                    product=products, 
-                                    logged_in=logged_in, 
-                                    review_exists=rating_exists,
-                                    rating=rating,
-                                    product_review_list=product_review_list, 
-                                    available=avail, 
-                                    reviewText=reviewText,
-                                    product_avg=product_avg,
-                                    product_count=product_count,
-                                    seller_info=seller_info)
+    return render_template('productpage.html', product_review_list_most_popular=product_review_list_most_popular, name=name, prod=products[0], product=products, logged_in=logged_in, review_exists=rating_exists,rating=rating,product_review_list=product_review_list, available=avail, reviewText=reviewText,product_avg=product_avg,product_count=product_count)
 
 
 @bp.route('/sorted_product_page/<name>', methods=['GET','POST'])
@@ -140,6 +134,11 @@ def get_sorted_product_page(name):
         product_review_list.reverse()
     elif sort=='rating_low_to_high':
         product_review_list.sort(key=lambda x: x.rating)
+    elif sort=='least_to_most_popular':
+        product_review_list.sort(key=lambda x: x.upvote_count-x.downvote_count)
+    elif sort == 'most_to_least_popular':
+        product_review_list.sort(key=lambda x: x.upvote_count-x.downvote_count)
+        product_review_list.reverse()
     else:
         product_review_list.sort(key=lambda x: x.date)
         product_review_list.reverse()
@@ -152,6 +151,14 @@ def get_sorted_product_page(name):
 
     if current_user.is_authenticated:
         logged_in = True
+        for product_review in product_review_list:
+            uid = product_review.buyer_id
+            user = User.get(uid)
+            if ProductReviewVote.vote_exists(current_user.id,uid,name):
+                tempVote = ProductReviewVote.get_vote(current_user.id,uid,name).upvote
+                product_review.vote = tempVote
+            else:
+                product_review.vote = -1
         if Product_Review.review_exists(name, current_user.id):
             rating_exists = True
             review = Product_Review.getRating(name,current_user.id)
@@ -167,7 +174,12 @@ def get_sorted_product_page(name):
         rating=-1
         reviewText= ""
 
-    return render_template('productpage.html', name=name, prod = products[0], product=products, logged_in=logged_in, review_exists=rating_exists,rating=rating,product_review_list=product_review_list, available=avail, reviewText=reviewText,product_avg=product_avg,product_count=product_count)
+    product_review_list_most_popular = copy.deepcopy(product_review_list)
+    product_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
+    product_review_list_most_popular.reverse()
+    product_review_list_most_popular = product_review_list_most_popular[0:3]
+
+    return render_template('productpage.html', product_review_list_most_popular=product_review_list_most_popular, name=name, prod = products[0], product=products, logged_in=logged_in, review_exists=rating_exists,rating=rating,product_review_list=product_review_list, available=avail, reviewText=reviewText,product_avg=product_avg,product_count=product_count)
 
 
 
@@ -259,8 +271,10 @@ def get_sorted_product_reviews_by_user():
         product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
         product_review_list.sort(key=lambda x: x.date)
         product_review_list.reverse() 
-        
-        
+       
+
+
+    
     seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
     seller_review_list.sort(key=lambda x: x.date)
     seller_review_list.reverse() 
@@ -432,4 +446,53 @@ def delete_seller_text_review(seller_id,summary):
     else:
         return redirect(url_for('index.get_reviews_by_user'))
 
+@bp.route('/add_product_upvote/<product_name>/<buyer_id>', methods=['POST'])
+def add_product_upvote(product_name,buyer_id):
+    ProductReviewVote.add_vote(current_user.id,buyer_id,product_name,1)
+    Product_Review.addUpvote(product_name,buyer_id)
+    return redirect(url_for('index.get_product_page', name=product_name))
 
+@bp.route('/add_product_downvote/<product_name>/<buyer_id>', methods=['POST'])
+def add_product_downvote(product_name,buyer_id):
+    ProductReviewVote.add_vote(current_user.id,buyer_id,product_name,0)
+    Product_Review.addDownvote(product_name,buyer_id)
+    return redirect(url_for('index.get_product_page', name=product_name))
+
+@bp.route('/delete_product_upvote/<product_name>/<buyer_id>', methods=['POST'])
+def delete_product_upvote(product_name,buyer_id):
+    ProductReviewVote.delete_vote(current_user.id,buyer_id,product_name)
+    Product_Review.deleteUpvote(product_name,buyer_id)
+    return redirect(url_for('index.get_product_page', name=product_name))
+
+@bp.route('/delete_product_downvote/<product_name>/<buyer_id>', methods=['POST'])
+def delete_product_downvote(product_name,buyer_id):
+    ProductReviewVote.delete_vote(current_user.id,buyer_id,product_name)
+    Product_Review.deleteDownvote(product_name,buyer_id)
+    return redirect(url_for('index.get_product_page', name=product_name))
+
+@bp.route('/add_seller_upvote/<seller_id>/<buyer_id>', methods=['POST'])
+def add_seller_upvote(seller_id,buyer_id):
+    SellerReviewVote.add_vote(current_user.id,buyer_id,seller_id,1)
+    Seller_Review.addUpvote(seller_id,buyer_id)
+    return redirect(url_for('users.get_public_user_page', user_id=seller_id))
+
+
+@bp.route('/add_seller_downvote/<seller_id>/<buyer_id>', methods=['POST'])
+def add_seller_downvote(seller_id,buyer_id):
+    SellerReviewVote.add_vote(current_user.id,buyer_id,seller_id,0)
+    Seller_Review.addDownvote(seller_id,buyer_id)
+    return redirect(url_for('users.get_public_user_page', user_id=seller_id))
+
+
+@bp.route('/delete_seller_upvote/<seller_id>/<buyer_id>', methods=['POST'])
+def delete_seller_upvote(seller_id,buyer_id):
+    SellerReviewVote.delete_vote(current_user.id,buyer_id,seller_id)
+    Seller_Review.deleteUpvote(seller_id,buyer_id)
+    return redirect(url_for('users.get_public_user_page', user_id=seller_id))
+
+
+@bp.route('/delete_seller_downvote/<seller_id>/<buyer_id>', methods=['POST'])
+def delete_seller_downvote(seller_id,buyer_id):
+    SellerReviewVote.delete_vote(current_user.id,buyer_id,seller_id)
+    Seller_Review.deleteDownvote(seller_id,buyer_id)
+    return redirect(url_for('users.get_public_user_page', user_id=seller_id))

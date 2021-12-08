@@ -7,11 +7,14 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask_babel import _, lazy_gettext as _l
 from flask import current_app as app
 import datetime
+import copy
+from werkzeug.exceptions import BadRequestKeyError
 
 from .models.user import User
 from .models.seller import Seller
 from .models.orders import Orders
 from .models.seller_review import Seller_Review
+from .models.seller_review_vote import SellerReviewVote
 
 
 from flask import Blueprint
@@ -247,6 +250,15 @@ def get_public_user_page(user_id):
 
         if current_user.is_authenticated:
             logged_in = True
+            for seller_review in seller_review_list:
+                uid = seller_review.buyer_id
+
+                if SellerReviewVote.vote_exists(current_user.id,uid,user_id):
+                    tempVote = SellerReviewVote.get_vote(current_user.id,uid,user_id).upvote
+                    seller_review.vote = tempVote
+                else:
+                    seller_review.vote = -1
+
             if Seller_Review.review_exists(user_id, current_user.id):
                 rating_exists = True
                 review = Seller_Review.get(user_id,current_user.id)
@@ -258,13 +270,21 @@ def get_public_user_page(user_id):
                 rating_exists = False
                 rating=-1
                 reviewText= ""
+                
+            
+
         else:
             logged_in = None
             rating_exists=False
             rating=-1
             reviewText= ""
-
-        return render_template('user_public_page.html', logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+            
+        seller_review_list_most_popular = copy.deepcopy(seller_review_list)
+        seller_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
+        seller_review_list_most_popular.reverse()
+        seller_review_list_most_popular = seller_review_list_most_popular[0:3]
+        
+        return render_template('user_public_page.html', seller_review_list_most_popular=seller_review_list_most_popular, logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
 
     else:
         return render_template('user_public_page.html', user=user,seller=False)
@@ -313,6 +333,13 @@ def get_sorted_seller_page(seller_id):
 
         if current_user.is_authenticated:
             logged_in = True
+            for seller_review in seller_review_list:
+                uid = seller_review.buyer_id
+                if SellerReviewVote.vote_exists(current_user.id,uid,seller_id):
+                    tempVote = SellerReviewVote.get_vote(current_user.id,uid,seller_id).upvote
+                    seller_review.vote = tempVote
+                else:
+                    seller_review.vote = -1
             if Seller_Review.review_exists(seller_id, current_user.id):
                 rating_exists = True
                 review = Seller_Review.get(seller_id,current_user.id)
@@ -329,5 +356,10 @@ def get_sorted_seller_page(seller_id):
             rating_exists=False
             rating=-1
             reviewText= ""
-
-        return render_template('user_public_page.html', logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+            
+        seller_review_list_most_popular = copy.deepcopy(seller_review_list)
+        seller_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
+        seller_review_list_most_popular.reverse()
+        seller_review_list_most_popular = seller_review_list_most_popular[0:3]
+        
+        return render_template('user_public_page.html', seller_review_list_most_popular=seller_review_list_most_popular,logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)

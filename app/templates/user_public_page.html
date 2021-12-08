@@ -52,8 +52,61 @@ Please log in to add a rating for this seller.
 <br> <br>
 {% endif %}
 
+<h2>Most popular reviews for this Seller:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Date</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Reviews</th>
+      <th scope="col">Upvotes</th>
+      <th scope="col">Downvotes</th>
+      {% if current_user.is_authenticated %}
+      <th scope="col">Vote</th>
+      {% endif %}
 
-<b>Select a rating to edit or delete it.</b>
+    </tr>
+  </thead>
+  <tbody>
+    {% for seller_review in seller_review_list_most_popular %}
+      <tr>
+        <td>{{seller_review.reviewer_name}}</td>
+        <td>{{seller_review.date}}</td>
+        <td>{{seller_review.rating}}</td>
+	<td>{{seller_review.reviewText}}</td>
+        <td>{{seller_review.upvote_count}}</td>
+        <td>{{seller_review.downvote_count}}</td>
+        {% if current_user.is_authenticated %}
+
+	<td>
+	{% if seller_review.buyer_id != current_user.id %}
+	{% if seller_review.vote == 1 %}
+        <form action="{{ url_for('index.delete_seller_upvote', seller_id=seller_review.seller_id, buyer_id=seller_review.buyer_id)}}" method="post">
+        <input type="submit" value="Delete Upvote">
+        </form>
+	{% elif seller_review.vote == 0 %}
+        <form action="{{ url_for('index.delete_seller_downvote', seller_id=seller_review.seller_id, buyer_id=seller_review.buyer_id)}}" method="post">
+        <input type="submit" value="Delete Downvote">
+        </form>
+	{% elif seller_review.vote == -1 %}
+        <form action="{{ url_for('index.add_seller_upvote', seller_id=seller_review.seller_id, buyer_id=seller_review.buyer_id)}}" method="post">
+        <input type="image" src="/static/icons/upvote_button.png" alt="Upvote" style=width:50px;height="50px";>
+        </form>
+        <form action="{{ url_for('index.add_seller_downvote', seller_id=seller_review.seller_id, buyer_id=seller_review.buyer_id)}}" method="post">
+        <input type="image" src="/static/icons/downvote_button.png" alt="Downvote" style=width:50px;height="50px";>
+        </form>
+	{% endif %}
+	{% endif %}
+	{% endif %}
+	</td>
+	</tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
     <form action="{{ url_for('users.get_sorted_seller_page',seller_id=seller.user_id)}}" method="POST">
     <label>Sort seller reviews:</label>
     <select id='sortSeller' name='sortSeller'>
@@ -81,6 +134,10 @@ Please log in to add a rating for this seller.
       <th scope="col">Reviews</th>
       <th scope="col">Upvotes</th>
       <th scope="col">Downvotes</th>
+      {% if current_user.is_authenticated %}
+      <th scope="col">Vote</th>
+      {% endif %}
+
     </tr>
   </thead>
   <tbody>
@@ -92,7 +149,29 @@ Please log in to add a rating for this seller.
 	<td>{{seller_review.reviewText}}</td>
         <td>{{seller_review.upvote_count}}</td>
         <td>{{seller_review.downvote_count}}</td>
-      </tr>
+        {% if current_user.is_authenticated %}
+	<td>
+	{% if seller_review.buyer_id != current_user.id %}
+	{% if seller_review.vote == 1 %}
+        <form action="{{ url_for('index.delete_seller_upvote', seller_id=seller_review.seller_id, buyer_id=seller_review.buyer_id)}}" method="post">
+        <input type="submit" value="Delete Upvote">
+        </form>
+	{% elif seller_review.vote == 0 %}
+        <form action="{{ url_for('index.delete_seller_downvote', seller_id=seller_review.seller_id, buyer_id=seller_review.buyer_id)}}" method="post">
+        <input type="submit" value="Delete Downvote">
+        </form>
+	{% elif seller_review.vote == -1 %}
+        <form action="{{ url_for('index.add_seller_upvote', seller_id=seller_review.seller_id, buyer_id=seller_review.buyer_id)}}" method="post">
+        <input type="image" src="/static/icons/upvote_button.png" alt="Upvote" style=width:50px;height="50px";>
+        </form>
+        <form action="{{ url_for('index.add_seller_downvote', seller_id=seller_review.seller_id, buyer_id=seller_review.buyer_id)}}" method="post">
+        <input type="image" src="/static/icons/downvote_button.png" alt="Downvote" style=width:50px;height="50px";>
+        </form>
+        {% endif %}
+	{% endif %}
+	{% endif %}
+	</td>
+	</tr>
     {% endfor %}
   </tbody>
 </table>
