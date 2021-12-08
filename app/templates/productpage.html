@@ -137,7 +137,7 @@ Please log in to add a rating for this product.
   <tbody>
     {% for product_review in product_review_list_most_popular %}
       <tr>
-        <td>{{product_review.reviewer_name}}</td>
+        <th scope="row"> <a href="{{ url_for('users.get_user_public_profile', user_id=product_review.buyer_id)}}">{{product_review.reviewer_name}}</a> </th>
         <td>{{product_review.date}}</td>
         <td>{{product_review.rating}}</td>
 	<td>{{product_review.reviewText}}</td>
@@ -210,7 +210,7 @@ Please log in to add a rating for this product.
   <tbody>
     {% for product_review in product_review_list %}
       <tr>
-        <td>{{product_review.reviewer_name}}</td>
+        <th scope="row"> <a href="{{ url_for('users.get_user_public_profile', user_id=product_review.buyer_id)}}">{{product_review.reviewer_name}}</a> </th>
         <td>{{product_review.date}}</td>
         <td>{{product_review.rating}}</td>
 	<td>{{product_review.reviewText}}</td>
