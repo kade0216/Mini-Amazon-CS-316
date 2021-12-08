@@ -238,9 +238,12 @@ def change_store(user_id):
 def get_public_user_page(user_id):
     if not user_id.isnumeric():
         user_id = Seller.get_seller_id(user_id)
-    if Seller.get(user_id) is not None:
 
+    if Seller.get(user_id) is not None:
         user = User.get(user_id)
+        email = user.email
+        address = user.address
+
         seller = Seller.get(user_id)
         seller_avg = round(Seller_Review.get_summary_for_seller(user_id)[0],2)
         seller_count = round(Seller_Review.get_summary_for_seller(user_id)[1],2)
@@ -272,7 +275,7 @@ def get_public_user_page(user_id):
                 seller_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
                 seller_review_list_most_popular.reverse()
                 seller_review_list_most_popular = seller_review_list_most_popular[0:3]
-                return render_template('user_public_page.html', ordered=ordered, seller_review_list_most_popular=seller_review_list_most_popular, logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+                return render_template('user_public_page.html', email=email,address=address, ordered=ordered, seller_review_list_most_popular=seller_review_list_most_popular, logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
 
             else:
                 rating_exists = False
@@ -291,7 +294,7 @@ def get_public_user_page(user_id):
         seller_review_list_most_popular.reverse()
         seller_review_list_most_popular = seller_review_list_most_popular[0:3]
 
-        return render_template('user_public_page.html', ordered=ordered, seller_review_list_most_popular=seller_review_list_most_popular, logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+        return render_template('user_public_page.html', email=email,address=address,ordered=ordered, seller_review_list_most_popular=seller_review_list_most_popular, logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
 
     else:
         user = User.get(user_id)
@@ -309,6 +312,8 @@ def get_sorted_seller_page(seller_id):
         seller_id = Seller.get_seller_id(seller_id)
     sort = request.form['sortSeller']
     user = User.get(seller_id)
+    email = user.email
+    address = user.address
     if Seller.get(seller_id) is not None:
         seller = Seller.get(seller_id)
         seller_review_list = Seller_Review.get_all_reviews_for_seller(seller_id)
@@ -360,7 +365,7 @@ def get_sorted_seller_page(seller_id):
                 seller_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
                 seller_review_list_most_popular.reverse()
                 seller_review_list_most_popular = seller_review_list_most_popular[0:3]
-                return render_template('user_public_page.html', ordered=ordered,seller_review_list_most_popular=seller_review_list_most_popular,logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+                return render_template('user_public_page.html', email=email,address=address, ordered=ordered,seller_review_list_most_popular=seller_review_list_most_popular,logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
 
             else:
                 rating_exists = False
@@ -379,4 +384,4 @@ def get_sorted_seller_page(seller_id):
         seller_review_list_most_popular.reverse()
         seller_review_list_most_popular = seller_review_list_most_popular[0:3]
 
-        return render_template('user_public_page.html', ordered=ordered, seller_review_list_most_popular=seller_review_list_most_popular,logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+        return render_template('user_public_page.html', email=email,address=address, ordered=ordered, seller_review_list_most_popular=seller_review_list_most_popular,logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
