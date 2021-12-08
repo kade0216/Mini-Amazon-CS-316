@@ -10,7 +10,8 @@ CREATE TABLE Users (
 
 CREATE TABLE Seller(
     user_id INTEGER NOT NULL PRIMARY KEY REFERENCES Users(id),
-    seller_name VARCHAR(255) UNIQUE NOT NULL
+    seller_name VARCHAR(255) UNIQUE NOT NULL,
+    balance FLOAT DEFAULT 0.0 CHECK (balance >= 0.0)
 );
 
 CREATE TABLE Category(

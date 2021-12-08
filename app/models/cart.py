@@ -295,6 +295,8 @@ class Cart:
                 item.seller_id, item.product_name, item.quantity * -1
             )
 
+            Seller.change_seller_balance(item.seller_id, item.quantity * item.final_unit_price, '+')
+
 
 class ProductSellers:
 
