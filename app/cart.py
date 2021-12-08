@@ -79,11 +79,13 @@ def submit_order():
     if is_cart_valid[0]:
         Cart.submit_cart_as_order(current_user.id)
     else:
-        if is_cart_valid[1] = "Insufficient Balance":
+
+        if is_cart_valid[1] == "Insufficient Balance":
             flash(
                 f"Error: The cart could not be submitted because the total cart price"
                 f" exceeds the user's balance."
             )
+            return redirect(url_for("cart.get_users_cart"))
 
         bad_items = is_cart_valid[1]
 
