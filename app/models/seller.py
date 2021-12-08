@@ -9,7 +9,7 @@ class Seller:
     @staticmethod
     def get(user_id):
         """
-        Given a seller_name return the corresponding user_id
+        Given a user_id return the corresponding seller_name
         """
         rows = app.db.execute("""
             SELECT user_id, seller_name

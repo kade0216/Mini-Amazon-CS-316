@@ -32,6 +32,26 @@ class Orders:
         return [Orders(*row) for row in rows]
 
     @staticmethod
+    def check_if_order_exists_between_buyer_seller(buyer_id,seller_id):
+        """ Retrieves all orders for a seller """
+        rows = app.db.execute('''
+            SELECT buyer_id,
+                seller_id,
+                product_name,
+                quantity,
+                fulfillment_status,
+                time_purchased,
+                final_price
+            FROM Orders
+            WHERE seller_id = :seller_id
+	    AND buyer_id = :buyer_id
+            ''',
+                seller_id=seller_id,
+		buyer_id=buyer_id)
+        return len([Orders(*row) for row in rows]) > 0
+
+
+    @staticmethod
     def get_order_history(uid,
                           since=datetime.datetime(1980, 9, 14, 0, 0, 0),
                           item_search='', seller_search=''):
