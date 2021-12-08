@@ -101,7 +101,6 @@ class Product:
         FROM Product, Selling, Product_Review
         WHERE name LIKE :item_name
         AND name = Selling.product_name
-        AND Selling.product_name = Product_Review.product_name
         AND category_name LIKE :category
         AND available = True
         GROUP BY name
