@@ -91,6 +91,34 @@ def dash(user_id, filter=False):
     user = User.get(user_id)
     seller_name = Seller.get(user_id).seller_name
 
+    full_order_history = Orders.get_order_history(user_id)
+
+    dd = {}
+    dp = {}
+    ds = {}
+    for order in full_order_history:
+        year = order.time_purchased.year
+        if year not in dd:
+            dd[year] = 0
+            dp[year] = 0
+            ds[year] = set([])
+        dd[year] += order.final_price
+        dp[year] += order.quantity
+        ds[year].add(order.seller_id)
+
+    sorted_dd = sorted(dd.items())
+    sorted_dp = sorted(dp.items())
+    sorted_ds = sorted(ds.items())
+
+    dollar_labels = [year for year,price in sorted_dd]
+    dollar_values = [price for year,price in sorted_dd]
+
+    prod_labels = [year for year,occ in sorted_dp]
+    prod_values = [occ for year,occ in sorted_dp]
+
+    seller_labels = [year for year,occ in sorted_ds]
+    seller_values = [len(occ) for year,occ in sorted_ds]
+
     if bool(filter) == True:
         since = datetime.datetime.now() - datetime.timedelta(int(request.form['since']))
         item_search = request.form['item_search']
@@ -109,15 +137,25 @@ def dash(user_id, filter=False):
                                             since_days=int(request.form['since']),
                                             item_search=item_search,
                                             seller_search=seller_search,
-                                            page_num=request.form.get('page'))
-    
-    order_history = Orders.get_order_history(user_id)
+                                            page_num=request.form.get('page'),
+                                            dollar_values=dollar_values, 
+                                            dollar_labels=dollar_labels,
+                                            prod_values=prod_values,
+                                            prod_labels=prod_labels,
+                                            seller_values=seller_values,
+                                            seller_labels=seller_labels)
 
-    return render_template('dash.html', order_history=order_history,
+    return render_template('dash.html', order_history=full_order_history,
                                         account_balance=account_balance,
                                         user=user,
                                         seller_name=seller_name,
-                                        page_num=1)
+                                        page_num=1,
+                                        dollar_values=dollar_values, 
+                                        dollar_labels=dollar_labels,
+                                        prod_values=prod_values,
+                                        prod_labels=prod_labels,
+                                        seller_values=seller_values,
+                                        seller_labels=seller_labels)
 
 @bp.route('/become_seller/<user_id>', methods=['POST', 'GET'])
 def become_seller(user_id):

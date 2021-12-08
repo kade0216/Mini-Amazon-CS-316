@@ -2,6 +2,13 @@
 
 {% block content %}
 <br> <br>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+<style>
+  .chart{
+    width: 30%;
+    float: left;
+  }
+</style>
 
 <h2>Dashboard</h2>
 
@@ -153,5 +160,91 @@ Become a seller?
     {% endfor %}
   </tbody>
 </table> 
+
+<h2>Order Analytics</h2>
+{% if dollar_labels %}  
+<div class='chart'>
+  <canvas id="myChart" width="200" height="200"></canvas>
+  <script>
+  var ctx = document.getElementById("myChart").getContext('2d');
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ dollar_labels|tojson }},
+        datasets: [{
+            label: 'Dollars spent per year',
+            data: {{ dollar_values|tojson }},
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+      }
+    }
+    });
+  myChart();
+  </script>
+</div>
+{% endif %}
+{% if prod_labels %}  
+<div class='chart'>
+  <canvas id="myChart1" width="200" height="200"></canvas>
+  <script>
+  var ctx = document.getElementById("myChart1").getContext('2d');
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ prod_labels|tojson }},
+        datasets: [{
+            label: 'Products ordered per year',
+            data: {{ prod_values|tojson }},
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+      }
+    }
+    });
+  myChart();
+  </script>
+</div>
+{% endif %}
+{% if seller_labels %}  
+<div class='chart'>
+  <canvas id="myChart2" width="200" height="200"></canvas>
+  <script>
+  var ctx = document.getElementById("myChart2").getContext('2d');
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ seller_labels|tojson }},
+        datasets: [{
+            label: 'Number of unique sellers ordered from per year',
+            data: {{ seller_values|tojson }},
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+      }
+    }
+    });
+  myChart();
+  </script>
+</div>
+{% endif %}
 
 {% endblock %}
