@@ -25,6 +25,8 @@
       {% endif %}
       <option value='price_ascending'>Price low to high</option>
       <option value='price_descending'>Price high to low</option>
+      <option value='rating_ascending'>Rating low to high</option>
+      <option value='rating_descending'>Rating high to low</option>
     </select>
     <br>
     <label>Filter by price:</label>
@@ -35,14 +37,14 @@
     <input name='max_product_price' type="number" style="width:100px;" step="0.01" min=0.01 value={{max_price}}>
     <br>
     <label>Filter by product rating:</label>
-    <br>
+    <!-- <br>
     <label>Min rating:</label>
     <input name='min_product_rating' type="number" style="width:100px;" step="0.01" min=0.00 value={{min_rating}}>
     <label>Max rating:</label>
     <input name='max_product_rating' type="number" style="width:100px;" step="0.01" min=0.01 value={{max_rating}}>
     <br>
     <button type="submit" name='page' id='page' value="1">search!</button>
-    <br>
+    <br> -->
     <br>
     Search parameters:
     {% for param in search_params%}

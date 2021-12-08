@@ -227,20 +227,12 @@ def get_search_results():
         min_price = request.form['min_product_price']
         max_price = request.form['max_product_price']
 
-        min_rating = request.form['min_product_rating']
-        max_rating = request.form['max_product_rating']
-
         if min_price == '':
             min_price = 0
         if max_price == '':
             max_price = 1000000000
 
-        if min_rating == '':
-            min_rating = 0
-        if max_rating== '':
-            max_rating = 5
-
-        products = Product.get_search(search, category, min_price, max_price, min_rating, max_rating, sort)
+        products = Product.get_search(search, category, min_price, max_price, sort)
         for product in products:
             product.rating=[round(x,2) for x in Product_Review.get_summary_for_product(product.name)]
             if product.rating[0] >= 3.5:
@@ -259,8 +251,6 @@ def get_search_results():
                             sort=sort,
                             min_price=min_price,
                             max_price=max_price,
-                            min_rating=min_rating,
-                            max_rating=max_rating,
                             page_num=request.form.get('page'))
 
 @bp.route('/reviews', methods=['GET','POST'])

@@ -84,7 +84,7 @@ class Product:
 
         return [row[0] for row in rows]
 
-    def get_search(item_name, category, min, max, min_rat, max_rat, sort=None):
+    def get_search(item_name, category, min, max, sort=None):
         """
         Searches products by name, category, min/max price, min/max rating and assumes no sorting by price
         increasing or decreasing.
@@ -105,20 +105,22 @@ class Product:
         AND category_name LIKE :category
         AND available = True
         GROUP BY name
-        HAVING MIN(price) > :min AND MAX(price) < :max AND AVG(rating) >= :min_rat AND AVG(rating) <= :max_rat
+        HAVING MIN(price) > :min AND MAX(price) < :max
         '''
         if sort == 'price_ascending':
             sql = sql + '\n' + 'ORDER BY price ASC'
         elif sort == 'price_descending':
             sql = sql + '\n' + 'ORDER BY price DESC'
+        elif sort == 'rating_descending':
+            sql = sql + '\n' + 'ORDER BY AVG(rating) DESC'
+        elif sort == 'rating_ascending':
+            sql = sql + '\n' + 'ORDER BY AVG(rating) ASC'
 
         rows = app.db.execute(sql,
                     item_name=("%" + item_name + "%"),
                     category=("%" + category + "%"),
                     min=min,
-                    max=max,
-                    min_rat=min_rat,
-                    max_rat=max_rat
+                    max=max
                 )
 
         return [Product(*row) for row in rows]
