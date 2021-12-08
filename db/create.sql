@@ -61,13 +61,14 @@ CREATE TABLE Product_Review (
 );
 
 CREATE TABLE Seller_Review (
-    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
     seller_id INT NOT NULL REFERENCES Seller(user_id),
+    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
     rating INT NOT NULL,
     date DATE,
     upvote_count INT,
     downvote_count INT,
-    PRIMARY KEY(buyer_id, seller_id)
+    reviewText VARCHAR(1000),
+    PRIMARY KEY(seller_id,buyer_id)
 );
 
 CREATE TABLE Message(
@@ -85,6 +86,14 @@ CREATE TABLE Cart (
     seller_id INT NOT NULL REFERENCES Seller(user_id),
     quantity INT NOT NULL,
     PRIMARY KEY(buyer_id, product_name, seller_id)
+);
+
+CREATE TABLE Vote (
+    voter_id INT NOT NULL REFERENCES Buyer(user_id),
+    reviewer_id INT NOT NULL REFERENCES Buyer(user_id),
+    product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
+    upvote INT NOT NULL REFERENCES Seller(user_id),
+    PRIMARY KEY(voter_id, reviewer_id, product_name)
 );
 
 CREATE TABLE SavedForLater (

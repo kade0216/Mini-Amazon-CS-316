@@ -38,22 +38,24 @@
 
 <br><br>
 
-<h2> Your feedback for this product!</h2>
-<b>Your Rating:</b> {{product_review_to_edit.rating}} <br>
-<b>Your Review:</b> {{product_review_to_edit.reviewText}}<br>
+<h2>Seller Information</h2>
+<b>Seller Name:</b> {{ seller_review_to_edit.seller_name }}
+<h2> Your feedback for this seller!</h2>
+<b>Your Rating:</b> {{seller_review_to_edit.rating}} <br>
+<b>Your Review:</b> {{seller_review_to_edit.reviewText}}<br>
 <br>
-<h2> Edit your feedback for this product.</h2>
-<form action="{{ url_for('index.change_product_rating', product_name=product_review_to_edit.product_name,summary=1)}}" method="post">
+<h2> Edit your feedback for this seller.</h2>
+<form action="{{ url_for('index.change_seller_rating', seller_id=seller_review_to_edit.seller_id,summary=1)}}" method="post">
   <label for="add_rating"><b>Change Rating (from 1 to 5):</b></label>
   <input name='rating' type="number" min=1 max=5 step=1><br>
   <textarea rows = "5" cols = "60" name = "review" id="review" maxlength=1000 placeholder="Change your text review here (optional)..."></textarea><br>
   <input type="submit" value="Submit">
 </form>
 <br>
-<form action="{{ url_for('index.delete_product_text_review', product_name=product_review_to_edit.product_name,summary=1)}}" method="post">
+<form action="{{ url_for('index.delete_seller_text_review', seller_id=seller_review_to_edit.seller_id,summary=1)}}" method="post">
   <input type="submit" value="Delete Text Review">
 </form><br>
-<form action="{{ url_for('index.delete_product_rating', product_name=product_review_to_edit.product_name,summary=1)}}" method="post">
+<form action="{{ url_for('index.delete_seller_rating', seller_id=seller_review_to_edit.seller_id,summary=1)}}" method="post">
   <input type="submit" value="Delete Entire Review">
 </form>
 <br>
