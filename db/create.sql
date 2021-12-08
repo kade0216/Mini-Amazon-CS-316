@@ -13,10 +13,6 @@ CREATE TABLE Seller(
     seller_name VARCHAR(255) UNIQUE NOT NULL
 );
 
-CREATE TABLE Buyer(
-    user_id INTEGER NOT NULL PRIMARY KEY REFERENCES Users(id)
-);
-
 CREATE TABLE Category(
     name VARCHAR(255) NOT NULL PRIMARY KEY
 );
@@ -38,7 +34,7 @@ CREATE TABLE Selling(
 );
 
 CREATE TABLE Orders (
-    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
+    buyer_id INT NOT NULL,
     time_purchased timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
     seller_id INT NOT NULL REFERENCES Seller(user_id),
     product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
@@ -51,7 +47,7 @@ CREATE TABLE Orders (
 
 CREATE TABLE Product_Review (
     product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
-    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
+    buyer_id INT NOT NULL,
     rating INT NOT NULL,
     date DATE,
     upvote_count INT,
@@ -62,7 +58,7 @@ CREATE TABLE Product_Review (
 
 CREATE TABLE Seller_Review (
     seller_id INT NOT NULL REFERENCES Seller(user_id),
-    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
+    buyer_id INT NOT NULL,
     rating INT NOT NULL,
     date DATE,
     upvote_count INT,
@@ -72,7 +68,7 @@ CREATE TABLE Seller_Review (
 );
 
 CREATE TABLE Message(
-    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
+    buyer_id INT NOT NULL,
     seller_id INT NOT NULL REFERENCES Seller(user_id),
     directionality INT,
     date DATE,
@@ -81,7 +77,7 @@ CREATE TABLE Message(
 );
 
 CREATE TABLE Cart (
-    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
+    buyer_id INT NOT NULL,
     product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
     seller_id INT NOT NULL REFERENCES Seller(user_id),
     quantity INT NOT NULL,
@@ -89,16 +85,16 @@ CREATE TABLE Cart (
 );
 
 CREATE TABLE ProductReviewVote (
-    voter_id INT NOT NULL REFERENCES Buyer(user_id),
-    reviewer_id INT NOT NULL REFERENCES Buyer(user_id),
+    voter_id INT NOT NULL,
+    reviewer_id INT NOT NULL,
     product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
     upvote INT NOT NULL,
     PRIMARY KEY(voter_id, reviewer_id, product_name)
 );
 
 CREATE TABLE SellerReviewVote (
-    voter_id INT NOT NULL REFERENCES Buyer(user_id),
-    reviewer_id INT NOT NULL REFERENCES Buyer(user_id),
+    voter_id INT NOT NULL,
+    reviewer_id INT NOT NULL,
     seller_id INT NOT NULL REFERENCES Seller(user_id),
     upvote INT NOT NULL,
     PRIMARY KEY(voter_id, reviewer_id, seller_id)
@@ -106,7 +102,7 @@ CREATE TABLE SellerReviewVote (
 
 
 CREATE TABLE SavedForLater (
-    buyer_id INT NOT NULL REFERENCES Buyer(user_id),
+    buyer_id INT NOT NULL,
     product_name VARCHAR(255) NOT NULL REFERENCES Product(name),
     seller_id INT NOT NULL REFERENCES Seller(user_id),
     quantity INT NOT NULL,

@@ -256,6 +256,6 @@ def createProducts():
                 i = i + 1
 
 createUser()
-createBuyers()
+# createBuyers()
 createSellers()
-createProducts()                                        
+createProducts()
