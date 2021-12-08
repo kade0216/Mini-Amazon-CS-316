@@ -123,17 +123,18 @@ def dash(user_id, filter=False):
     seller_labels = [year for year,occ in sorted_ds]
     seller_values = [len(occ) for year,occ in sorted_ds]
 
-    get_order_history_grouped_by_timestamp = Orders.get_order_history_grouped_by_timestamp(current_user.id)
+
 
     if bool(filter) == True:
         since = datetime.datetime.now() - datetime.timedelta(int(request.form['since']))
         item_search = request.form['item_search']
         seller_search = request.form['seller_search']
-        order_history = Orders.get_order_history(
+        get_order_history_grouped_by_timestamp  = Orders.get_order_history_grouped_by_timestamp(
             user_id,
             since,
             item_search,
             seller_search)
+
 
         return render_template('dash.html', order_history=get_order_history_grouped_by_timestamp,
                                             account_balance=account_balance,
@@ -150,6 +151,8 @@ def dash(user_id, filter=False):
                                             prod_labels=prod_labels,
                                             seller_values=seller_values,
                                             seller_labels=seller_labels)
+
+    get_order_history_grouped_by_timestamp = Orders.get_order_history_grouped_by_timestamp(current_user.id)
 
     return render_template('dash.html', order_history=get_order_history_grouped_by_timestamp,
                                         account_balance=account_balance,
