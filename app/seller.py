@@ -3,6 +3,7 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user
 
 from .models.selling import Selling
+from .models.seller import Seller
 from .models.orders import Orders
 from .models.product import Product
 
@@ -15,9 +16,11 @@ bp = Blueprint("seller", __name__)
 @bp.route('/seller-inventory', methods=['GET'])
 def get_seller_inventory_page():
     seller_inventory = Selling.get_all_for_seller(current_user.id)
+    seller_info = Seller.get(current_user.id)
 
     return render_template('sellerinventory.html',
-                           seller_inventory=seller_inventory)
+                           seller_inventory=seller_inventory,
+                           seller_info=seller_info)
 
 @bp.route("/seller/add_quant/<product_name>", methods=["POST"])
 def add_quantity_to_inventory_item(product_name):
