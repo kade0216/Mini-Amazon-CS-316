@@ -191,7 +191,7 @@ def createProducts():
     with open(db + 'Product_Review.csv', mode='w') as f:
         keySet = set([])
         i = 0
-        while i < 500:
+        while i < 10000:
             
             buyer_id= random.randint(0,299)
             prod = random.choice(products)
@@ -223,7 +223,7 @@ def createProducts():
     with open(db + 'Seller_Review.csv', mode='w') as f:
         keySet = set([])
         i = 0
-        while i < 500:
+        while i < 5000:
             
             buyer_id= random.randint(0,199)
             seller_id= random.randint(0,199)

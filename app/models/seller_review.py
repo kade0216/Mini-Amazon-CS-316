@@ -178,11 +178,11 @@ class Seller_Review:
 
     @staticmethod
     def addUpvote(seller_id, buyer_id):
-        app.db.execute("""
+        app.db.execute_with_no_return("""
 		UPDATE Seller_Review
+        SET upvote_count = upvote_count + 1
 		WHERE seller_id = :seller_id
 		AND buyer_id = :buyer_id
-		SET upvote_count = (SELECT upvote_count FROM Seller_Review WHERE seller_id = :seller_id AND buyer_id = :buyer_id) + 1
 		""",
                               seller_id=seller_id,
                               buyer_id=buyer_id)
@@ -190,11 +190,35 @@ class Seller_Review:
     
     @staticmethod
     def addDownvote(seller_id, buyer_id):
-        app.db.execute("""
+        app.db.execute_with_no_return("""
 		UPDATE Seller_Review
+		SET downvote_count = downvote_count + 1        
 		WHERE seller_id = :seller_id
 		AND buyer_id = :buyer_id
-		SET downvote_count = (SELECT downvote_count FROM Seller_Review WHERE seller_id = :seller_id AND buyer_id = :buyer_id) + 1
+		""",
+                              seller_id=seller_id,
+                              buyer_id=buyer_id)
+        return 0
+    
+    @staticmethod
+    def deleteUpvote(seller_id, buyer_id):
+        app.db.execute_with_no_return("""
+		UPDATE Seller_Review
+		SET upvote_count = upvote_count - 1        
+		WHERE seller_id = :seller_id
+		AND buyer_id = :buyer_id
+		""",
+                              seller_id=seller_id,
+                              buyer_id=buyer_id)
+        return 0
+    
+    @staticmethod
+    def deleteDownvote(seller_id, buyer_id):
+        app.db.execute_with_no_return("""
+		UPDATE Seller_Review
+		SET downvote_count = downvote_count - 1
+		WHERE seller_id = :seller_id
+		AND buyer_id = :buyer_id
 		""",
                               seller_id=seller_id,
                               buyer_id=buyer_id)
