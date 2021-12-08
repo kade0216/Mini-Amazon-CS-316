@@ -215,7 +215,7 @@ class Cart:
         if len(rows) == 0:
             return (True, [])
 
-        app.logger.error([ProductSellers(*row) for row in rows])
+        #TODO(validate account balance)
 
         return (False, [ProductSellers(*row) for row in rows])
 
