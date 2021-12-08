@@ -195,7 +195,7 @@ class Cart:
         rows = Cart.get_current_cart(user_id)
         total_cart_price = 0
         for row in rows:
-            total_cart_price += row[-1]
+            total_cart_price += row.total_price
 
         return total_cart_price
 
