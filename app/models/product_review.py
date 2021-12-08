@@ -3,14 +3,19 @@ import datetime
 
 class Product_Review:
     def __init__(self, product_name, buyer_id, rating, date, upvote_count=0,downvote_count=0,reviewText=""):
-        self.product_name = product_name
-        self.buyer_id = buyer_id
-        self.rating = rating
-        self.date = date
-        self.upvote_count = upvote_count
-        self.downvote_count = downvote_count
-        self.reviewText = reviewText
+        self.product_name = product_name # the name of the product being reviewed
+        self.buyer_id = buyer_id # Reviewer user ID
+        self.rating = rating # numerical rating from 1 to 5
+        self.date = date # datetime object of rating
+        self.upvote_count = upvote_count # tally of upvotes
+        self.downvote_count = downvote_count # tally of downvotes
+        self.reviewText = reviewText # optional text review of product
 
+    """
+    Add a review to the table for a specific user and specific product.
+    rating is the numerical rating(from 1 to 5)
+    reviewText is the optional text review string ("" if left blank)
+    """
     @staticmethod
     def add_review(product_name, buyer_id, rating, reviewText):
         rows = app.db.execute("""
@@ -29,6 +34,9 @@ class Product_Review:
         buyer_id = rows[0][1]
         return Product_Review.getRating(product_name, buyer_id)
 
+    """
+    Retrieve a review to the table by a specific user for a specific product.
+    """
     @staticmethod
     def getRating(product_name, buyer_id):
         rows = app.db.execute("""
@@ -41,6 +49,9 @@ class Product_Review:
                               buyer_id=buyer_id)
         return Product_Review(*(rows[0])) if rows else None
 
+    """
+    See if a review in the table exists for a specific user for a specific product.
+    """
     @staticmethod
     def review_exists(product_name, buyer_id):
         rows = app.db.execute("""
@@ -53,7 +64,9 @@ class Product_Review:
             buyer_id=buyer_id)
         return len(rows) > 0
 
-
+    """
+    Retrieve all reviews in the table by a specific user.
+    """
     @staticmethod
     def get_all_reviews_by_buyer(buyer_id):
         rows = app.db.execute("""
@@ -64,7 +77,10 @@ class Product_Review:
         """,
                               buyer_id=buyer_id)
         return [Product_Review(*row) for row in rows]
-
+    
+    """
+    Retrieve all reviews in the table for a specific product.
+    """
     @staticmethod
     def get_all_reviews_for_product(product_name):
         rows = app.db.execute("""
@@ -76,7 +92,11 @@ class Product_Review:
                               product_name=product_name)
         return [Product_Review(*row) for row in rows]
 
-
+    """
+    Retrieve a summary of all reviews in the table for a specific product.
+    Returns a list with two values; the first is the average rating and 
+    the second is number of ratings.
+    """
     @staticmethod
     def get_summary_for_product(product_name):
         rows = app.db.execute("""
@@ -96,6 +116,10 @@ class Product_Review:
             avg = count / len(product_reviews)
             return [avg,len(product_reviews)]
     
+    """
+    Change the numerical rating and/or text review of a review by a
+    specific user for a specific product.
+    """
     @staticmethod
     def change_rating(product_name,buyer_id,newRating,newReview):
         if len(newReview) == 0 and len(newRating) != 0:
@@ -132,7 +156,10 @@ class Product_Review:
                         newReview=newReview,
                         product_name=product_name,
                         buyer_id=buyer_id)
-
+            
+    """
+    Delete a specific review by a user for a specific product from the table.
+    """
     @staticmethod
     def delete_rating(product_name,buyer_id):
         app.db.execute_with_no_return("""
@@ -142,7 +169,11 @@ class Product_Review:
                 """,
                     product_name=product_name,
                     buyer_id=buyer_id)
-    
+        
+    """
+    Delete the text review of a specific review by a user 
+    for a specific product (making it an empty string).
+    """
     @staticmethod
     def delete_text_review(product_name,buyer_id):
         newReview = ""
@@ -157,6 +188,10 @@ class Product_Review:
                         product_name=product_name,
                         buyer_id=buyer_id)
 
+    """
+    Increment the upvote tally of a specific review by a user 
+    for a specific product.
+    """
     @staticmethod
     def addUpvote(product_name, buyer_id):
         app.db.execute_with_no_return("""
@@ -167,7 +202,11 @@ class Product_Review:
         """,
                               product_name=product_name,
                               buyer_id=buyer_id)
-
+    
+    """
+    Increment the downvote tally of a specific review by a user 
+    for a specific product.
+    """
     @staticmethod
     def addDownvote(product_name, buyer_id):
         app.db.execute_with_no_return("""
@@ -179,6 +218,10 @@ class Product_Review:
                               product_name=product_name,
                               buyer_id=buyer_id)
     
+    """
+    Decrement the upvote tally of a specific review by a user 
+    for a specific product.
+    """
     @staticmethod
     def deleteUpvote(product_name, buyer_id):
         app.db.execute_with_no_return("""
@@ -189,7 +232,11 @@ class Product_Review:
         """,
                               product_name=product_name,
                               buyer_id=buyer_id)
-
+    
+    """
+    Decrement the downvote tally of a specific review by a user 
+    for a specific product.
+    """
     @staticmethod
     def deleteDownvote(product_name, buyer_id):
         app.db.execute_with_no_return("""
