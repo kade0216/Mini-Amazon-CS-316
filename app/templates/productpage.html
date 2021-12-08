@@ -15,11 +15,9 @@
       <tr>
         <br>
         <h3> Product Name: {{prod.name}}</h3>
-        <!-- <td>{{prod.price}}</td> -->
-        <!-- <th scope="col">Image</th> -->
         <br>
         <h4 > Description: {{prod.description}}</h4>
-        <!-- <img src="/static/css/images/{{prod.category_name}}.jpeg" alt={{prod.name}} style="width:150px;height:150px;margin-left:200px;"> -->
+        <h5 > Product Review Summary: {{ product_avg }} ({{ product_count }} Reviews) </h5>
         <img src={{prod.image_url}} alt={{prod.name}} style="width:150px;height:150px;margin-left:200px;">
         <br>
         <br>
@@ -35,33 +33,28 @@
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
-      <!-- <th scope="col">Product Name</th> -->
       <th scope="col">Price</th>
-      <!-- <th scope="col">Image</th> -->
-      <!-- <th scope="col">Description</th> -->
       <th scope="col">Seller</th>
+      <th scope="col">Seller Rating</th>
       <th scope="col">Seller Quantity</th>
       <th scope="col">Add Quantity</th>
     </tr>
   </thead>
   <tbody>
-    {% for prod in product%}
+    {% for idx in range(product| length) %}
       <tr>
-        <!-- <th scope="row">{{prod.name}}</th> -->
-        <td>{{prod.price}}</td>
-        <!-- <td><img src="/static/css/images/{{prod.category_name}}.jpeg" alt={{prod.name}} style="width:auto;height:50px"></td> -->
-        <!-- <td>{{prod.description}}</td> -->
-        <td>{{prod.seller_name}}</td>
-        <td>{{prod.quantity_in_inventory}}</td>
+        <td>{{product[idx].price}}</td>
+        <th scope="row"> <a href="{{ url_for('users.get_public_user_page', user_id=product[idx].seller_id)}}">{{product[idx].seller_name}}</a> </th>
+        <td>{{seller_info[idx][0]}} ({{seller_info[idx][1]}} ratings)</td>
+        <td>{{product[idx].quantity_in_inventory}}</td>
         <td>
-          <form action="{{ url_for('cart.add_item_to_cart', product_name=prod.name, seller_id=prod.seller_id)}}" method="post">
-          <input name='quantity' type="number" step="1" min=0>
-          <!-- <input type="submit" value="Add to Cart"> -->
-          <button type="submit" formaction="{{ url_for('cart.add_item_to_cart', product_name=prod.name, seller_id=prod.seller_id)}}">
+          <form action="{{ url_for('cart.add_item_to_cart', product_name=product[idx].name, seller_id=product[idx].seller_id)}}" method="post">
+          <input name='quantity' type="number" step="1" min=1 value=1>
+          <button type="submit" formaction="{{ url_for('cart.add_item_to_cart', product_name=product[idx].name, seller_id=product[idx].seller_id)}}">
             Add to Cart
           </button>
 
-          <button type="submit" formaction="{{ url_for('cart.add_item_to_save_for_later', product_name=prod.name, seller_id=prod.seller_id)}}">
+          <button type="submit" formaction="{{ url_for('cart.add_item_to_save_for_later', product_name=product[idx].name, seller_id=product[idx].seller_id)}}">
               Save For Later
           </button>
 
@@ -94,8 +87,7 @@
 </form><br>
 <form action="{{ url_for('index.delete_product_rating', product_name=name,summary=0)}}" method="post">
   <input type="submit" value="Delete Entire Review">
-</form>
-
+</form><br>
 <br>
 
 {% else %}
@@ -144,6 +136,8 @@ Please log in to add a rating for this product.
       <th scope="col">Reviews</th>
       <th scope="col">Upvotes</th>
       <th scope="col">Downvotes</th>
+      <th scope="col">Vote</th>
+
     </tr>
   </thead>
   <tbody>
@@ -154,6 +148,15 @@ Please log in to add a rating for this product.
         <td>{{product_review.rating}}</td>
 	<td>{{product_review.reviewText}}</td>
         <td>{{product_review.upvote_count}}</td>
+	<td>
+	{% if product_review.vote == 1 %}
+	Upvoted
+	{% elif product_review.vote == 0 %}
+	Downvoted
+	{% elif product_review.vote == -1 %}
+	Vote
+	{% endif %}
+	</td>
         <td>{{product_review.downvote_count}}</td>
       </tr>
     {% endfor %}

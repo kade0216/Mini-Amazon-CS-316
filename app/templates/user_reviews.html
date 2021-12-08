@@ -1,41 +1,68 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<br><br>
-
+<br>
 <h2>Your Seller Reviews:</h2>
+<b>Select a rating to edit or delete it.</b>
+    <form action="{{ url_for('index.get_sorted_seller_reviews_by_user')}}" method="POST">
+    <label>Sort seller reviews:</label>
+    <select id='sortSeller' name='sortSeller'>
+      {% if sort %} <option value={{sort}} selected hidden></option>
+      {% else %} <option value='' selected hidden></option>
+      {% endif %}
+      <option value='reverse_chronological'>Reverse chronological</option>
+      <option value='chronological'>Chronological</option>
+      <option value='rating_low_to_high'>Rating low to high</option>
+      <option value='rating_high_to_low'>Rating high to low</option>
+      <option value='most_to_least_popular'>Most to least popular</option>
+      <option value='least_to_most_popular'>Least to most popular</option>
+    </select>
+    <button type="submit" name='submit' id='submit' value="1">sort!</button>
+    </form>
+    <br>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
-      <th scope="col">Seller ID</th>
-      <th scope="col">Rating</th>
+      <th scope="col">Seller</th>
       <th scope="col">Date</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Text Review</th>
       <th scope="col">Upvotes</th>
       <th scope="col">Downvotes</th>
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
     {% for seller_review in seller_review_list %}
       <tr>
-        <th scope="row">{{seller_review.seller_id}}</th>
-        <td>{{seller_review.rating}}</td>
+        <th scope="row"> <a href="{{ url_for('users.get_public_user_page', user_id=seller_review.seller_id)}}">{{seller_review.seller_name}}</a> </th>
+
         <td>{{seller_review.date}}</td>
-        <td>{{seller_review.upvote_count}}</td>
+	<td>{{seller_review.rating}}</td>
+	{% if seller_review.reviewText|length >0 %}
+	<td><details><summary><b>Read review</b></summary>{{seller_review.reviewText}}</details></td>
+        {% else %}
+	<td>No text review</td>
+        {% endif %}
+	<td>{{seller_review.upvote_count}}</td>
         <td>{{seller_review.downvote_count}}</td>
+	<td>
+          <form action="{{ url_for('index.get_reviews_by_user_with_seller_edit', seller_id=seller_review.seller_id)}}" method="post">
+          <input type="submit" value="Edit/Delete">
+        </form></td>
+
 
       </tr>
     {% endfor %}
   </tbody>
 </table>
 
-<br><br>
+<br>
 
 <h2>Your Product Reviews:</h2>
-<b>Select a rating to edit or delete it.</b><br><br>
-<br>
-    <form action="{{ url_for('index.get_sorted_reviews_by_user')}}" method="POST">
-    <label>Sort reviews:</label>
+<b>Select a rating to edit or delete it.</b><br>
+    <form action="{{ url_for('index.get_sorted_product_reviews_by_user')}}" method="POST">
+    <label>Sort product reviews:</label>
     <select id='sortProduct' name='sortProduct'>
       {% if sort %} <option value={{sort}} selected hidden></option>
       {% else %} <option value='' selected hidden></option>
@@ -44,6 +71,8 @@
       <option value='chronological'>Chronological</option>
       <option value='rating_low_to_high'>Rating low to high</option>
       <option value='rating_high_to_low'>Rating high to low</option>
+      <option value='most_to_least_popular'>Most to least popular</option>
+      <option value='least_to_most_popular'>Least to most popular</option>
     </select>
     <button type="submit" name='submit' id='submit' value="1">sort!</button>
     </form>
@@ -65,7 +94,7 @@
   <tbody>
     {% for product_review in product_review_list %}
       <tr>
-        <th scope="row">{{product_review.product_name}}</th>
+	<th scope="row"> <a href="{{ url_for('index.get_product_page', name=product_review.product_name)}}">{{product_review.product_name}}</a> </th>
         <td>{{product_review.date}}</td>
 	<td>{{product_review.rating}}</td>
 	{% if product_review.reviewText|length >0 %}
