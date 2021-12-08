@@ -36,6 +36,8 @@
     <label>Max price:</label>
     <input name='max_product_price' type="number" style="width:100px;" step="0.01" min=0.01 value={{max_price}}>
     <br>
+    <button type="submit" name='page' id='page' value="1">search!</button>
+    <br>
     Search parameters:
     {% for param in search_params%}
     {{param}}
