@@ -17,7 +17,7 @@
         <h3> Product Name: {{prod.name}}</h3>
         <br>
         <h4 > Description: {{prod.description}}</h4>
-        <h5 > Product Review Summary: {{ product_avg }} ({{ product_count }} Reviews) 
+        <h5 > Product Review Summary: {{ product_avg }} ({{ product_count }} Reviews)
 	{% if prod.starred==1 %}
 	<img src="/static/icons/starred.png" alt="(Well-Rated!)" width="20" height="20">
 	{% endif %}
@@ -72,8 +72,6 @@
     {% endfor %}
   </tbody>
 </table>
-{% else %}
-<h2>This product is no longer available.</h2>
 {% endif %}
 
 <br><br>
