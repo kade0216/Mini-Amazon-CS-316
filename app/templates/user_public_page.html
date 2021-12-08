@@ -6,6 +6,9 @@
 <h2>Seller Information</h2>
 <b>Seller Name:</b> {{ seller.seller_name }} <br>
 <b>Seller Review Summary:</b> {{ seller_avg }} ({{ seller_count }})
+{% if seller_avg >= 3.5 %}
+<img src="/static/icons/starred.png" alt="(Well-Rated!)" width="20" height="20">
+{% endif %}
 
 <br><br>
 
