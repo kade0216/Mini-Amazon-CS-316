@@ -25,8 +25,8 @@ class Orders:
                 time_purchased,
                 final_price
             FROM Orders
-            WHERE
-                seller_id = :seller_id
+            WHERE seller_id = :seller_id
+            ORDER BY time_purchased DESC
             ''',
                 seller_id=seller_id)
         return [Orders(*row) for row in rows]

@@ -86,7 +86,7 @@ def create_new_product():
 
     if (Product.does_product_exist(name)):
         flash(f"{name} already exists! Instead, add existing product to seller inventory.")
-        return redirect(url_for('seller.create_new_product_page')) 
+        return redirect(url_for('seller.create_new_product_page'))
     else:
         seller_id = current_user.id
         Product.create_new_product(seller_id, name, category, url, description, price, product_quantity)
@@ -112,7 +112,7 @@ def add_new_product():
 
     seller_id = current_user.id
 
-    Product.add_new_product_to_seller(seller_id, name, price, product_quantity)
+    Selling.add_new_product_to_seller_inventory(seller_id, name, price, product_quantity)
 
     categories = Product.get_categories()
 
