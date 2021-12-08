@@ -1,7 +1,107 @@
 {% extends "base.html" %}
 {% block content %}
 <br>
-{% if seller %}
+
+{% if isSeller==True %}
+<h2>Seller Information</h2>
+<b>Seller Name:</b> {{ seller.seller_name }} <br>
+<b>Seller Review Summary:</b> {{ seller_avg }} ({{ seller_count }})
+
+<br><br>
+
+{% if current_user.is_authenticated %}
+{% if rating_exists %}
+<h2> Your feedback for this seller!</h2>
+<b>Your Rating:</b> {{rating}} <br>
+<b>Your Review:</b> {{reviewText}}<br>
+<br>
+<h2> Edit your feedback for this seller.</h2>
+<form action="{{ url_for('index.change_seller_rating', seller_id=seller.user_id,summary=0)}}" method="post">
+  <label for="add_rating"><b>Change Rating (from 1 to 5):</b></label>
+  <input name='rating' type="number" min=1 max=5 step=1><br>
+  <textarea rows = "5" cols = "60" name = "review" id="review" maxlength=1000 placeholder="Change your text review here (optional)..."></textarea><br>
+  <input type="submit" value="Submit">
+</form>
+<br>
+<form action="{{ url_for('index.delete_seller_text_review', seller_id=seller.user_id,summary=0)}}" method="post">
+  <input type="submit" value="Delete Text Review">
+</form><br>
+<form action="{{ url_for('index.delete_seller_rating', seller_id=seller.user_id,summary=0)}}" method="post">
+  <input type="submit" value="Delete Entire Review">
+</form>
+
+<br>
+
+{% else %}
+
+<h2>Add a Rating for This Seller!</h2>
+<form action="{{ url_for('index.add_review_seller', seller_id=seller.user_id)}}" method="post">
+  <label for="add_rating">Rate from 1 to 5 (required):</label>
+  <input name='rating' type="number" min=1 max=5 step=1 required> <br>
+  <textarea rows = "5" cols = "60" name = "review" id="review" maxlength=1000 placeholder="Enter your text review here (optional)..."></textarea><br>
+  <input type="submit" value="Submit">
+</form>
+
+<br>
+
+{% endif %}
+
+{% else %}
+<br> <br>
+Please log in to add a rating for this seller.
+<br> <br>
+{% endif %}
+
+
+<b>Select a rating to edit or delete it.</b>
+    <form action="{{ url_for('users.get_sorted_seller_page',seller_id=seller.user_id)}}" method="POST">
+    <label>Sort seller reviews:</label>
+    <select id='sortSeller' name='sortSeller'>
+      {% if sort %} <option value={{sort}} selected hidden></option>
+      {% else %} <option value='' selected hidden></option>
+      {% endif %}
+      <option value='reverse_chronological'>Reverse chronological</option>
+      <option value='chronological'>Chronological</option>
+      <option value='rating_low_to_high'>Rating low to high</option>
+      <option value='rating_high_to_low'>Rating high to low</option>
+      <option value='most_to_least_popular'>Most to least popular</option>
+      <option value='least_to_most_popular'>Least to most popular</option>
+    </select>
+    <button type="submit" name='submit' id='submit' value="1">sort!</button>
+    </form>
+    <br>
+
+<h2>All Reviews for this Seller:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Date</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Reviews</th>
+      <th scope="col">Upvotes</th>
+      <th scope="col">Downvotes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for seller_review in seller_review_list %}
+      <tr>
+        <td>{{seller_review.reviewer_name}}</td>
+        <td>{{seller_review.date}}</td>
+        <td>{{seller_review.rating}}</td>
+	<td>{{seller_review.reviewText}}</td>
+        <td>{{seller_review.upvote_count}}</td>
+        <td>{{seller_review.downvote_count}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+<br><br>
+
+
 {% else %}
 <h2>User Information</h2>
 <b>First Name:</b> {{ user.firstname }}

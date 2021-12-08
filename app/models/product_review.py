@@ -76,6 +76,26 @@ class Product_Review:
                               product_name=product_name)
         return [Product_Review(*row) for row in rows]
 
+
+    @staticmethod
+    def get_summary_for_product(product_name):
+        rows = app.db.execute("""
+        SELECT *
+        FROM Product_Review
+        WHERE product_name = :product_name
+        ORDER BY date DESC
+        """,
+                              product_name=product_name)
+        product_reviews = [Product_Review(*row) for row in rows]
+        count = 0
+        for product_review in product_reviews:
+            count += product_review.rating
+        if len(product_reviews)==0:
+            return [0,0]
+        else:
+            avg = count / len(product_reviews)
+            return [avg,len(product_reviews)]
+    
     @staticmethod
     def change_rating(product_name,buyer_id,newRating,newReview):
         if len(newReview) == 0 and len(newRating) != 0:

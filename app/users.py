@@ -12,6 +12,7 @@ from werkzeug.exceptions import BadRequestKeyError
 from .models.user import User
 from .models.seller import Seller
 from .models.orders import Orders
+from .models.seller_review import Seller_Review
 
 
 from flask import Blueprint
@@ -186,8 +187,94 @@ def change_store(user_id):
 @bp.route('/user_profile/<user_id>')
 def get_public_user_page(user_id):
     user = User.get(user_id)
-    if Seller.get(user_id) is None:
-    	return render_template('user_public_page.html', user=user,seller=True)
+    if Seller.get(user_id) is not None:
+        seller = Seller.get(user_id)
+        seller_avg = round(Seller_Review.get_summary_for_seller(user_id)[0],2)
+        seller_count = round(Seller_Review.get_summary_for_seller(user_id)[1],2)
+        seller_review_list = Seller_Review.get_all_reviews_for_seller(user_id) 
+        for seller_review in seller_review_list:
+            uid = seller_review.buyer_id
+            userTemp = User.get(uid)
+            reviewer_name = userTemp.firstname + " " + userTemp.lastname
+            seller_review.reviewer_name = reviewer_name
+        
+        if current_user.is_authenticated:
+            logged_in = True
+            if Seller_Review.review_exists(user_id, current_user.id):
+                rating_exists = True
+                review = Seller_Review.get(user_id,current_user.id)
+                rating = review.rating
+                reviewText= review.reviewText
+                return render_template('user_public_page.html', logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+
+            else:
+                rating_exists = False
+                rating=-1
+                reviewText= ""
+        else:
+            logged_in = None
+            rating_exists=False
+            rating=-1
+            reviewText= ""
+        
+        return render_template('user_public_page.html', logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+
     else:
-        return render_template('user_public_page.html', user=user,seller=False)
+        return render_template('user_public_page.html', user=user,isSeller=False)
 	
+@bp.route('/sorted_seller_page/<seller_id>', methods=['GET','POST'])
+def get_sorted_seller_page(seller_id):
+    
+    sort = request.form['sortSeller']
+    user = User.get(seller_id)
+    if Seller.get(seller_id) is not None:
+        seller = Seller.get(seller_id)
+        seller_review_list = Seller_Review.get_all_reviews_for_seller(seller_id) 
+        for seller_review in seller_review_list:
+            uid = seller_review.buyer_id
+            userTemp = User.get(uid)
+            reviewer_name = userTemp.firstname + " " + userTemp.lastname
+            seller_review.reviewer_name = reviewer_name
+        
+        if sort=='reverse_chronological':
+            seller_review_list.sort(key=lambda x: x.date)
+            seller_review_list.reverse() 
+        elif sort=='chronological':
+            seller_review_list.sort(key=lambda x: x.date)
+        elif sort=='rating_high_to_low':
+            seller_review_list.sort(key=lambda x: x.rating)
+            seller_review_list.reverse()
+        elif sort=='rating_low_to_high':
+            seller_review_list.sort(key=lambda x: x.rating)
+        elif sort=='least_to_most_popular':
+            seller_review_list.sort(key=lambda x: x.upvote_count-x.downvote_count)
+        elif sort == 'most_to_least_popular':
+            seller_review_list.sort(key=lambda x: x.upvote_count-x.downvote_count)
+            seller_review_list.reverse()
+        else:
+            seller_review_list.sort(key=lambda x: x.date)
+            seller_review_list.reverse() 
+        
+        seller_avg = round(Seller_Review.get_summary_for_seller(seller_id)[0],2)
+        seller_count = round(Seller_Review.get_summary_for_seller(seller_id)[1],2)
+
+        if current_user.is_authenticated:
+            logged_in = True
+            if Seller_Review.review_exists(seller_id, current_user.id):
+                rating_exists = True
+                review = Seller_Review.get(seller_id,current_user.id)
+                rating = review.rating
+                reviewText= review.reviewText
+                return render_template('user_public_page.html', logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
+
+            else:
+                rating_exists = False
+                rating=-1
+                reviewText= ""
+        else:
+            logged_in = None
+            rating_exists=False
+            rating=-1
+            reviewText= ""
+        
+        return render_template('user_public_page.html', logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
