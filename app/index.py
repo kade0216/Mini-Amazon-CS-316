@@ -245,7 +245,7 @@ def get_search_results():
     return render_template('index.html',
                             avail_products=products,
                             categories=categories,
-                            search_params=[search, category, sort.replace('_', ' '), min_price, max_price, min_rating, max_rating],
+                            search_params=[search, category, sort.replace('_', ' '), min_price, max_price],
                             item_search=search,
                             category=category,
                             sort=sort,
