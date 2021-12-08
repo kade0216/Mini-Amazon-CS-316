@@ -3,10 +3,10 @@ import datetime
 
 class ProductReviewVote:
     def __init__(self, voter_id, reviewer_id, product_name, upvote):
-        self.voter_id = voter_id
-        self.reviewer_id = reviewer_id
-        self.product_name = product_name
-        self.upvote = upvote
+        self.voter_id = voter_id # user id of person placing vote on product review
+        self.reviewer_id = reviewer_id # user id of person who placed the product review
+        self.product_name = product_name # the product on which the review is placed
+        self.upvote = upvote # upvote = 1 means the voter upvoted, upvote = 0 means the voter downvoted
     
     """
     Add a vote to the table for a review by a specific user, from a specific user, 
