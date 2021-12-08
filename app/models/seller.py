@@ -1,10 +1,12 @@
 from flask import current_app as app
 
 
+
 class Seller:
-    def __init__(self, user_id, seller_name):
+    def __init__(self, user_id, seller_name, balance):
         self.user_id = user_id
         self.seller_name = seller_name
+        self.balance = balance
 
     @staticmethod
     def get(user_id):
@@ -12,7 +14,7 @@ class Seller:
         Given a user_id return the corresponding seller_name
         """
         rows = app.db.execute("""
-            SELECT user_id, seller_name
+            SELECT user_id, seller_name, balance
             FROM Seller
             WHERE user_id = :user_id
             """,
@@ -71,4 +73,22 @@ class Seller:
         )
 
         return len(rows) > 0
-        
+
+    @staticmethod
+    def change_seller_balance(seller_id, balance, change):
+        """
+        Changes the balance of a seller
+        balance - quantity to add or subtract
+        change - either '+' or '-'
+        """
+        app.logger.error("Increment balance by " + str(balance) + change)
+
+        sql = """
+                UPDATE Seller
+                SET balance = balance""" + change +  """:balance
+                WHERE user_id = :seller_id
+                RETURNING user_id
+                """
+        app.db.execute(sql,
+                    seller_id=seller_id,
+                    balance=balance)

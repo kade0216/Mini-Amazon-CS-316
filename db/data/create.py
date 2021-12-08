@@ -42,13 +42,14 @@ def createSellers():
         for i in range(200):
             id = i
             store = random.choice(stores) + str(random.randint(100,999))
+            balance = random.randint(0,100000)
 
             if store not in storeslst:
                 storeslst.append(store)
                 w = csv.writer(f, delimiter=',')
-                w.writerow([id, store])
-        w.writerow([500, "Saputra Sponges"])
-        w.writerow([501, "Vik's goated store"])
+                w.writerow([id, store, balance])
+        w.writerow([500, "Saputra Sponges", 100000])
+        w.writerow([501, "Vik's goated store", 100000])
 
 def createProducts():
     colors=['red', 'green', 'blue', 'teal', 'orange', 'yellow', 'maroon', 'pink', 'lilac', 'rose', 'magenta', 'rust', 'burgundy', 'grass', 'lime', 'lemon', 'white', 'cream', 'indigo', 'purple', 'oatmeal', 'beige', 'black', 'grey', 'charcoal', 'tin', 'gold', 'silver', 'brick', 'blush', 'khaki', 'violet', 'coral', 'salmon', 'brown', 'bronze', 'tan']

@@ -72,6 +72,10 @@ def get_reviews_for_seller(seller_id):
 def get_product_page(name):
     products = Product.get(name)
 
+    if len(products) == 0:
+        return render_template('productpage.html')
+
+
     seller_info = []
     for product in products:
         seller_name = product.seller_name
@@ -81,7 +85,7 @@ def get_product_page(name):
         else:
             summary.append(0)
         seller_info.append(summary)
-        
+
     product_review_list = Product_Review.get_all_reviews_for_product(name)
     product_avg = round(Product_Review.get_summary_for_product(name)[0],2)
     product_count = round(Product_Review.get_summary_for_product(name)[1],2)
@@ -90,14 +94,14 @@ def get_product_page(name):
         products[0].starred = 1
     else:
         products[0].starred = 0
-        
+
     avail = Product.is_product_available(name)
     for product_review in product_review_list:
         uid = product_review.buyer_id
         user = User.get(uid)
         reviewer_name = user.firstname + " " + user.lastname
         product_review.reviewer_name = reviewer_name
-        
+
     if current_user.is_authenticated:
         logged_in = True
         for product_review in product_review_list:
@@ -123,7 +127,7 @@ def get_product_page(name):
         rating_exists=False
         rating=-1
         reviewText= ""
-    
+
     product_review_list_most_popular = copy.deepcopy(product_review_list)
     product_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
     product_review_list_most_popular.reverse()
@@ -147,19 +151,19 @@ def get_sorted_product_page(name):
             summary.append(0)
         seller_info.append(summary)
 
-    
+
     product_avg = round(Product_Review.get_summary_for_product(name)[0],2)
     product_count = round(Product_Review.get_summary_for_product(name)[1],2)
-    
+
     if product_avg >= 3.5:
         products[0].starred = 1
     else:
         products[0].starred = 0
-        
+
     sort = request.form['sortProduct']
     if sort=='reverse_chronological':
         product_review_list.sort(key=lambda x: x.date)
-        product_review_list.reverse() 
+        product_review_list.reverse()
     elif sort=='chronological':
         product_review_list.sort(key=lambda x: x.date)
     elif sort=='rating_high_to_low':
@@ -175,7 +179,7 @@ def get_sorted_product_page(name):
     else:
         product_review_list.sort(key=lambda x: x.date)
         product_review_list.reverse()
-    
+
     for product_review in product_review_list:
         uid = product_review.buyer_id
         user = User.get(uid)
@@ -255,7 +259,7 @@ def get_search_results():
 
 @bp.route('/reviews', methods=['GET','POST'])
 def get_reviews_by_user():
-    
+
     seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
     product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
     seller_review_list.sort(key=lambda x: x.date)
@@ -272,12 +276,12 @@ def get_reviews_by_user():
 
 @bp.route('/reviews-product-sorted', methods=['GET','POST'])
 def get_sorted_product_reviews_by_user():
-    
+
     sort = request.form['sortProduct']
     if sort=='reverse_chronological':
         product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
         product_review_list.sort(key=lambda x: x.date)
-        product_review_list.reverse() 
+        product_review_list.reverse()
     elif sort=='chronological':
         product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
         product_review_list.sort(key=lambda x: x.date)
@@ -298,14 +302,14 @@ def get_sorted_product_reviews_by_user():
     else:
         product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
         product_review_list.sort(key=lambda x: x.date)
-        product_review_list.reverse() 
-       
+        product_review_list.reverse()
 
 
-    
+
+
     seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
     seller_review_list.sort(key=lambda x: x.date)
-    seller_review_list.reverse() 
+    seller_review_list.reverse()
 
     for seller_review in seller_review_list:
         seller_review.seller_name = Seller.get(seller_review.seller_id).seller_name
@@ -316,12 +320,12 @@ def get_sorted_product_reviews_by_user():
 
 @bp.route('/reviews-seller-sorted', methods=['GET','POST'])
 def get_sorted_seller_reviews_by_user():
-    
+
     sort = request.form['sortSeller']
     if sort=='reverse_chronological':
         seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
         seller_review_list.sort(key=lambda x: x.date)
-        seller_review_list.reverse() 
+        seller_review_list.reverse()
     elif sort=='chronological':
         seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
         seller_review_list.sort(key=lambda x: x.date)
@@ -342,12 +346,12 @@ def get_sorted_seller_reviews_by_user():
     else:
         seller_review_list = Seller_Review.get_all_reviews_by_buyer(current_user.id)
         seller_review_list.sort(key=lambda x: x.date)
-        seller_review_list.reverse() 
-        
-        
+        seller_review_list.reverse()
+
+
     product_review_list = Product_Review.get_all_reviews_by_buyer(current_user.id)
     product_review_list.sort(key=lambda x: x.date)
-    product_review_list.reverse() 
+    product_review_list.reverse()
 
     for seller_review in seller_review_list:
         seller_review.seller_name = Seller.get(seller_review.seller_id).seller_name
