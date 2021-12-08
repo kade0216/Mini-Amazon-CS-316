@@ -156,7 +156,6 @@ def dash(user_id, filter=False):
                                             seller_labels=seller_labels)
 
     get_order_history_grouped_by_timestamp = Orders.get_order_history_grouped_by_timestamp(current_user.id) 
-    print(get_order_history_grouped_by_timestamp[0][0].seller_id)
 
     return render_template('dash.html', order_history=get_order_history_grouped_by_timestamp,
                                         account_balance=account_balance,
@@ -240,7 +239,7 @@ def get_public_user_page(user_id):
     if not user_id.isnumeric():
         user_id = Seller.get_seller_id(user_id)
     if Seller.get(user_id) is not None:
-        
+
         user = User.get(user_id)
         seller = Seller.get(user_id)
         seller_avg = round(Seller_Review.get_summary_for_seller(user_id)[0],2)
@@ -278,7 +277,7 @@ def get_public_user_page(user_id):
             else:
                 rating_exists = False
                 rating=-1
-                reviewText= ""            
+                reviewText= ""
 
         else:
             logged_in = None
@@ -286,7 +285,7 @@ def get_public_user_page(user_id):
             rating=-1
             reviewText= ""
             ordered=-1
-            
+
         seller_review_list_most_popular = copy.deepcopy(seller_review_list)
         seller_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
         seller_review_list_most_popular.reverse()
@@ -374,10 +373,10 @@ def get_sorted_seller_page(seller_id):
             rating=-1
             reviewText= ""
             ordered=-1
-            
+
         seller_review_list_most_popular = copy.deepcopy(seller_review_list)
         seller_review_list_most_popular.sort(key=lambda x: x.upvote_count-x.downvote_count)
         seller_review_list_most_popular.reverse()
         seller_review_list_most_popular = seller_review_list_most_popular[0:3]
-        
+
         return render_template('user_public_page.html', ordered=ordered, seller_review_list_most_popular=seller_review_list_most_popular,logged_in=logged_in,rating_exists=rating_exists,rating=rating,reviewText=reviewText,user=user,isSeller=True,seller=seller,seller_review_list=seller_review_list,seller_avg=seller_avg,seller_count=seller_count)
