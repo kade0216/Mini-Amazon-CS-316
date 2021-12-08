@@ -111,10 +111,6 @@ class Product:
             sql = sql + '\n' + 'ORDER BY price ASC'
         elif sort == 'price_descending':
             sql = sql + '\n' + 'ORDER BY price DESC'
-        elif sort == 'rating_descending':
-            sql = sql + '\n' + 'ORDER BY AVG(rating) DESC'
-        elif sort == 'rating_ascending':
-            sql = sql + '\n' + 'ORDER BY AVG(rating) ASC'
 
         rows = app.db.execute(sql,
                     item_name=("%" + item_name + "%"),
