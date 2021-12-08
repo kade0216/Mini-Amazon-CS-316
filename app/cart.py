@@ -5,6 +5,7 @@ from flask_login import current_user
 from .models.cart import Cart
 from .models.saved_for_later import SavedForLater
 from .models.seller import Seller
+from .models.user import User
 
 from flask import Blueprint
 
@@ -17,7 +18,8 @@ bp = Blueprint("cart", __name__)
 def get_users_cart():
     cart = Cart.get_current_cart(current_user.id)
     saved_for_later = SavedForLater.get_saved_for_later(current_user.id)
-    return render_template("cart.html", cart=cart, saved_for_later=saved_for_later)
+    user_balance = User.get_account_balance(current_user.id)
+    return render_template("cart.html", cart=cart, saved_for_later=saved_for_later, user_balance=user_balance)
 
 @bp.route("/cart/add_item/<product_name>/<seller_id>", methods=["POST"])
 def add_item_to_cart(product_name, seller_id):
@@ -77,6 +79,14 @@ def submit_order():
     if is_cart_valid[0]:
         Cart.submit_cart_as_order(current_user.id)
     else:
+
+        if is_cart_valid[1] == "Insufficient Balance":
+            flash(
+                f"Error: The cart could not be submitted because the total cart price"
+                f" exceeds the user's balance."
+            )
+            return redirect(url_for("cart.get_users_cart"))
+
         bad_items = is_cart_valid[1]
 
         bad_items_output = ""

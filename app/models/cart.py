@@ -3,6 +3,7 @@ from flask import current_app as app
 from .seller import Seller
 from .selling import Selling
 from .orders import Orders
+from .user import User
 
 import datetime
 
@@ -187,6 +188,17 @@ class Cart:
             user_id=user_id,
         )
 
+    def get_total_price_of_cart(user_id):
+        """
+        Fetches Total Price of Cart
+        """
+        rows = Cart.get_current_cart(user_id)
+        total_cart_price = 0
+        for row in rows:
+            total_cart_price += row.total_price
+
+        return total_cart_price
+
     def validate_cart(user_id):
         """
         Checks to see if the cart is valid.
@@ -198,6 +210,13 @@ class Cart:
         If cart is valid, returns the following tuple (True, [])
         If cart is not valid, returns (False, [invalid_products])
         """
+
+        total_price_of_cart = Cart.get_total_price_of_cart(user_id)
+
+        if total_price_of_cart > User.get_account_balance(user_id):
+            app.logger.error("Error: Total Cart Price exceeds the User account balance")
+            return (False, "Insufficient Balance")
+
 
         rows = app.db.execute(
             """
@@ -215,7 +234,7 @@ class Cart:
         if len(rows) == 0:
             return (True, [])
 
-        app.logger.error([ProductSellers(*row) for row in rows])
+
 
         return (False, [ProductSellers(*row) for row in rows])
 
@@ -232,6 +251,7 @@ class Cart:
         """
 
         cart_is_valid = Cart.validate_cart(user_id)[0]
+        total_price_of_cart = Cart.get_total_price_of_cart(user_id)
 
         if not cart_is_valid:
             app.logger.error(f"Cannot submit invalid cart for user {user_id})")
@@ -247,6 +267,9 @@ class Cart:
             """,
             user_id=user_id,
         )
+
+        # Decrement user balance
+        User.change_balance(user_id, total_price_of_cart, "-")
 
         all_items = [OrderSheet(*item) for item in user_cart]
 
